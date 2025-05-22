@@ -1,8 +1,14 @@
 #include "menu.h"
 #include <stdio.h>
-#include <conio.h>
 #include <stdlib.h>
-#include <windows.h>
+
+#ifdef _WIN32
+	#include <windows.h>
+	#include <conio.h>
+#else
+	#include <termios.h>
+	#include <unistd.h>
+#endif
 
 int menu(const char *menuHeader, const char **menuItems, const char *menuFooter)
 {
@@ -91,9 +97,9 @@ Input userInput()
 	}
 }
 
-void moveConsoleCursorTo(int x, int y) {
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), (COORD) {(short) x, (short) y});
-}
+// void moveConsoleCursorTo(int x, int y) {
+// 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), (COORD) {(short) x, (short) y});
+// }
 
 void clearScreen() {
 	#ifdef _WIN32
