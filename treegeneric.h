@@ -5,14 +5,15 @@
 #include <stdbool.h>
 
 typedef struct elmttree *addrtree;
-typedef int board [8][8];
 typedef struct elmttree{
-    board Board;
+    void * data;
+    unsigned int datasize;
     addrtree fs, nb; 
 } nbtree;
 
 bool IsEmptyTree(addrtree t);
-addrtree CreateNode (board b, int score);
+addrtree CreateNode (const void *data, unsigned int dataSize);
 void DeleteEntireTree (addrtree *root);
+
 
 #endif

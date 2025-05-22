@@ -1,14 +1,22 @@
 #include <stdio.h>
-#include "tree.h"
+#include "treegeneric.h"
 
 bool IsEmptyTree(addrtree root){
     if (root==NULL) return;
 }
 
-addrtree CreateNode (board b, int score){
+addrtree CreateNode (const void *data, unsigned int dataSize){
     addrtree temp= (addrtree) malloc (sizeof(nbtree));
     if (temp != NULL){
-        memcpy(temp->Board, b, sizeof(board));
+        temp->data = malloc (dataSize);
+        if (temp->data != NULL){
+            memcpy(temp->Board, b, sizeof(board));
+            temp->datasize = dataSize;
+        } else {
+            free (temp);
+            printf ("allocate failed\n");
+            return NULL;
+        }
         temp->fs = NULL;
         temp->nb = NULL;
     } else {
