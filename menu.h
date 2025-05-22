@@ -7,6 +7,12 @@
 #define PREVIOUS UP
 #define NEXT DOWN
 
+#ifdef _WIN32
+	#define KEY_ENTER 13
+#else
+	#define KEY_ENTER 10
+#endif
+
 typedef enum input {
 	UP,
 	DOWN,

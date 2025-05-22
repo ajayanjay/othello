@@ -58,7 +58,7 @@ void inputUntilChar(char c)
 
 void inputUntilEnter()
 {
-	while (nonBlockingInput() != 13);
+	while (nonBlockingInput() != KEY_ENTER);
 }
 
 Input userInput()
@@ -75,9 +75,6 @@ Input userInput()
 					case 77: return RIGHT;
 					default: return NUL;
 				}
-
-			case 13:
-				return ENTER;
 		#else
 			case 27:
 				switch(nonBlockingInput()) 
@@ -94,10 +91,10 @@ Input userInput()
 					default:
 						return NUL;
 				}
-
-			case 10: case 13:
-				return ENTER;
 		#endif
+
+		case KEY_ENTER:
+			return ENTER;
 
 		// WASD movement
 		case 'w': case 'W':
@@ -135,7 +132,7 @@ void clearScreen() {
 		SetConsoleCursorPosition(hStdOut, coordScreen);
 	#else
 		// For other platforms, you can use ANSI escape codes
-		printf("\033[H\033[J");
+		printf("clear");
 	#endif
 }
 
