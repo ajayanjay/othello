@@ -58,9 +58,6 @@ Input userInput();
 // bersihkan layar
 void clearScreen();
 
-// pindahin cursor ke x, y.
-void moveConsoleCursorTo(int x, int y);
-
 // INSIDER FUNCTIONS. should not to be used outside this file.
 
 // move cursor to next or previous item. or execute action. or not at all.

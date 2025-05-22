@@ -65,16 +65,39 @@ Input userInput()
 {
 	switch (nonBlockingInput())
 	{
-		// arrow key movement
-		case 0: case 224:
-		    switch(nonBlockingInput()) 
-		    {
-		        case 72: return UP;
-		        case 75: return LEFT;  
-		        case 80: return DOWN;
-		        case 77: return RIGHT;
-		        default: return NUL;
-		    }
+		#ifdef _WIN32
+			case 0: case 224:
+				switch(nonBlockingInput()) 
+				{
+					case 72: return UP;
+					case 75: return LEFT;  
+					case 80: return DOWN;
+					case 77: return RIGHT;
+					default: return NUL;
+				}
+
+			case 13:
+				return ENTER;
+		#else
+			case 27:
+				switch(nonBlockingInput()) 
+				{
+					case 91:
+						switch(nonBlockingInput()) 
+						{
+							case 65: return UP;
+							case 68: return LEFT;  
+							case 66: return DOWN;
+							case 67: return RIGHT;
+							default: return NUL;
+						}
+					default:
+						return NUL;
+				}
+
+			case 10: case 13:
+				return ENTER;
+		#endif
 
 		// WASD movement
 		case 'w': case 'W':
@@ -89,17 +112,10 @@ Input userInput()
 		case 'd': case 'D':
 			return RIGHT;
 
-		case 13:
-			return ENTER;
-
 		default: 
 			return NUL;
 	}
 }
-
-// void moveConsoleCursorTo(int x, int y) {
-// 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), (COORD) {(short) x, (short) y});
-// }
 
 void clearScreen() {
 	#ifdef _WIN32
