@@ -14,32 +14,11 @@ typedef enum input {
 	RIGHT,
 	ENTER,
 	NUL
-} input_e ;
+} Input ;
 
 int menu(const char* menuHeader, const char* menuItems[], const char* menuFooter);
 // both requires NULL at the end of element at menuItems.
 /* Usage Example
-
-	menuHeader = 	"\nWelcome to X\n\n";
-	menuItems[] = {
-					"Play Game", "Continue\n",
-					"Settings\n",
-					"How To Play\n\n",
-
-					"Exit\n\n", NULL
-	};
-
-	menuFooter =	"Press ENTER to Select..."
-
-	switch (menu(menuHeader, menuItems, menuFooter)) {
-	
-		case 0: playGame();  break;
-		case 1: continue();  break;
-		case 2: settings();	 break;
-		case 3: howToPlay(); break;
-		case 4: return 0;
-
-	}
 
 	menuHeader = 	"\nWelcome to X\n\n";
 	menuItems[] = {
@@ -74,7 +53,7 @@ void inputUntilChar(char c);
 void inputUntilEnter();
 
 // konversi input dari user ke enum input_e.
-input_e userInput();
+Input userInput();
 
 // bersihkan layar
 void clearScreen();
@@ -91,7 +70,7 @@ int menuInput(int *item, int minSize, int maxSize);
 int moveCursor(int *item, int direction);
 
 // get the length of menuItems.
-int getItemsLength(const char* menuItems[]);
+int getMenuItemsLength(const char* menuItems[]);
 
 // check if the cursor is at the end of the menu.
 int isAtEnd(int item, int maxSize);

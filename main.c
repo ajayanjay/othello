@@ -26,8 +26,8 @@ void mainMenu()
 
     while (1) // Loop the game until the user exits.
         switch (menu(menuHeader, menuItems, menuFooter)) {
-            case 0: //playGame(); break;
-            case 1: //continueGame(); break;
+            case 0: //newGame(); break;
+            case 1: //continue(); break;
             case 2: //scoreboard(); break;
             case 3: howToPlay(); break;
             case 4: return;

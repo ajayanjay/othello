@@ -7,7 +7,7 @@
 int menu(const char *menuHeader, const char **menuItems, const char *menuFooter)
 {
 	int cursor = 0, action;
-	int n = getItemsLength(menuItems);
+	int n = getMenuItemsLength(menuItems);
 
 	while (1) 
 	{
@@ -55,7 +55,7 @@ void inputUntilEnter()
 	while (nonBlockingInput() != 13);
 }
 
-input_e userInput()
+Input userInput()
 {
 	switch (nonBlockingInput())
 	{
@@ -91,7 +91,33 @@ input_e userInput()
 	}
 }
 
-int getItemsLength(const char **menuItems) 
+void moveConsoleCursorTo(int x, int y) {
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), (COORD) {(short) x, (short) y});
+}
+
+void clearScreen() {
+	#ifdef _WIN32
+		HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+		COORD coordScreen = { 0, 0 };
+		DWORD dwCharsWritten;
+		CONSOLE_SCREEN_BUFFER_INFO csbi;
+
+		/* Get the number of cells in the current buffer */
+		GetConsoleScreenBufferInfo(hStdOut, &csbi);
+		DWORD dwSize = (DWORD) (csbi.dwSize.X * csbi.dwSize.Y);
+
+		/* Fill the entire buffer with spaces */
+		FillConsoleOutputCharacter(hStdOut, ' ', dwSize, coordScreen, &dwCharsWritten);
+
+		/* Move the cursor home */
+		SetConsoleCursorPosition(hStdOut, coordScreen);
+	#else
+		// For other platforms, you can use ANSI escape codes
+		printf("\033[H\033[J");
+	#endif
+}
+
+int getMenuItemsLength(const char **menuItems) 
 {
 	int count = -1;
 	while (menuItems[++count] != NULL);
@@ -116,33 +142,6 @@ int menuInput(int *item, int minSize, int maxSize)
 		default:
 			return UNNECESSARY_INPUT;
 	}
-}
-
-void moveConsoleCursorTo(int x, int y) {
-	COORD c = {(short) x, (short) y};
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), c);
-}
-
-void clearScreen() {
-	#ifdef _WIN32
-		HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-		COORD coordScreen = { 0, 0 };
-		DWORD dwCharsWritten;
-		CONSOLE_SCREEN_BUFFER_INFO csbi;
-
-		/* Get the number of cells in the current buffer */
-		GetConsoleScreenBufferInfo(hStdOut, &csbi);
-		DWORD dwSize = (DWORD) (csbi.dwSize.X * csbi.dwSize.Y);
-
-		/* Fill the entire buffer with spaces */
-		FillConsoleOutputCharacter(hStdOut, ' ', dwSize, coordScreen, &dwCharsWritten);
-
-		/* Move the cursor home */
-		SetConsoleCursorPosition(hStdOut, coordScreen);
-	#else
-		// For other platforms, you can use ANSI escape codes
-		printf("\033[H\033[J");
-	#endif
 }
 
 int moveCursor(int *item, int direction)
