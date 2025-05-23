@@ -1,48 +1,44 @@
 #include "queue.h"
-#include <stdlib.h>
-#include <string.h>
 
-void initQueue(Queue * q, unsigned int size)
-{
-    front(q) = NULL;
-    rear(q) = NULL;
-    size(q) = size;
-}
-
-void enqueue(Queue * q, const void * data)
-{
-    if (rear(q) == NULL)
-    {
-        insertLast(&rear(q), data, size(q));
-        front(q) = rear(q);    
+void enqueue(Queue *Q, infotype nilai) {
+    address P = SetNode(&nilai);
+    if (P == nil) {
+        return;
     }
-    else
-    {
-        insertLast(&rear(q), data, size(q));
-        rear(q) = next(rear(q));
+    if (isEmpty(Q->head)) {
+        Q->head = P;
+        Q->tail = P;
+    } else {
+        Ins_Akhir(&(Q->tail), P);
+        Q->tail = P;
     }
 }
 
-void dequeue(Queue * q, void * deleted_data)
-{
-    deleteFirst(&front(q), deleted_data, size(q));
+void dequeue (Queue *Q, infotype *nilai){
+    if (!isEmpty(Q->head)) {
+        Del_Awal(&Q->head, nilai);
+        if (Q->head == nil) {
+            Q->tail = nil;
+        }
+    }
 }
 
-void peekFront(Queue * q, void * data)
-{
-    memcpy(data, item(front(q)), size(q));
-}
-void peekRear(Queue * q, void * data)
-{
-    memcpy(data, item(rear(q)), size(q));
-}
-
-void freeQueue(Queue * q)
-{
-    freeSingleList(&front(q), size(q));
+void dequeueandprint(Queue *Q) {
+    infotype nilai;
+    if (!isEmpty(Q->head)) {
+        dequeue(Q, &nilai);
+        printf("Lagu yang telah selesai adalah %c\n", nilai);
+    } else {
+        printf("Queue kosong\n");
+    }
 }
 
-int isQueueEmpty(Queue * q)
-{
-    return front(q) == NULL;
+void createinitQueue(Queue *Q1){
+    Q1->head = nil;
+    Q1->tail = nil;
+}
+
+void ExitQueue (Queue *Q1){
+    DeAlokasi(&(Q1->head));
+    Q1->tail = nil;
 }

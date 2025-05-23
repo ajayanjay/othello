@@ -1,14 +1,14 @@
 #include <stdio.h>
 #include "tree.h"
 
-bool IsEmptyTree(addrtree root){
+boolean IsEmptyTree(NbTree *root){
     if (root==NULL) return;
 }
 
-addrtree CreateNode (board b, int score){
-    addrtree temp= (addrtree) malloc (sizeof(nbtree));
+NbTree* CreateNode (InfoNbTree b, int score){
+    NbTree* temp= (NbTree*) malloc (sizeof(NbTree));
     if (temp != NULL){
-        memcpy(temp->Board, b, sizeof(board));
+        temp->info = b;
         temp->fs = NULL;
         temp->nb = NULL;
     } else {
@@ -17,17 +17,17 @@ addrtree CreateNode (board b, int score){
     return temp;
 }
 
-void DeleteEntireTree (addrtree *root){
+void DeleteEntireTree(NbTree** root){
     if (root== NULL || *root == NULL){
         printf ("no tree in DeleteEntireTree\n");
     }
     if ((*root)->fs != NULL){
-        addrtree temp = (*root)->fs;
+        NbTree* temp = (*root)->fs;
         (*root)->fs = NULL;
         DeleteEntireTree (&temp);
     }
     if ((*root)->nb != NULL){
-        addrtree temp= (*root)->nb;
+        NbTree* temp= (*root)->nb;
         (*root)->nb = NULL;
         DeleteEntireTree (&temp);
     }

@@ -1,6 +1,7 @@
 #include "stack.h"
 #include <mem.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 void initStack(Stack * stack, SizeData elementSize, SizeData capacity) {
     initArray(stack, elementSize, capacity);
@@ -31,4 +32,35 @@ void top(Stack * stack, void * element) {
 
 int isStackEmpty(Stack * stack) {
     return stack->size == 0;
+}
+
+void saveStack(Stack * stack, const char* filename) {
+    FILE *f;
+
+    if ( (f = fopen(filename, "w")) == NULL)
+        return;
+
+    fwrite(&stack->size, sizeof(SizeData), 1, f);
+    fwrite(&stack->elementSize, sizeof(SizeData), 1, f);
+    fwrite(stack->data, stack->elementSize, stack->size, f);
+    fclose(f);
+}
+
+Stack loadStack(const char * filename) {
+    FILE *f;
+    Stack s;
+
+    if ( (f = fopen(filename, "r")) == NULL) {
+        s.size = 0;
+        s.elementSize = 0;
+        s.data = NULL;
+        return s;
+    }
+
+    fread(&s.size, sizeof(SizeData), 1, f);
+    fread(&s.elementSize, sizeof(SizeData), 1, f);
+    s.data = malloc(s.size * s.elementSize);
+    fread(s.data, s.elementSize, s.size, f);
+    fclose(f);
+    return s;
 }

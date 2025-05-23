@@ -1,27 +1,21 @@
-#ifndef queue_h
-#define queue_h
+#ifndef queue_H
+#define queue_H
 
-#include "node_sll.h"
+#include "linked.h"
 
 typedef struct {
-    NodeSingle * front;
-    NodeSingle * rear;
-    unsigned int size;
+    address head;
+    address tail;
 } Queue;
 
-#define front(q) q->front
-#define rear(q) q->rear
+void enqueue (Queue *Q, infotype nilai);
 
-void initQueue(Queue * q, unsigned int size);
+void dequeue (Queue *Q, infotype *nilai);
 
-void enqueue(Queue * q, const void * data);
-void dequeue(Queue * q, void * deleted_data);
+void dequeueandprint (Queue *Q);
 
-void peekFront(Queue * q, void * data);
-void peekRear(Queue * q, void * data);
+void createinitQueue(Queue *Q1);
 
-void freeQueue(Queue * q);
-
-int isQueueEmpty(Queue * q);
+void ExitQueue (Queue *Q1);
 
 #endif

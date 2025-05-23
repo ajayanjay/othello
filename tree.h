@@ -2,17 +2,25 @@
 #define nbtrees_h
 
 #include <stdlib.h>
-#include <stdbool.h>
+#include "convention.h"
+typedef struct boardarray {
+    char board[8][8];
+    char currentPlayer;
+} BoardArray;
+typedef struct nodetree {
+    BoardArray board;
+    unsigned char depth, value;
+    boolean isMax, evaluated, expanded;
+} NodeInfo;
 
-typedef struct elmttree *addrtree;
-typedef int board [8][8];
-typedef struct elmttree{
-    board Board;
-    addrtree fs, nb; 
-} nbtree;
+typedef NodeInfo InfoNbTree;
+typedef struct nbtree {
+    InfoNbTree info;
+    struct nbtree *fs, *nb;
+} NbTree;
 
-bool IsEmptyTree(addrtree t);
-addrtree CreateNode (board b, int score);
-void DeleteEntireTree (addrtree *root);
+boolean IsEmptyTree(NbTree *t);
+NbTree* CreateNode (InfoNbTree info, int score);
+void DeleteEntireTree (NbTree** root);
 
 #endif

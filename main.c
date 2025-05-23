@@ -17,6 +17,7 @@ void mainMenu()
     const char* menuItems[] = {
                                 "New Game\n",
                                 "Continue\n",
+                                "Watch Replay\n",
                                 "Scoreboard\n",
                                 "How To Play\n",
                                 "Exit\n\n",
@@ -28,9 +29,10 @@ void mainMenu()
         switch (menu(menuHeader, menuItems, menuFooter)) {
             case 0: //newGame(); break;
             case 1: //continue(); break;
-            case 2: //scoreboard(); break;
-            case 3: howToPlay(); break;
-            case 4: return;
+            case 2: //watchReplay(); break;
+            case 3: //scoreboard(); break;
+            case 4: howToPlay(); break;
+            case 5: return;
         }
 }
 
