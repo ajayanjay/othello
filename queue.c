@@ -1,4 +1,5 @@
 #include "queue.h"
+#include <stdlib.h>
 
 void enqueue(Queue *Q, infotype nilai) {
     address P = SetNode(&nilai);

@@ -1,7 +1,13 @@
 #include "stack.h"
-#include <mem.h>
 #include <stdlib.h>
 #include <stdio.h>
+
+#ifdef _WIN32
+    #include <mem.h>
+#else
+    #include <memory.h>
+#endif
+
 
 void initStack(Stack * stack, SizeData elementSize, SizeData capacity) {
     initArray(stack, elementSize, capacity);
