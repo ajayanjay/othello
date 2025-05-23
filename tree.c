@@ -1,11 +1,12 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "tree.h"
 
 boolean IsEmptyTree(NbTree *root){
-    if (root==NULL) return;
+    return root == NULL;
 }
 
-NbTree* CreateNode (InfoNbTree b, int score){
+NbTree* CreateNode (InfoNbTree b){
     NbTree* temp= (NbTree*) malloc (sizeof(NbTree));
     if (temp != NULL){
         temp->info = b;

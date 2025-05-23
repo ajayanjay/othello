@@ -12,10 +12,8 @@ void enqueue (Queue *Q, infotype nilai);
 
 void dequeue (Queue *Q, infotype *nilai);
 
-void dequeueandprint (Queue *Q);
+void initQueue(Queue *Q1);
 
-void createinitQueue(Queue *Q1);
-
-void ExitQueue (Queue *Q1);
+void freeQueue (Queue *Q1);
 
 #endif

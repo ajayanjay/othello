@@ -1,7 +1,6 @@
 #ifndef nbtrees_h
 #define nbtrees_h
 
-#include <stdlib.h>
 #include "convention.h"
 typedef struct boardarray {
     char board[8][8];
@@ -9,7 +8,7 @@ typedef struct boardarray {
 } BoardArray;
 typedef struct nodetree {
     BoardArray board;
-    unsigned char depth, value;
+    char depth, value;
     boolean isMax, evaluated, expanded;
 } NodeInfo;
 
@@ -20,7 +19,7 @@ typedef struct nbtree {
 } NbTree;
 
 boolean IsEmptyTree(NbTree *t);
-NbTree* CreateNode (InfoNbTree info, int score);
+NbTree* CreateNode (InfoNbTree info);
 void DeleteEntireTree (NbTree** root);
 
 #endif
