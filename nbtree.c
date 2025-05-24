@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "tree.h"
+#include "nbtree.h"
 
 boolean IsEmptyTree(NbTree *root){
     return root == NULL;

@@ -2,17 +2,10 @@
 #define nbtrees_h
 
 #include "convention.h"
-typedef struct boardarray {
-    char board[8][8];
-    char currentPlayer;
-} BoardArray;
-typedef struct nodetree {
-    BoardArray board;
-    char depth, value;
-    boolean isMax, evaluated, expanded;
-} NodeInfo;
+#include "ai.h"
 
-typedef NodeInfo InfoNbTree;
+typedef AIInfo InfoNbTree;
+
 typedef struct nbtree {
     InfoNbTree info;
     struct nbtree *fs, *nb;
