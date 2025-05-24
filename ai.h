@@ -2,6 +2,7 @@
 #define ai_h
 
 #include "move.h"
+#include "convention.h"
 
 // board duplicate for AI.
 typedef struct boardarray {
