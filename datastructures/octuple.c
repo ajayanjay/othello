@@ -202,7 +202,7 @@ void convertArrayToOctuple(NodeOctuple *root, char boardArray[8][8]) {
     }
 }
 
-void saveGame(NodeOctuple *root, const char *filename) {
+void saveBoard(NodeOctuple *root, const char *filename) {
     /*
     Save the octuple linked list board to a text file in 8x8 grid format
     Each line contains 8 characters ('X', 'O', or '.') followed by a newline
