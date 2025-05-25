@@ -115,7 +115,7 @@ void constructOthelloBoard(NodeOctuple **root) {
 
 void printRow(NodeOctuple *row) {
     if (row == NULL) return;
-    printf("%c", row->info);
+    printf("%c ", row->info);
     if (row->right != NULL) {
         printRow(row->right);
     }
@@ -130,6 +130,21 @@ void printBoard(NodeOctuple *board) {
     }
 }
 
+NodeOctuple * setNodeAt (NodeOctuple *root, OctupleInfo info,  int row, int col){
+    NodeOctuple *current= root;
+    int i=0;
+    while (i<row){
+        current = current->down;
+        i++;
+    }
+    i=0;
+    while (i<col){
+        current = current->right;
+    }
+    current->info = info;
+}
+
+
 NodeOctuple * getNodeAt(NodeOctuple *root, int row, int col) {
     NodeOctuple *current = root;
     for (int i = 0; i < row; ++i)
@@ -137,4 +152,81 @@ NodeOctuple * getNodeAt(NodeOctuple *root, int row, int col) {
     for (int j = 0; j < col; ++j)
         current = current->right;
     return current;
+}
+
+void convertOctupleToArray (NodeOctuple *root, char boardArray[8][8]){
+    /*
+    Convert Octuple link list to 8x8 array by traversing board
+    */
+    if (root==NULL) {
+        printf ("Papan Octuple kosong\n");
+        return;
+    }
+    
+    NodeOctuple *row = root;
+    int i = 0;
+    while (row != NULL && i < 8) {
+        NodeOctuple *col = row;
+        int j = 0;
+        while (col != NULL && j < 8) {
+            boardArray[i][j] = col->info; //duplicate
+            col = col->right; //right
+            j++;
+        }
+        row = row->down; //down
+        i++;
+    }
+}
+
+void convertArrayToOctuple(NodeOctuple *root, char boardArray[8][8]) {
+    /*
+    Update the info field of an existing octuple linked list with values from an 8x8 array
+    Assumes the linked list already has all pointers correctly connected
+    */
+    if (root == NULL) {
+        return; // Handle empty list
+    }
+
+    NodeOctuple *row = root;
+    int i = 0;
+    while (row != NULL && i < 8) {
+        NodeOctuple *col = row;
+        int j = 0;
+        while (col != NULL && j < 8) {
+            col->info = boardArray[i][j]; // Update info with array value
+            col = col->right; // Move to next column
+            j++;
+        }
+        row = row->down; // Move to next row
+        i++;
+    }
+}
+
+void saveGame(NodeOctuple *root, const char *filename) {
+    /*
+    Save the octuple linked list board to a text file in 8x8 grid format
+    Each line contains 8 characters ('X', 'O', or '.') followed by a newline
+    */
+    if (root == NULL) {
+        return;
+    }
+
+    FILE *file = fopen(filename, "w");
+    if (file == NULL) {
+        printf("Gagal membuka file %s untuk menulis\n", filename);
+        return;
+    }
+
+    NodeOctuple *row = root;
+    while (row != NULL) {
+        NodeOctuple *col = row;
+        while (col != NULL) {
+            fputc(col->info, file); // Write info to file
+            col = col->right;
+        }
+        fputc('\n', file); // Newline after each row
+        row = row->down;
+    }
+
+    fclose(file);
 }

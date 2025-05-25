@@ -20,4 +20,12 @@ void printRow(NodeOctuple *row);
 
 void printBoard(NodeOctuple *board);
 
+NodeOctuple * setNodeAt (NodeOctuple *root, OctupleInfo info,  int row, int col);
+
+void convertOctupleToArray (NodeOctuple *root, char boardArray[8][8]);
+
+void convertArrayToOctuple(NodeOctuple *root, char boardArray[8][8]);
+
+void saveGame(NodeOctuple *root, const char *filename);
+
 #endif
