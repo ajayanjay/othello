@@ -14,7 +14,7 @@ typedef struct tElmtList {
 
 int isEmpty(address p);
 
-address createNode(infotype nilai);
+address createNodeSingle(infotype nilai);
 
 void printList(address p);
 void insertAwal(address *p, address PNew);

@@ -1,7 +1,7 @@
 #ifndef nbtrees_h
 #define nbtrees_h
 
-#include "convention.h"
+#include "boolean.h"
 #include "ai.h"
 
 typedef AIInfo InfoNbTree;
@@ -11,8 +11,8 @@ typedef struct nbtree {
     struct nbtree *fs, *nb;
 } NbTree;
 
-boolean IsEmptyTree(NbTree *t);
-NbTree* CreateNode (InfoNbTree info);
-void DeleteEntireTree (NbTree** root);
+boolean isEmptyTree(NbTree *t);
+NbTree* createNodeTree (InfoNbTree info);
+void deleteEntireTree (NbTree** root);
 
 #endif

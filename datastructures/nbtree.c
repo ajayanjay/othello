@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include "nbtree.h"
 
-boolean IsEmptyTree(NbTree *root){
+boolean isEmptyTree(NbTree *root){
     return root == NULL;
 }
 
-NbTree* CreateNode (InfoNbTree b){
+NbTree* createNodeTree (InfoNbTree b){
     NbTree* temp= (NbTree*) malloc (sizeof(NbTree));
     if (temp != NULL){
         temp->info = b;
@@ -18,19 +18,19 @@ NbTree* CreateNode (InfoNbTree b){
     return temp;
 }
 
-void DeleteEntireTree(NbTree** root){
+void deleteEntireTree(NbTree** root){
     if (root== NULL || *root == NULL){
         printf ("no tree in DeleteEntireTree\n");
     }
     if ((*root)->fs != NULL){
         NbTree* temp = (*root)->fs;
         (*root)->fs = NULL;
-        DeleteEntireTree (&temp);
+        deleteEntireTree (&temp);
     }
     if ((*root)->nb != NULL){
         NbTree* temp= (*root)->nb;
         (*root)->nb = NULL;
-        DeleteEntireTree (&temp);
+        deleteEntireTree (&temp);
     }
 
     free (*root);

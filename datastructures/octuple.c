@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "octuple.h"
+#include "piece.h"
 
 NodeOctuple * createNodeOctuple (OctupleInfo info){
     NodeOctuple * new_node = malloc (sizeof(NodeOctuple));
@@ -22,12 +23,12 @@ void constructOthelloBoard(NodeOctuple **root) {
     */
 
     // Init first node
-    (*root) = createNodeOctuple('.');
+    (*root) = createNodeOctuple(BLANK);
     NodeOctuple *current = *root;
 
     int i = 0; //init first line and connect left right
     while (i < 7) {
-        NodeOctuple *new_node = createNodeOctuple('.');
+        NodeOctuple *new_node = createNodeOctuple(BLANK);
         current->right = new_node;
         new_node->left = current;
         current = new_node; //update current
@@ -39,7 +40,7 @@ void constructOthelloBoard(NodeOctuple **root) {
 
     int row = 0;
     while (row < 7) {
-        NodeOctuple *firstrow = createNodeOctuple('.');
+        NodeOctuple *firstrow = createNodeOctuple(BLANK);
         current = firstrow;
 
         // connect first node to up and down
@@ -53,10 +54,10 @@ void constructOthelloBoard(NodeOctuple **root) {
         while (i < 7) {
             // Set infotype based on position (especially middle set rule othello)
             char color = '.';
-            if (row == 2 && i == 2) color = 'O'; // White on row 3, col 3 (d4)
-            else if (row == 2 && i == 3) color = 'X'; // Black on row 3, col 4 (e4)
-            else if (row == 3 && i == 2) color = 'X'; // Black on row 4, col 3 (d5)
-            else if (row == 3 && i == 3) color = 'O'; // White on row 4, col 4 (e5)
+            if (row == 2 && i == 2) color = WHITE; // White on row 3, col 3 (d4)
+            else if (row == 2 && i == 3) color = BLACK; // Black on row 3, col 4 (e4)
+            else if (row == 3 && i == 2) color = BLACK; // Black on row 4, col 3 (d5)
+            else if (row == 3 && i == 3) color = WHITE; // White on row 4, col 4 (e5)
 
             NodeOctuple *new_node = createNodeOctuple(color);
             // connect left and right 

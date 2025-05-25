@@ -7,7 +7,7 @@ int isEmpty(address p) {
     return (p == nil);
 }
 
-address createNode(infotype nilai){
+address createNodeSingle(infotype nilai){
     address P;
     Create_Node (&P);
     if (P == NULL) {
