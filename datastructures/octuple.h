@@ -11,11 +11,13 @@ typedef struct nodeoctuple {
 NodeOctuple * createNodeOctuple(OctupleInfo info);
 
 // creates othello board, consists of 8x8 octuples. All linked to each other.
-void constructOthelloBoard(NodeOctuple *root);
+void constructOthelloBoard(NodeOctuple **root);
 
 // returns the node at the given row and column
 NodeOctuple * getNodeAt(NodeOctuple *root, int row, int col);
 
+void printRow(NodeOctuple *row);
 
+void verifyOthelloBoard(NodeOctuple *board);
 
 #endif
