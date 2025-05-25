@@ -264,7 +264,7 @@ int loadBoard(NodeOctuple **root, const char *filename) {
         // Skip empty lines
         if (line[0] == '\n') continue;
         
-        // Validate line has at least 8 characters
+        // Validate line has exactly 8 characters
         int char_count = 0;
         while (char_count < 8 && line[char_count] != '\n' && line[char_count] != '\0') {
             if (line[char_count] == 'X' || line[char_count] == 'O' || line[char_count] == '.') {
@@ -290,7 +290,12 @@ int loadBoard(NodeOctuple **root, const char *filename) {
         return 0; // Invalid number of rows
     }
 
-    // Create a new board structure using constructOthelloBoard logic
+    /* Create a new board structure using constructOthelloBoard logic
+       from this point, it is possible to create a new board directly from the array with:
+    constructOthelloBoard(root);
+    convertArrayToOctuple(*root, boardArray);
+       but the method used below saves one iteration.
+    */
     *root = createNodeOctuple(boardArray[0][0]);
     NodeOctuple *current = *root;
 
