@@ -109,7 +109,7 @@ void printRow(NodeOctuple *row) {
     }
 }
 
-void verifyOthelloBoard(NodeOctuple *board) {
+void printBoard(NodeOctuple *board) {
     if (board == NULL) return;
     printRow(board);
     printf("\n");

@@ -18,6 +18,6 @@ NodeOctuple * getNodeAt(NodeOctuple *root, int row, int col);
 
 void printRow(NodeOctuple *row);
 
-void verifyOthelloBoard(NodeOctuple *board);
+void printBoard(NodeOctuple *board);
 
 #endif
