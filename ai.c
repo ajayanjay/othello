@@ -3,11 +3,11 @@
 #include <stdlib.h>
 
 // WIP
-int evaluateBoard(char board[8][8]) {
+int evaluateBoardArray(char board[8][8]) {
 }
 
 
-int getTotalPieceCount(char board[8][8]) {
+int getTotalPieceCountArray(char board[8][8]) {
     int count = 0;
     for (int i = 0; i < 8; ++i) 
         for (int j = 0; j < 8; ++j)
@@ -17,7 +17,7 @@ int getTotalPieceCount(char board[8][8]) {
     return count;
 }
 
-int getPieceCount(char board[8][8], char player) {
+int getPieceCountArray(char board[8][8], char player) {
     int count = 0;
     for (int i = 0; i < 8; i++) 
         for (int j = 0; j < 8; j++) 
@@ -28,7 +28,7 @@ int getPieceCount(char board[8][8], char player) {
 }
 
 // caller must call free.
-Move * getValidMoves(char board[8][8], char player, int *returnSize) {
+Move * getValidMovesArray(char board[8][8], char player, int *returnSize) {
     
     Move buffer[64];
     *returnSize = 0;
@@ -39,7 +39,7 @@ Move * getValidMoves(char board[8][8], char player, int *returnSize) {
     for (int i = 0; i < 8; ++i) {
         for (int j = 0; j < 8; ++j) {
             Move temp = {.x = j, .y = i};
-            if (isValidMove(board, &temp, player) == 1) {
+            if (isValidMoveArray(board, &temp, player) == 1) {
                 buffer[*returnSize] = temp;
                 (*returnSize)++;
             }
@@ -73,10 +73,10 @@ Move * getValidMoves(char board[8][8], char player, int *returnSize) {
 }
 
 // WIP
-void makeMove(char board[8][8], Move *move) {
+void makeMoveArray(char board[8][8], Move *move) {
 }
 
-int isValidMove(char board[8][8], Move *move, char player) {
+int isValidMoveArray(char board[8][8], Move *move, char player) {
     char opPlayer = player == BLACK ? WHITE : BLACK;
 
     if (board[move->y][move->x] != '.') {

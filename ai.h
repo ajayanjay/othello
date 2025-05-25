@@ -23,23 +23,23 @@ typedef struct aiinfo {
     BLANK : '.'
 */
 
-int evaluateBoard(char board[8][8]);
+int evaluateBoardArray(char board[8][8]);
 
 // Returns the total number of pieces on the board.
-int getTotalPieceCount(char board[8][8]);
+int getTotalPieceCountArray(char board[8][8]);
 
 // returns the total number of pieces for a specific player.
-int getPieceCount(char board[8][8], char player);
+int getPieceCountArray(char board[8][8], char player);
 
 // returns all possible moves for a player. use count to get the number of moves.
-Move * getValidMoves(char board[8][8], char player, int *count);
+Move * getValidMovesArray(char board[8][8], char player, int *count);
 
 // checks if a move (Move *move) is possible for a player.
 // Returns 1 if the move is possible, 0 otherwise.
-int isValidMove(char board[8][8], Move *move, char player);
+int isValidMoveArray(char board[8][8], Move *move, char player);
 
 // Makes a move on the board.
 // This function modifies the board directly.
-void makeMove(char board[8][8], Move *move);
+void makeMoveArray(char board[8][8], Move *move);
 
 #endif
