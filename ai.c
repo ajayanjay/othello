@@ -54,9 +54,9 @@ Move * getValidMovesArray(char board[8][8], char player, int *returnSize) {
             if (buffer[i].x == buffer[j].x && buffer[i].y == buffer[j].y) {
 
                 // shift elements to the left to remove the duplicate
-                for (int k = j; k < *returnSize - 1; ++k) {
+                for (int k = j; k < *returnSize - 1; ++k)
                     buffer[k] = buffer[k + 1];
-                }
+                
                 (*returnSize)--;
                 j--; // since we shifted elements, we need to check the new element at index j again
             }
@@ -65,9 +65,8 @@ Move * getValidMovesArray(char board[8][8], char player, int *returnSize) {
 
     Move *moves = malloc(sizeof(Move) * (*returnSize));
 
-    for (int i = 0; i < *returnSize; ++i) {
+    for (int i = 0; i < *returnSize; ++i)
         moves[i] = buffer[i];
-    }
 
     return moves;
 }
@@ -83,7 +82,7 @@ int isValidMoveArray(char board[8][8], Move *move, char player) {
         return 0;
     }
 
-    int directions[8][2] = {
+    static const int directions[8][2] = {
         {-1, -1}, {-1, 0}, {-1, 1},     // Up
         { 0, -1},          { 0, 1},     // Left/Right
         { 1, -1}, { 1, 0}, { 1, 1}      // Down
@@ -94,12 +93,12 @@ int isValidMoveArray(char board[8][8], Move *move, char player) {
         int dy = directions[i][1];
         int x = move->x + dx;
         int y = move->y + dy;
-        int foundOpponent = 0;
+        boolean foundOpponent = false;
 
         while (x >= 0 && x < 8 && y >= 0 && y < 8) {
-            // nemu musuh.
+            // nemu musuh. berarti ada kemungkinan kita bisa nge capture.
             if (board[y][x] == opPlayer)
-                foundOpponent = 1;
+                foundOpponent = true;
 
             // nemu kita
             else if (board[y][x] == player) {
