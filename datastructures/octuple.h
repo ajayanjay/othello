@@ -26,6 +26,6 @@ void convertOctupleToArray (NodeOctuple *root, char boardArray[8][8]);
 
 void convertArrayToOctuple(NodeOctuple *root, char boardArray[8][8]);
 
-void saveGame(NodeOctuple *root, const char *filename);
+void saveBoard(NodeOctuple *root, const char *filename);
 
 #endif
