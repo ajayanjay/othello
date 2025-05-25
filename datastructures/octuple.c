@@ -113,21 +113,35 @@ void constructOthelloBoard(NodeOctuple **root) {
     }
 }
 
-void printRow(NodeOctuple *row) {
-    if (row == NULL) return;
-    printf("%c ", row->info);
-    if (row->right != NULL) {
-        printRow(row->right);
-    }
-}
-
 void printBoard(NodeOctuple *board) {
-    if (board == NULL) return;
-    printRow(board);
-    printf("\n");
-    if (board->down != NULL) {
-        printBoard(board->down);
+    char buffer[1024];
+    int offset = 0;
+
+    // Baris atas
+    offset += sprintf(buffer + offset, "  +-----------------+\n"); //border top
+
+    NodeOctuple *current_row = board;
+    int row_number = 1;
+
+    while (current_row != NULL && row_number <= 8) {
+        offset += sprintf(buffer + offset, "%d |", row_number); //print row number and border
+        NodeOctuple *current_col = current_row;
+        int i = 0;
+        while (i < 8 && current_col != NULL) {
+            offset += sprintf(buffer + offset, " %c", current_col->info); // print info node
+            current_col = current_col->right; // update current to right
+            i++;
+        }
+        offset += sprintf(buffer + offset, " |\n");
+        current_row = current_row->down; // update current to bottom
+        row_number++; //update row number
     }
+
+    offset += sprintf(buffer + offset, "  +-----------------+\n"); //border bottom
+    offset += sprintf(buffer + offset, "    A B C D E F G H\n");
+
+    // Print all
+    printf("%s", buffer);
 }
 
 NodeOctuple * setNodeAt (NodeOctuple *root, OctupleInfo info,  int row, int col){

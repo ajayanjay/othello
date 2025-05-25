@@ -16,8 +16,6 @@ void constructOthelloBoard(NodeOctuple **root);
 // returns the node at the given row and column
 NodeOctuple * getNodeAt(NodeOctuple *root, int row, int col);
 
-void printRow(NodeOctuple *row);
-
 void printBoard(NodeOctuple *board);
 
 NodeOctuple * setNodeAt (NodeOctuple *root, OctupleInfo info,  int row, int col);
