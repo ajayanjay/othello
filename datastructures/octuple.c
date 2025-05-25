@@ -47,6 +47,11 @@ void constructOthelloBoard(NodeOctuple **root) {
         current->up = prev_row_start;
         if (prev_row_start != NULL) {
             prev_row_start->down = current;
+            // Set diagonal (upright & downleft) for first node
+            if (prev_row_start->right != NULL) {
+                current->upright = prev_row_start->right;
+                prev_row_start->right->downleft = current;
+            }
         }
 
         NodeOctuple *prev_current = prev_row_start; //create current for traversal in prev row
@@ -67,6 +72,7 @@ void constructOthelloBoard(NodeOctuple **root) {
             // Connect up and down (ensure not node in right end)
             if (prev_current != NULL && prev_current->right != NULL) {
                 new_node->up = prev_current->right; // because new_node in right, not straight from prev current
+                // not straight from prev current
                 prev_current->right->down = new_node;
             }
 
@@ -75,8 +81,9 @@ void constructOthelloBoard(NodeOctuple **root) {
                 if (new_node->up->left != NULL) {
                     new_node->upleft = new_node->up->left;
                 }
-                if (new_node->up->right != NULL) {
+                if (i < 6 && new_node->up->right != NULL) { // Ensure j+1 < 8
                     new_node->upright = new_node->up->right;
+                    new_node->up->right->downleft = new_node; // Set reverse pointer
                 }
             }
 
@@ -84,9 +91,13 @@ void constructOthelloBoard(NodeOctuple **root) {
             if (prev_current != NULL) {
                 if (current != NULL) {
                     prev_current->downright = new_node;
+                    new_node->upleft = prev_current; // Set reverse pointer
                 }
-                if (new_node->left != NULL) {
-                    prev_current->downleft = current;
+                if (current->left != NULL) {
+                    prev_current->downleft = current->left;
+                    current->left->upright = prev_current; // Set reverse pointer
+                } else {
+                    prev_current->downleft = NULL;
                 }
             }
 
