@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "octuple.h"
-#include "piece.h"
+#include "../piece.h"
 
 NodeOctuple * createNodeOctuple (OctupleInfo info){
     NodeOctuple * new_node = malloc (sizeof(NodeOctuple));
@@ -229,4 +229,126 @@ void saveBoard(NodeOctuple *root, const char *filename) {
     }
 
     fclose(file);
+}
+
+int loadBoard(NodeOctuple **root, const char *filename) {
+    /*
+    Load the octuple linked list board from a text file in 8x8 grid format
+    Each line contains 8 characters ('X', 'O', or '.') followed by a newline
+    */
+    FILE *file = fopen(filename, "r");
+    if (file == NULL) {
+        return 0; // Failed to open file
+    }
+
+    // Read the board into a 2D array first for easier processing
+    char boardArray[8][8];
+    char line[10]; // Buffer for reading lines (8 chars + newline + null terminator)
+    int row_count = 0;
+    
+    while (fgets(line, sizeof(line), file) != NULL && row_count < 8) {
+        // Skip empty lines
+        if (line[0] == '\n') continue;
+        
+        // Validate line has at least 8 characters
+        int char_count = 0;
+        while (char_count < 8 && line[char_count] != '\n' && line[char_count] != '\0') {
+            if (line[char_count] == 'X' || line[char_count] == 'O' || line[char_count] == '.') {
+                boardArray[row_count][char_count] = line[char_count];
+                char_count++;
+            } else {
+                fclose(file);
+                return 0; // Invalid character
+            }
+        }
+        
+        if (char_count != 8) {
+            fclose(file);
+            return 0; // Invalid line length
+        }
+        
+        row_count++;
+    }
+    
+    fclose(file);
+    
+    if (row_count != 8) {
+        return 0; // Invalid number of rows
+    }
+
+    // Create a new board structure using constructOthelloBoard logic
+    *root = createNodeOctuple(boardArray[0][0]);
+    NodeOctuple *current = *root;
+
+    // Create first row and connect left-right
+    for (int j = 1; j < 8; j++) {
+        NodeOctuple *new_node = createNodeOctuple(boardArray[0][j]);
+        current->right = new_node;
+        new_node->left = current;
+        current = new_node;
+    }
+
+    NodeOctuple *prev_row_start = *root;
+
+    // Create remaining rows with full octuple connections
+    for (int i = 1; i < 8; i++) {
+        NodeOctuple *first_node = createNodeOctuple(boardArray[i][0]);
+        current = first_node;
+
+        // Connect up-down for first node
+        current->up = prev_row_start;
+        prev_row_start->down = current;
+
+        // Set diagonal connections for first node
+        if (prev_row_start->right != NULL) {
+            current->upright = prev_row_start->right;
+            prev_row_start->right->downleft = current;
+        }
+
+        NodeOctuple *prev_current = prev_row_start;
+        
+        // Create rest of the row
+        for (int j = 1; j < 8; j++) {
+            NodeOctuple *new_node = createNodeOctuple(boardArray[i][j]);
+            
+            // Connect left-right
+            current->right = new_node;
+            new_node->left = current;
+
+            // Connect up-down
+            if (prev_current->right != NULL) {
+                new_node->up = prev_current->right;
+                prev_current->right->down = new_node;
+            }
+
+            // Set diagonal connections
+            if (new_node->up != NULL) {
+                // upleft connection
+                if (new_node->up->left != NULL) {
+                    new_node->upleft = new_node->up->left;
+                    new_node->up->left->downright = new_node;
+                }
+                // upright connection
+                if (j < 7 && new_node->up->right != NULL) {
+                    new_node->upright = new_node->up->right;
+                    new_node->up->right->downleft = new_node;
+                }
+            }
+
+            // downleft connection for previous node in previous row
+            if (prev_current != NULL && current != NULL) {
+                prev_current->downright = new_node;
+                new_node->upleft = prev_current;
+            }
+
+            current = new_node;
+            if (prev_current != NULL) {
+                prev_current = prev_current->right;
+            }
+        }
+
+        prev_row_start = first_node;
+    }
+
+    return 1; // Board loaded successfully
 }

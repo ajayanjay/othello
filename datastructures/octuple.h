@@ -28,4 +28,6 @@ void convertArrayToOctuple(NodeOctuple *root, char boardArray[8][8]);
 
 void saveBoard(NodeOctuple *root, const char *filename);
 
+int loadBoard(NodeOctuple **root, const char *filename);
+
 #endif
