@@ -23,12 +23,12 @@ void constructOthelloBoard(NodeOctuple **root) {
     */
 
     // Init first node
-    (*root) = createNodeOctuple(BLANK);
+    (*root) = createNodeOctuple(EMPTY);
     NodeOctuple *current = *root;
 
     int i = 0; //init first line and connect left right
     while (i < 7) {
-        NodeOctuple *new_node = createNodeOctuple(BLANK);
+        NodeOctuple *new_node = createNodeOctuple(EMPTY);
         current->right = new_node;
         new_node->left = current;
         current = new_node; //update current
@@ -40,7 +40,7 @@ void constructOthelloBoard(NodeOctuple **root) {
 
     int row = 0;
     while (row < 7) {
-        NodeOctuple *firstrow = createNodeOctuple(BLANK);
+        NodeOctuple *firstrow = createNodeOctuple(EMPTY);
         current = firstrow;
 
         // connect first node to up and down

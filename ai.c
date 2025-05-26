@@ -11,7 +11,7 @@ int getTotalPieceCountArray(char board[8][8]) {
     int count = 0;
     for (int i = 0; i < 8; ++i) 
         for (int j = 0; j < 8; ++j)
-            if (board[i][j] != BLANK)
+            if (board[i][j] != EMPTY)
                 ++count;
 
     return count;
@@ -123,7 +123,7 @@ void makeMoveArray(char board[8][8], Move *move, char currentPlayer) {
 int isValidMoveArray(char board[8][8], Move *move, char player) {
     char opPlayer = player == BLACK ? WHITE : BLACK;
 
-    if (board[move->y][move->x] != BLANK)
+    if (board[move->y][move->x] != EMPTY)
         return 0;
 
     static const int directions[8][2] = {

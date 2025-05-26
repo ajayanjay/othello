@@ -20,7 +20,7 @@ typedef struct aiinfo {
 /*
     BLACK (First move) : 'X'
     WHITE (Second move): 'O'
-    BLANK : '.'
+    EMPTY : '.'
 */
 
 int evaluateBoardArray(char board[8][8]);
@@ -40,6 +40,6 @@ int isValidMoveArray(char board[8][8], Move *move, char player);
 
 // Makes a move on the board.
 // This function modifies the board directly.
-void makeMoveArray(char board[8][8], Move *move);
+void makeMoveArray(char board[8][8], Move *move, char player);
 
 #endif

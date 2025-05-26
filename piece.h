@@ -3,6 +3,6 @@
 
 #define BLACK 'X'
 #define WHITE 'O'
-#define BLANK '.'
+#define EMPTY '.'
 
 #endif
