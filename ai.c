@@ -123,9 +123,8 @@ void makeMoveArray(char board[8][8], Move *move, char currentPlayer) {
 int isValidMoveArray(char board[8][8], Move *move, char player) {
     char opPlayer = player == BLACK ? WHITE : BLACK;
 
-    if (board[move->y][move->x] != '.') {
+    if (board[move->y][move->x] != BLANK)
         return 0;
-    }
 
     static const int directions[8][2] = {
         {-1, -1}, {-1, 0}, {-1, 1},     // Up
