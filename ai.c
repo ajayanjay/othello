@@ -71,8 +71,53 @@ Move * getValidMovesArray(char board[8][8], char player, int *returnSize) {
     return moves;
 }
 
-// WIP
-void makeMoveArray(char board[8][8], Move *move) {
+// move is VALID.
+void makeMoveArray(char board[8][8], Move *move, char currentPlayer) {
+    char opPlayer = currentPlayer == BLACK ? WHITE : BLACK;
+
+    // set the piece
+    board[move->y][move->x] = currentPlayer;
+
+    // flip the opponent's pieces
+    static const int directions[8][2] = {
+        {-1, -1}, {-1, 0}, {-1, 1},     // Up
+        { 0, -1},          { 0, 1},     // Left/Right
+        { 1, -1}, { 1, 0}, { 1, 1}      // Down
+    };
+
+    for (int i = 0; i < 8; ++i) {
+        int dx = directions[i][0];
+        int dy = directions[i][1];
+        int x = move->x + dx;
+        int y = move->y + dy;
+        boolean foundOpponent = false;
+
+        while (x >= 0 && x < 8 && y >= 0 && y < 8) {
+            if (board[y][x] == opPlayer) {
+                foundOpponent = true;
+            } else if (board[y][x] == currentPlayer) {
+                if (foundOpponent) {
+                    // flip the opponent's pieces
+                    int flipX = move->x + dx;
+                    int flipY = move->y + dy;
+
+                    // continue flipping until we reach the current player's piece
+                    while (flipX != x || flipY != y) {
+                        board[flipY][flipX] = currentPlayer;
+                        flipX += dx;
+                        flipY += dy;
+                    }
+                }
+                break;
+            } else
+                break;
+            
+
+            x += dx;
+            y += dy;
+        }
+    }
+
 }
 
 int isValidMoveArray(char board[8][8], Move *move, char player) {
