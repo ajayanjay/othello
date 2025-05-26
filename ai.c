@@ -2,10 +2,74 @@
 #include "piece.h"
 #include <stdlib.h>
 
-// WIP
-int evaluateBoardArray(char board[8][8]) {
+int evaluateBoardArray(char board[8][8], char player) {
+
+    char opPlayer = player == BLACK ? WHITE : BLACK;
+
+    int evalBoardMap = evaluateBoardMapArray(board, player);
+    int totalPieceCount = getTotalPieceCountArray(board);
+    int playerPieceCount = getPieceCountArray(board, player);
+    int opponentPieceCount = getPieceCountArray(board, opPlayer);
+
+    return evalBoardMap + 
+           (playerPieceCount - opponentPieceCount) * 10 + 
+           (totalPieceCount - 32) * 5; // 32 is the initial number of pieces on the board
 }
 
+
+int evaluateBoardMapArray(char board[8][8], char player) {
+    char opPlayer = player == BLACK ? WHITE : BLACK;
+
+    // weight map for the board, corners are the most valuable.
+    // the pieces next to corners are the worst.
+    int weight[8][8] = {
+        { 200, -100, 100,  50,  50, 100, -100,  200},
+        {-100, -200, -50, -10, -10, -50, -200, -100},
+        { 100, -50,    0,   0,   0,   0, -50,   100},
+        {  50, -10,    0,   0,   0,   0, -10,    50},
+        {  50, -10,    0,   0,   0,   0, -10,    50},
+        { 100, -50,    0,   0,   0,   0, -50,   100},
+        {-100, -200, -50, -10, -10, -50, -200, -100},
+        { 200, -100, 100,  50,  50, 100, -100,  200}
+    };
+
+    if (board[0][0] != EMPTY) {
+        for (int i = 0; i < 3; ++i)
+            for (int j = 0; j < 4; ++j)
+                weight[i][j] = 0; 
+    }
+
+    if (board[0][7] != EMPTY) {
+        for (int i = 0; i < 3; ++i)
+            for (int j = 4; j < 8; ++j)
+                weight[i][j] = 0; 
+    }
+
+    if (board[7][0] != EMPTY) {
+        for (int i = 5; i < 8; ++i)
+            for (int j = 0; j < 4; ++j)
+                weight[i][j] = 0; 
+    }
+
+    if (board[7][7] != EMPTY) {
+        for (int i = 5; i < 8; ++i)
+            for (int j = 4; j < 8; ++j)
+                weight[i][j] = 0; 
+    }
+
+    int myScore = 0, opScore = 0;
+
+    for (int i = 0; i < 8; ++i) {
+        for (int j = 0; j < 8; ++j) {
+            if (board[i][j] == player) 
+                myScore += weight[i][j];
+            else if (board[i][j] == opPlayer) 
+                opScore += weight[i][j];
+        }
+    }
+
+    return myScore - opScore;
+}
 
 int getTotalPieceCountArray(char board[8][8]) {
     int count = 0;
