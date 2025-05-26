@@ -5,7 +5,10 @@ typedef int OctupleInfo;
 
 typedef struct nodeoctuple {
     OctupleInfo info;
-    struct nodeoctuple *left, *right, *up, *down, *upleft, *upright, *downleft, *downright;
+    struct nodeoctuple
+    *upleft,    *up,    *upright,
+    *left,              *right,
+    *downleft,  *down,  *downright;
 } NodeOctuple;
 
 NodeOctuple * createNodeOctuple(OctupleInfo info);
