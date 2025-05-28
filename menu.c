@@ -132,7 +132,7 @@ void clearScreen() {
 		SetConsoleCursorPosition(hStdOut, coordScreen);
 	#else
 		// For other platforms, you can use ANSI escape codes
-		printf("clear");
+		system("clear");
 	#endif
 }
 
