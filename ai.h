@@ -21,6 +21,10 @@ int evaluateBoardArray(char board[8][8], char player);
 
 int evaluateBoardMapArray(char board[8][8], char player);
 
+int evaluateMobility(char board[8][8], char player);
+int evaluatePieceDifference(char board[8][8], char player);
+int evaluateCorner(char board[8][8], char player);
+
 // Returns the total number of pieces on the board.
 int getTotalPieceCountArray(char board[8][8]);
 

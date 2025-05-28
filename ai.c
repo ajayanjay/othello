@@ -85,8 +85,6 @@ Move * getValidMovesArray(char board[8][8], char player, int *returnSize) {
     Move buffer[64];
     *returnSize = 0;
 
-    char opPlayer = player == BLACK ? WHITE : BLACK;
-
     // get all possible moves for the player.
     for (int i = 0; i < 8; ++i) {
         for (int j = 0; j < 8; ++j) {
@@ -131,7 +129,7 @@ void makeMoveArray(char board[8][8], Move *move, char currentPlayer) {
     board[move->y][move->x] = currentPlayer;
 
     // flip the opponent's pieces
-    static const int directions[8][2] = {
+    static const char directions[8][2] = {
         {-1, -1}, {-1, 0}, {-1, 1},     // Up
         { 0, -1},          { 0, 1},     // Left/Right
         { 1, -1}, { 1, 0}, { 1, 1}      // Down

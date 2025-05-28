@@ -190,6 +190,7 @@ NodeOctuple * setNodeAt (NodeOctuple *root, OctupleInfo info,  int row, int col)
         current = current->right;
     }
     current->info = info;
+    return current;
 }
 
 
