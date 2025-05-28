@@ -60,7 +60,7 @@ void constructOthelloBoard(NodeOctuple **root) {
         i = 0;
         while (i < 7) {
             // Set infotype based on position (especially middle set rule othello)
-            char color = '.';
+            char color = EMPTY;
             if (row == 2 && i == 2) color = WHITE; // White on row 3, col 3 (d4)
             else if (row == 2 && i == 3) color = BLACK; // Black on row 3, col 4 (e4)
             else if (row == 3 && i == 2) color = BLACK; // Black on row 4, col 3 (d5)
