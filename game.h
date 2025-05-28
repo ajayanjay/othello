@@ -13,7 +13,8 @@ int hasValidMove(NodeOctuple * board, char player);
 
 Move inputMove (NodeOctuple *root, char player);
 
-// void undo(NodeOctuple * board, Deque * queue_undo, Stack * stack_undo);
-// void redo(NodeOctuple * board, Deque * queue_undo, Stack * stack_redo);
+int undo(NodeOctuple * board, Deque * queue_undo, Stack * stack_undo, char * currentPlayer);
+int redo(NodeOctuple * board, Deque * queue_undo, Stack * stack_redo, char * currentPlayer);
+Activity activity(NodeOctuple * board, Move lastMove, char currentPlayer);
 
 #endif

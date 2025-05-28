@@ -14,6 +14,44 @@
 //     return (getValidMoves(board, player) != NULL);
 // }
 
+int undo(NodeOctuple * board, Deque * queue_undo, Stack * stack_undo, char * currentPlayer) {
+    
+    if (isEmptyDeque(queue_undo)) return 0;
+    
+    Activity lastActivity;
+    popHead(queue_undo, &lastActivity);
+
+    convertArrayToOctuple(board, lastActivity.board);
+    *currentPlayer = lastActivity.currentPlayer;
+
+    push(stack_undo, &(lastActivity.lastMove));
+    return 1;
+}
+
+int redo(NodeOctuple * board, Deque * queue_undo, Stack * stack_redo, char * currentPlayer) {
+    
+    if (isEmpty(stack_redo)) return 0;
+
+    Move lastMove;
+    pop(stack_redo, &lastMove);
+
+    makeMove(board, &lastMove, *currentPlayer);
+
+    *currentPlayer = (*currentPlayer == BLACK) ? WHITE : BLACK;
+
+    pushHead(queue_undo, activity(board, lastMove, *currentPlayer));
+
+    return 1;
+}
+
+Activity activity(NodeOctuple * board, Move lastMove, char currentPlayer) {
+    Activity newActivity;
+    convertOctupleToArray(board, newActivity.board);
+    newActivity.lastMove = lastMove;
+    newActivity.currentPlayer = currentPlayer;
+    return newActivity;
+}
+
 Move inputMove (NodeOctuple *root, char player){
     Move valid_moves[64]; // to collect valid moves and later will store by address
     int num_valid_moves; // how many valid move

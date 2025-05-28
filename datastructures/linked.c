@@ -35,16 +35,6 @@ void printList(address p) {
     printf("\n");
 }
 
-address search(address p, infotype nilai) {
-    while (p != nil) {
-        if (info(p) == nilai) {
-            return p;
-        }
-        p = next(p);
-    }
-    return nil;
-}
-
 void insertAwal(address *p, address PNew) {
     if (isEmpty(*p)) {
         *p = PNew;
@@ -97,31 +87,6 @@ void freeAkhir(address *p, infotype *X) {
         *X = info(next(temp));
         free(next(temp));
         next(temp) = nil;
-    }
-}
-
-void freeValue(address *p, infotype target, infotype *X) {
-    if (*p == nil) {
-        return;
-    }
-
-    if (info(*p) == target) {
-        freeAwal(p, X);
-        return;
-    }
-
-    address prev = *p;
-    address temp = next(prev);
-
-    while (temp != nil && info(temp) != target) {
-        prev = temp;
-        temp = next(temp);
-    }
-
-    if (temp != nil) {
-        *X = info(temp);
-        next(prev) = next(temp);
-        free(temp);
     }
 }
 
