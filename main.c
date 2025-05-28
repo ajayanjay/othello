@@ -10,7 +10,19 @@ void howToPlay();
 void test() {
     NodeOctuple * root = NULL;
     constructOthelloBoard(&root);
-    inputMove(root, BLACK);
+    char player = BLACK;
+    while (1) {
+        Move move = inputMove(root, player);
+
+        if (move.x == -1 && move.y == -1) {
+            printf("Game Over!\n");
+            inputUntilEnter();
+            break;
+        }
+
+        makeMove(root, &move, player);
+        player = (player == BLACK) ? WHITE : BLACK;
+    }
 }
 
 int main(void)

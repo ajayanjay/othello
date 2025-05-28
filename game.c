@@ -118,7 +118,12 @@ void printBoard(NodeOctuple *board, Move *valid_moves, int num_valid_moves, int 
                 offset += sprintf (buffer + offset, " \033[2m%c\033[m", tolower(player));
             }
             else { // regular cell
-                offset += sprintf (buffer + offset, " %c", c);
+                if (c == BLACK)
+                    offset += sprintf (buffer + offset, " \033[91m%c\033[m", c);
+                else if (c == WHITE)
+                    offset += sprintf (buffer + offset, " \033[96m%c\033[m", c);
+                else
+                    offset += sprintf (buffer + offset, " %c", c);
             }
             
             current_col = current_col->right; // update current to right
@@ -192,7 +197,7 @@ Move inputMove (NodeOctuple *root, char player){
     int selected=0;
     
     boolean isExit = false;
-
+    
     while (!isExit){
         clearScreen();
         printBoard (root, valid_moves, num_valid_moves, selected, player);
