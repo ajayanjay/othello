@@ -159,7 +159,7 @@ int redo(NodeOctuple * board, Deque * queue_undo, Stack * stack_redo, char * cur
     Move lastMove;
     pop(stack_redo, &lastMove);
 
-    // makeMove(board, &lastMove, *currentPlayer);
+    makeMove(board, &lastMove, *currentPlayer);
 
     *currentPlayer = (*currentPlayer == BLACK) ? WHITE : BLACK;
 
@@ -216,4 +216,35 @@ Move inputMove (NodeOctuple *root, char player){
     }
     //return selected move
     return valid_moves[selected];
+}
+
+void makeMove(NodeOctuple *board, Move *move, char player) {
+    char opponent = (player == BLACK) ? WHITE : BLACK;
+    
+    NodeOctuple *moveNode = getNodeAt(board, move->x, move->y);
+    
+    moveNode->info = player;
+    
+    // Check all directions and flip opponent pieces
+    for (int dir = 0; dir < 8; dir++) {
+        NodeOctuple *current = getNext(moveNode, dir);
+        NodeOctuple *pieces_to_flip[8]; // Max pieces that can be flipped in one direction
+        int flip_count = 0;
+        boolean found_opponent = false;
+        
+        // Move in the direction while finding opponent pieces
+        while (current != NULL && current->info == opponent) {
+            pieces_to_flip[flip_count] = current;
+            flip_count++;
+            found_opponent = true;
+            current = getNext(current, dir);
+        }
+        
+        // if found opponent pieces and ended at a player piece, flip
+        if (found_opponent && current != NULL && current->info == player) {
+            for (int i = 0; i < flip_count; i++) {
+                pieces_to_flip[i]->info = player;
+            }
+        }
+    }
 }

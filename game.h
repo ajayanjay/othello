@@ -5,6 +5,7 @@
 #include "datastructures/stack.h"
 #include "datastructures/deque.h"
 #include "move.h"
+#include "activity.h"
 
 // cek jika game sudah berakhir.
 // antara board sudah penuh atau kedua player tidak bisa melakukan gerakan
@@ -16,6 +17,8 @@ void printBoard(NodeOctuple *board, Move *valid_moves, int num_valid_moves, int 
 int isValidMove(NodeOctuple* node, char player);
 
 Move inputMove (NodeOctuple *root, char player);
+
+void makeMove(NodeOctuple *board, Move *move, char player);
 
 int undo(NodeOctuple * board, Deque * queue_undo, Stack * stack_undo, char * currentPlayer);
 int redo(NodeOctuple * board, Deque * queue_undo, Stack * stack_redo, char * currentPlayer);

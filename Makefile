@@ -6,5 +6,8 @@ BUILDDIR = build # placeholder for build directory
 all: 
 	$(CC) $(CFLAGS) datastructures/*.c *.c -o build
 
+clean:
+	rm build
+
 run: all
 	./build
