@@ -17,12 +17,6 @@ typedef struct aiinfo {
     boolean isMax, evaluated, expanded;
 } AIInfo;
 
-/*
-    BLACK (First move) : 'X'
-    WHITE (Second move): 'O'
-    EMPTY : '.'
-*/
-
 int evaluateBoardArray(char board[8][8], char player);
 
 int evaluateBoardMapArray(char board[8][8], char player);
@@ -43,5 +37,7 @@ int isValidMoveArray(char board[8][8], Move *move, char player);
 // Makes a move on the board.
 // This function modifies the board directly.
 void makeMoveArray(char board[8][8], Move *move, char player);
+
+int isGameFinishedArray(char board[8][8]);
 
 #endif

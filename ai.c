@@ -4,71 +4,59 @@
 
 int evaluateBoardArray(char board[8][8], char player) {
 
+    int mobility = 100 * evaluateMobility(board, player);
+    int pieceDifference = 100 * evaluatePieceDifference(board, player);
+    int corner = 100 * evaluateCorner(board, player);
+
+    // corners are the most valuable.
+    // mobility is also valuable, but not as much as corners.
+    return 2 * mobility + pieceDifference + 1000 * corner;
+}
+
+int evaluatePieceDifference(char board[8][8], char player) {
     char opPlayer = player == BLACK ? WHITE : BLACK;
 
-    int evalBoardMap = evaluateBoardMapArray(board, player);
-    int totalPieceCount = getTotalPieceCountArray(board);
     int playerPieceCount = getPieceCountArray(board, player);
     int opponentPieceCount = getPieceCountArray(board, opPlayer);
 
-    return evalBoardMap + 
-           (playerPieceCount - opponentPieceCount) * 10 + 
-           (totalPieceCount - 32) * 5; // 32 is the initial number of pieces on the board
+    return (playerPieceCount - opponentPieceCount) / (playerPieceCount + opponentPieceCount + 1);
 }
 
-
-int evaluateBoardMapArray(char board[8][8], char player) {
+// mobility is the number of valid moves a player can make.
+int evaluateMobility(char board[8][8], char player) {
     char opPlayer = player == BLACK ? WHITE : BLACK;
 
-    // weight map for the board, corners are the most valuable.
-    // the pieces next to corners are the worst.
-    int weight[8][8] = {
-        { 200, -100, 100,  50,  50, 100, -100,  200},
-        {-100, -200, -50, -10, -10, -50, -200, -100},
-        { 100, -50,    0,   0,   0,   0, -50,   100},
-        {  50, -10,    0,   0,   0,   0, -10,    50},
-        {  50, -10,    0,   0,   0,   0, -10,    50},
-        { 100, -50,    0,   0,   0,   0, -50,   100},
-        {-100, -200, -50, -10, -10, -50, -200, -100},
-        { 200, -100, 100,  50,  50, 100, -100,  200}
-    };
+    int mySize = 0, opSize = 0;
+    Move *myMoves = getValidMovesArray(board, player, &mySize);
+    Move *opMoves = getValidMovesArray(board, opPlayer, &opSize);
 
-    if (board[0][0] != EMPTY) {
-        for (int i = 0; i < 3; ++i)
-            for (int j = 0; j < 4; ++j)
-                weight[i][j] = 0; 
-    }
+    if (myMoves != NULL) 
+        free(myMoves);
+    
+    if (opMoves != NULL) 
+        free(opMoves);
+    
+    return (mySize - opSize) / (mySize + opSize + 1);
+}
 
-    if (board[0][7] != EMPTY) {
-        for (int i = 0; i < 3; ++i)
-            for (int j = 4; j < 8; ++j)
-                weight[i][j] = 0; 
-    }
+int evaluateCorner(char board[8][8], char player) {
+    char opPlayer = player == BLACK ? WHITE : BLACK;
 
-    if (board[7][0] != EMPTY) {
-        for (int i = 5; i < 8; ++i)
-            for (int j = 0; j < 4; ++j)
-                weight[i][j] = 0; 
-    }
+    int myCorners = 0, opCorners = 0;
 
-    if (board[7][7] != EMPTY) {
-        for (int i = 5; i < 8; ++i)
-            for (int j = 4; j < 8; ++j)
-                weight[i][j] = 0; 
-    }
+    if (board[0][0] == player) myCorners++;
+    else if (board[0][0] == opPlayer) opCorners++;
 
-    int myScore = 0, opScore = 0;
+    if (board[0][7] == player) myCorners++;
+    else if (board[0][7] == opPlayer) opCorners++;
 
-    for (int i = 0; i < 8; ++i) {
-        for (int j = 0; j < 8; ++j) {
-            if (board[i][j] == player) 
-                myScore += weight[i][j];
-            else if (board[i][j] == opPlayer) 
-                opScore += weight[i][j];
-        }
-    }
+    if (board[7][0] == player) myCorners++;
+    else if (board[7][0] == opPlayer) opCorners++;
 
-    return myScore - opScore;
+    if (board[7][7] == player) myCorners++;
+    else if (board[7][7] == opPlayer) opCorners++;
+
+    return (myCorners - opCorners) / (myCorners + opCorners + 1);
 }
 
 int getTotalPieceCountArray(char board[8][8]) {
@@ -232,6 +220,20 @@ int isValidMoveArray(char board[8][8], Move *move, char player) {
     return 0;
 }
 
+int isGameFinishedArray(char board[8][8]) {
+    
+    int countBlack = 0, countWhite = 0;
+    Move *movesBlack = getValidMovesArray(board, BLACK, &countBlack);
+    Move *movesWhite = getValidMovesArray(board, WHITE, &countWhite);
+
+    if ((movesBlack == NULL) && (movesWhite == NULL)) return 1;
+
+    free(movesBlack);
+    free(movesWhite);
+
+    return 0;
+}
+
 /* bruteforce check
                 // upleft check
                 if (board->board[y - 1][x - 1] == opPlayer && y > 0 && x > 0) {
@@ -354,4 +356,58 @@ int isValidMoveArray(char board[8][8], Move *move, char player) {
                         (*count)++;
                     }
                 }
+                    int evaluateBoardMapArray(char board[8][8], char player) {
+    char opPlayer = player == BLACK ? WHITE : BLACK;
+
+    // weight map for the board, corners are the most valuable.
+    // the pieces next to corners are the worst.
+    int weight[8][8] = {
+        { 200, -100, 100,  50,  50, 100, -100,  200},
+        {-100, -200, -50, -10, -10, -50, -200, -100},
+        { 100, -50,    0,   0,   0,   0, -50,   100},
+        {  50, -10,    0,   0,   0,   0, -10,    50},
+        {  50, -10,    0,   0,   0,   0, -10,    50},
+        { 100, -50,    0,   0,   0,   0, -50,   100},
+        {-100, -200, -50, -10, -10, -50, -200, -100},
+        { 200, -100, 100,  50,  50, 100, -100,  200}
+    };
+
+    if (board[0][0] != EMPTY) {
+        for (int i = 0; i < 3; ++i)
+            for (int j = 0; j < 4; ++j)
+                weight[i][j] = 0; 
+    }
+
+    if (board[0][7] != EMPTY) {
+        for (int i = 0; i < 3; ++i)
+            for (int j = 4; j < 8; ++j)
+                weight[i][j] = 0; 
+    }
+
+    if (board[7][0] != EMPTY) {
+        for (int i = 5; i < 8; ++i)
+            for (int j = 0; j < 4; ++j)
+                weight[i][j] = 0; 
+    }
+
+    if (board[7][7] != EMPTY) {
+        for (int i = 5; i < 8; ++i)
+            for (int j = 4; j < 8; ++j)
+                weight[i][j] = 0; 
+    }
+
+    int myScore = 0, opScore = 0;
+
+    for (int i = 0; i < 8; ++i) {
+        for (int j = 0; j < 8; ++j) {
+            if (board[i][j] == player) 
+                myScore += weight[i][j];
+            else if (board[i][j] == opPlayer) 
+                opScore += weight[i][j];
+        }
+    }
+
+    return myScore - opScore;
+}
                     */
+
