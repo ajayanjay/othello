@@ -16,7 +16,7 @@
 
 int undo(NodeOctuple * board, Deque * queue_undo, Stack * stack_undo, char * currentPlayer) {
     
-    if (isEmptyDeque(queue_undo)) return 0;
+    if (isDequeEmpty(queue_undo)) return 0;
     
     Activity lastActivity;
     popHead(queue_undo, &lastActivity);
@@ -30,12 +30,12 @@ int undo(NodeOctuple * board, Deque * queue_undo, Stack * stack_undo, char * cur
 
 int redo(NodeOctuple * board, Deque * queue_undo, Stack * stack_redo, char * currentPlayer) {
     
-    if (isEmpty(stack_redo)) return 0;
+    if (isStackEmpty(stack_redo)) return 0;
 
     Move lastMove;
     pop(stack_redo, &lastMove);
 
-    makeMove(board, &lastMove, *currentPlayer);
+    // makeMove(board, &lastMove, *currentPlayer);
 
     *currentPlayer = (*currentPlayer == BLACK) ? WHITE : BLACK;
 
