@@ -1,5 +1,6 @@
 #ifndef octuple_h
 #define octuple_h
+#include "../move.h"
 
 typedef int OctupleInfo;
 
@@ -19,9 +20,11 @@ void constructOthelloBoard(NodeOctuple **root);
 // returns the node at the given row and column
 NodeOctuple * getNodeAt(NodeOctuple *root, int row, int col);
 
-void printBoard(NodeOctuple *board);
-
 NodeOctuple * setNodeAt (NodeOctuple *root, OctupleInfo info,  int row, int col);
+
+void getValidMoves(NodeOctuple *board, char player, Move *valid_moves, int *num_valid_moves);
+
+void printBoard(NodeOctuple *board, Move *valid_moves, int num_valid_moves, int selected_idx, char player);
 
 void convertOctupleToArray (NodeOctuple *root, char boardArray[8][8]);
 

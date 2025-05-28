@@ -1,12 +1,21 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "menu.h"
+#include "game.h"
+#include "piece.h"
 
 void mainMenu();
 void howToPlay();
 
+void test() {
+    NodeOctuple * root = NULL;
+    constructOthelloBoard(&root);
+    inputMove(root, WHITE);
+}
+
 int main(void)
 {
+    test();
     mainMenu();
     return 0;
 }

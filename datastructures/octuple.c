@@ -1,7 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include <ctype.h>
 #include "octuple.h"
 #include "../piece.h"
+#include "../menu.h"
 
 NodeOctuple * createNodeOctuple (OctupleInfo info){
     NodeOctuple * new_node = malloc (sizeof(NodeOctuple));
@@ -113,7 +116,7 @@ void constructOthelloBoard(NodeOctuple **root) {
     }
 }
 
-void printBoard(NodeOctuple *board) {
+void printBoard(NodeOctuple *board, Move *valid_moves, int num_valid_moves, int selected_idx, char player) {
     char buffer[1024];
     int offset = 0;
 
@@ -126,12 +129,43 @@ void printBoard(NodeOctuple *board) {
     while (current_row != NULL && row_number <= 8) {
         offset += sprintf(buffer + offset, "%d |", row_number); //print row number and border
         NodeOctuple *current_col = current_row;
-        int i = 0;
-        while (i < 8 && current_col != NULL) {
-            offset += sprintf(buffer + offset, " %c", current_col->info); // print info node
+        int col_idx = 0;
+
+        while (current_col != NULL && col_idx < 8) {
+            char c = current_col->info;
+            int row_idx = row_number -1;
+            int is_valid = 0;
+            int is_selected=0;
+
+            //check if position contain valid move or is_selected 
+            int valid_moves_idx = 0;
+            while (valid_moves_idx < num_valid_moves){
+                if (valid_moves[valid_moves_idx].x == row_idx && valid_moves[valid_moves_idx].y == col_idx){
+                    is_valid = 1;
+                    if (valid_moves_idx == selected_idx){
+                        is_selected = 1;
+                    }
+                    break;
+                }
+
+                valid_moves_idx++;
+            }
+
+            if (is_selected){ // is_selected>0 with special formatting
+                offset += sprintf (buffer + offset, " \033[30;47m%c\033[0m", tolower(player));
+            }
+            else if (is_valid){ // possible move
+                offset += sprintf (buffer + offset, " \033[38;5;250m%c\033[0m", tolower(player));
+            }
+            else { // regular cell
+                offset += sprintf (buffer + offset, " %c", c);
+            }
+            
             current_col = current_col->right; // update current to right
-            i++;
+            col_idx++;
         }
+        
+        // end row
         offset += sprintf(buffer + offset, " |\n");
         current_row = current_row->down; // update current to bottom
         row_number++; //update row number
@@ -371,3 +405,78 @@ int loadBoard(NodeOctuple **root, const char *filename) {
 
     return 1; // Board loaded successfully
 }
+
+// Function helper to get access various direction
+static NodeOctuple* getNext(NodeOctuple* node, int dir) {
+    // Returns pointer node based on the direction code (0–7)
+    switch(dir) {
+        case 0: return node->left;
+        case 1: return node->right;
+        case 2: return node->up;
+        case 3: return node->down;
+        case 4: return node->upleft;
+        case 5: return node->upright;
+        case 6: return node->downleft;
+        case 7: return node->downright;
+        default: return NULL; // Return NULL if direction is invalid
+    }
+}
+
+// Static helper function to check if a move is valid for the player
+static bool isValidMove(NodeOctuple* node, char player) {
+    // If the node is not empty, it's not a valid move
+    if (node->info != '.') return false;
+
+    // Determine the opponent's symbol
+    char opponent = (player == 'X') ? 'O' : 'X';
+    // player x then opponent O, otherwise
+
+    // Check all all direction
+    for (int dir = 0; dir < 8; dir++) {
+        NodeOctuple* current = getNext(node, dir);
+        int count = 0;
+
+        // Move in all directions when facing opponent's pieces
+        while (current != NULL && current->info == opponent) {
+            current = getNext(current, dir);
+            count++;
+        }
+
+        // If we end up at a piece of the player and have passed over opponent pieces, it's valid
+        if (current != NULL && current->info == player && count > 0) {
+            return true;
+        }
+    }
+
+    // If no capturing path is found, it's not valid
+    return false;
+}
+
+void getValidMoves (NodeOctuple *root, char player, Move *valid_moves, int *num_valid_moves) {
+    //valid moves untuk pointer ke array
+    //num valid moves passing by reference because will use in another method
+
+    *num_valid_moves = 0; // (*) acces score not pointer. Init count valid move
+    NodeOctuple *row= root;
+    NodeOctuple *col;
+    int row_idx = 0;
+
+    while (row != NULL && row_idx <8){
+        col=row;
+        int col_idx = 0;
+
+        while (col != NULL && col_idx < 8){
+            //if isvalidmove, add to list
+            if (isValidMove(col, player)){ //col=pointer node
+                valid_moves[*num_valid_moves].x = row_idx; //*numvalidmove beacuse acces score
+                valid_moves[*num_valid_moves].y = col_idx;
+                (*num_valid_moves)++; //update index validmoves
+            }
+            col = col->right; //update collumn
+            col_idx;
+        }
+        row = row->down; // update row
+        row_idx++;
+    }
+}
+

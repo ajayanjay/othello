@@ -9,7 +9,11 @@
 // antara board sudah penuh atau kedua player tidak bisa melakukan gerakan
 int isGameOver(NodeOctuple *board);
 
-void undo(NodeOctuple * board, Deque * queue_undo, Stack * stack_undo);
-void redo(NodeOctuple * board, Deque * queue_undo, Stack * stack_redo);
+int hasValidMove(NodeOctuple * board, char player);
+
+Move inputMove (NodeOctuple *root, char player);
+
+// void undo(NodeOctuple * board, Deque * queue_undo, Stack * stack_undo);
+// void redo(NodeOctuple * board, Deque * queue_undo, Stack * stack_redo);
 
 #endif
