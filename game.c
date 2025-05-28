@@ -6,13 +6,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-// int isGameOver(NodeOctuple * board) {
-//     return (isBoardFull(board) || (!hasValidMove(board, BLACK) && !hasValidMove(board, WHITE)));
-// }
+int isGameOver(NodeOctuple * board) {
+    return !hasValidMove(board, BLACK) && !hasValidMove(board, WHITE);
+}
 
-// int hasValidMove(NodeOctuple * board, char player) {
-//     return (getValidMoves(board, player) != NULL);
-// }
+int hasValidMove(NodeOctuple * board, char player) {
+    Move buffer[64]; int bufferSize = 0;
+    getValidMoves(board, player, buffer, &bufferSize);
+    return bufferSize > 0;
+}
 
 int undo(NodeOctuple * board, Deque * queue_undo, Stack * stack_undo, char * currentPlayer) {
     
