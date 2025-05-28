@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 void pushTail(Deque *Q, infotype nilai) {
-    address P = SetNode(nilai);
+    address P = createNodeSingle(nilai);
     if (P == nil) {
         return;
     }
@@ -17,7 +17,7 @@ void pushTail(Deque *Q, infotype nilai) {
 }
 
 void pushHead(Deque *Q, infotype nilai) {
-    address P = SetNode(nilai);
+    address P = createNodeSingle(nilai);
     if (P == nil) {
         return;
     }

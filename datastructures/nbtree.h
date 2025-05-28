@@ -1,8 +1,8 @@
 #ifndef nbtrees_h
 #define nbtrees_h
 
-#include "boolean.h"
-#include "ai.h"
+#include "../boolean.h"
+#include "../ai.h"
 
 typedef AIInfo InfoNbTree;
 

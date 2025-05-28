@@ -2,8 +2,8 @@
 #define move_h
 
 typedef struct {
-    int x;
-    int y;
+    char x;
+    char y;
 } Move;
 
 #endif

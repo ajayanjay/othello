@@ -9,7 +9,7 @@ int isEmpty(address p) {
 
 address createNodeSingle(infotype nilai){
     address P;
-    Create_Node (&P);
+    P = (address) malloc(sizeof(ElmtList));
     if (P == NULL) {
         printf("Memory allocation failed\n");
         return NULL;

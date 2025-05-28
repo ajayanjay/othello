@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <ctype.h>
 #include "octuple.h"
+#include "../boolean.h"
 #include "../piece.h"
 #include "../menu.h"
 
@@ -152,10 +152,10 @@ void printBoard(NodeOctuple *board, Move *valid_moves, int num_valid_moves, int 
             }
 
             if (is_selected){ // is_selected>0 with special formatting
-                offset += sprintf (buffer + offset, " \033[30;47m%c\033[0m", tolower(player));
+                offset += sprintf (buffer + offset, " \033[30;47m%c\033[0m", player);
             }
             else if (is_valid){ // possible move
-                offset += sprintf (buffer + offset, " \033[38;5;250m%c\033[0m", tolower(player));
+                offset += sprintf (buffer + offset, " \033[2m%c\033[m", tolower(player));
             }
             else { // regular cell
                 offset += sprintf (buffer + offset, " %c", c);
@@ -301,7 +301,7 @@ int loadBoard(NodeOctuple **root, const char *filename) {
         // Validate line has exactly 8 characters
         int char_count = 0;
         while (char_count < 8 && line[char_count] != '\n' && line[char_count] != '\0') {
-            if (line[char_count] == 'X' || line[char_count] == 'O' || line[char_count] == '.') {
+            if (line[char_count] == BLACK || line[char_count] == WHITE || line[char_count] == EMPTY) {
                 boardArray[row_count][char_count] = line[char_count];
                 char_count++;
             } else {
@@ -407,7 +407,7 @@ int loadBoard(NodeOctuple **root, const char *filename) {
 }
 
 // Function helper to get access various direction
-static NodeOctuple* getNext(NodeOctuple* node, int dir) {
+NodeOctuple* getNext(NodeOctuple* node, int dir) {
     // Returns pointer node based on the direction code (0–7)
     switch(dir) {
         case 0: return node->left;
@@ -423,12 +423,12 @@ static NodeOctuple* getNext(NodeOctuple* node, int dir) {
 }
 
 // Static helper function to check if a move is valid for the player
-static bool isValidMove(NodeOctuple* node, char player) {
+boolean isValidMove(NodeOctuple* node, char player) {
     // If the node is not empty, it's not a valid move
-    if (node->info != '.') return false;
+    if (node->info != EMPTY) return false;
 
     // Determine the opponent's symbol
-    char opponent = (player == 'X') ? 'O' : 'X';
+    char opponent = (player == BLACK) ? WHITE : BLACK;
     // player x then opponent O, otherwise
 
     // Check all all direction
@@ -473,7 +473,7 @@ void getValidMoves (NodeOctuple *root, char player, Move *valid_moves, int *num_
                 (*num_valid_moves)++; //update index validmoves
             }
             col = col->right; //update collumn
-            col_idx;
+            col_idx++;
         }
         row = row->down; // update row
         row_idx++;

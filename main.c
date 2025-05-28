@@ -10,7 +10,7 @@ void howToPlay();
 void test() {
     NodeOctuple * root = NULL;
     constructOthelloBoard(&root);
-    inputMove(root, WHITE);
+    inputMove(root, BLACK);
 }
 
 int main(void)
