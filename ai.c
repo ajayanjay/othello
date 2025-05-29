@@ -98,21 +98,6 @@ Move * getValidMovesArray(char board[8][8], char player, int *returnSize) {
 
     if (*returnSize == 0) return NULL;
 
-    // Remove duplicates
-    for (int i = 0; i < *returnSize; ++i) {
-        for (int j = i + 1; j < *returnSize; ++j) {
-            if (buffer[i].x == buffer[j].x && buffer[i].y == buffer[j].y) {
-
-                // shift elements to the left to remove the duplicate
-                for (int k = j; k < *returnSize - 1; ++k)
-                    buffer[k] = buffer[k + 1];
-                
-                (*returnSize)--;
-                j--; // since we shifted elements, we need to check the new element at index j again
-            }
-        }
-    }
-
     Move *moves = malloc(sizeof(Move) * (*returnSize));
 
     for (int i = 0; i < *returnSize; ++i)
