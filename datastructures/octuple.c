@@ -359,3 +359,16 @@ NodeOctuple* getNext(NodeOctuple* node, int dir) {
         default: return NULL; // Return NULL if direction is invalid
     }
 }
+
+void freeRow(NodeOctuple *col) {
+    if (col == NULL) return;
+    freeRow(col->right);
+    printf("free");
+    free(col);
+}
+
+void freeBoard(NodeOctuple *row) {
+    if (row == NULL) return;
+    freeBoard(row->down);
+    freeRow(row);
+}

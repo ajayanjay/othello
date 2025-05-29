@@ -31,4 +31,6 @@ void saveBoard(NodeOctuple *root, const char *filename);
 
 int loadBoard(NodeOctuple **root, const char *filename);
 
+void freeBoard (NodeOctuple *row);
+
 #endif

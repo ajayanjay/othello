@@ -17,6 +17,8 @@ void test() {
         if (move.x == -1 && move.y == -1) {
             printf("Game Over!\n");
             inputUntilEnter();
+            freeBoard (root);
+            root == NULL;
             break;
         }
 
