@@ -18,7 +18,6 @@ void test() {
             printf("Game Over!\n");
             inputUntilEnter();
             freeBoard (root);
-            root == NULL;
             break;
         }
 
@@ -30,7 +29,6 @@ void test() {
 int main(void)
 {
     test();
-    mainMenu();
     return 0;
 }
 

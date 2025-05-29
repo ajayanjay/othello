@@ -363,7 +363,6 @@ NodeOctuple* getNext(NodeOctuple* node, int dir) {
 void freeRow(NodeOctuple *col) {
     if (col == NULL) return;
     freeRow(col->right);
-    printf("free");
     free(col);
 }
 
