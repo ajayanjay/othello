@@ -7,17 +7,17 @@
 
 // Author: Ihsan
 NodeOctuple * createNodeOctuple (OctupleInfo info){
-    NodeOctuple * new_node = malloc (sizeof(NodeOctuple));
-    new_node->info = info;
-    new_node->up = NULL; 
-    new_node->down = NULL;
-    new_node->left = NULL; 
-    new_node->right = NULL;
-    new_node->upleft = NULL; 
-    new_node->upright = NULL;
-    new_node->downleft = NULL; 
-    new_node->downright = NULL; 
-    return new_node;
+    NodeOctuple * newNode = malloc (sizeof(NodeOctuple));
+    newNode->info = info;
+    newNode->up = NULL; 
+    newNode->down = NULL;
+    newNode->left = NULL; 
+    newNode->right = NULL;
+    newNode->upleft = NULL; 
+    newNode->upright = NULL;
+    newNode->downleft = NULL; 
+    newNode->downright = NULL; 
+    return newNode;
 }
 
 // Author: Ihsan
@@ -32,15 +32,15 @@ void constructOthelloBoard(NodeOctuple **root) {
 
     int i = 0; //init first line and connect left right
     while (i < 7) {
-        NodeOctuple *new_node = createNodeOctuple(EMPTY);
-        current->right = new_node;
-        new_node->left = current;
-        current = new_node; //update current
+        NodeOctuple *newNode = createNodeOctuple(EMPTY);
+        current->right = newNode;
+        newNode->left = current;
+        current = newNode; //update current
         i++;
     }
 
     // save row before
-    NodeOctuple *prev_row_start = *root;
+    NodeOctuple *prevRowStart = *root;
 
     int row = 0;
     while (row < 7) {
@@ -48,17 +48,17 @@ void constructOthelloBoard(NodeOctuple **root) {
         current = firstrow;
 
         // connect first node to up and down
-        current->up = prev_row_start;
-        if (prev_row_start != NULL) {
-            prev_row_start->down = current;
+        current->up = prevRowStart;
+        if (prevRowStart != NULL) {
+            prevRowStart->down = current;
             // Set diagonal (upright & downleft) for first node
-            if (prev_row_start->right != NULL) {
-                current->upright = prev_row_start->right;
-                prev_row_start->right->downleft = current;
+            if (prevRowStart->right != NULL) {
+                current->upright = prevRowStart->right;
+                prevRowStart->right->downleft = current;
             }
         }
 
-        NodeOctuple *prev_current = prev_row_start; //create current for traversal in prev row
+        NodeOctuple *prevCurrent = prevRowStart; //create current for traversal in prev row
         i = 0;
         while (i < 7) {
             // Set infotype based on position (especially middle set rule othello)
@@ -68,52 +68,52 @@ void constructOthelloBoard(NodeOctuple **root) {
             else if (row == 3 && i == 2) color = BLACK; // Black on row 4, col 3 (d5)
             else if (row == 3 && i == 3) color = WHITE; // White on row 4, col 4 (e5)
 
-            NodeOctuple *new_node = createNodeOctuple(color);
+            NodeOctuple *newNode = createNodeOctuple(color);
             // connect left and right 
-            current->right = new_node;
-            new_node->left = current;
+            current->right = newNode;
+            newNode->left = current;
 
             // Connect up and down (ensure not node in right end)
-            if (prev_current != NULL && prev_current->right != NULL) {
-                new_node->up = prev_current->right; // because new_node in right, not straight from prev current
+            if (prevCurrent != NULL && prevCurrent->right != NULL) {
+                newNode->up = prevCurrent->right; // because newNode in right, not straight from prev current
                 // not straight from prev current
-                prev_current->right->down = new_node;
+                prevCurrent->right->down = newNode;
             }
 
             // diagonal upleft and upright
-            if (new_node->up != NULL) {
-                if (new_node->up->left != NULL) {
-                    new_node->upleft = new_node->up->left;
+            if (newNode->up != NULL) {
+                if (newNode->up->left != NULL) {
+                    newNode->upleft = newNode->up->left;
                 }
-                if (i < 6 && new_node->up->right != NULL) { // Ensure j+1 < 8
-                    new_node->upright = new_node->up->right;
-                    new_node->up->right->downleft = new_node; // Set reverse pointer
+                if (i < 6 && newNode->up->right != NULL) { // Ensure j+1 < 8
+                    newNode->upright = newNode->up->right;
+                    newNode->up->right->downleft = newNode; // Set reverse pointer
                 }
             }
 
             // diagonal downright and downleft
-            if (prev_current != NULL) {
+            if (prevCurrent != NULL) {
                 if (current != NULL) {
-                    prev_current->downright = new_node;
-                    new_node->upleft = prev_current; // Set reverse pointer
+                    prevCurrent->downright = newNode;
+                    newNode->upleft = prevCurrent; // Set reverse pointer
                 }
                 if (current->left != NULL) {
-                    prev_current->downleft = current->left;
-                    current->left->upright = prev_current; // Set reverse pointer
+                    prevCurrent->downleft = current->left;
+                    current->left->upright = prevCurrent; // Set reverse pointer
                 } else {
-                    prev_current->downleft = NULL;
+                    prevCurrent->downleft = NULL;
                 }
             }
 
-            current = new_node;
-            if (prev_current != NULL) {
-                prev_current = prev_current->right; //update prev_current
+            current = newNode;
+            if (prevCurrent != NULL) {
+                prevCurrent = prevCurrent->right; //update prevCurrent
             }
             i++;
         }
 
         row++;
-        prev_row_start = firstrow; //update prev_row_start
+        prevRowStart = firstrow; //update prevRowStart
     }
 }
 
@@ -280,13 +280,13 @@ int loadBoard(NodeOctuple **root, const char *filename) {
 
     // Create first row and connect left-right
     for (int j = 1; j < 8; j++) {
-        NodeOctuple *new_node = createNodeOctuple(boardArray[0][j]);
-        current->right = new_node;
-        new_node->left = current;
-        current = new_node;
+        NodeOctuple *newNode = createNodeOctuple(boardArray[0][j]);
+        current->right = newNode;
+        newNode->left = current;
+        current = newNode;
     }
 
-    NodeOctuple *prev_row_start = *root;
+    NodeOctuple *prevRowStart = *root;
 
     // Create remaining rows with full octuple connections
     for (int i = 1; i < 8; i++) {
@@ -294,58 +294,58 @@ int loadBoard(NodeOctuple **root, const char *filename) {
         current = firstNode;
 
         // Connect up-down for first node
-        current->up = prev_row_start;
-        prev_row_start->down = current;
+        current->up = prevRowStart;
+        prevRowStart->down = current;
 
         // Set diagonal connections for first node
-        if (prev_row_start->right != NULL) {
-            current->upright = prev_row_start->right;
-            prev_row_start->right->downleft = current;
+        if (prevRowStart->right != NULL) {
+            current->upright = prevRowStart->right;
+            prevRowStart->right->downleft = current;
         }
 
-        NodeOctuple *prev_current = prev_row_start;
+        NodeOctuple *prevCurrent = prevRowStart;
         
         // Create rest of the row
         for (int j = 1; j < 8; j++) {
-            NodeOctuple *new_node = createNodeOctuple(boardArray[i][j]);
+            NodeOctuple *newNode = createNodeOctuple(boardArray[i][j]);
             
             // Connect left-right
-            current->right = new_node;
-            new_node->left = current;
+            current->right = newNode;
+            newNode->left = current;
 
             // Connect up-down
-            if (prev_current->right != NULL) {
-                new_node->up = prev_current->right;
-                prev_current->right->down = new_node;
+            if (prevCurrent->right != NULL) {
+                newNode->up = prevCurrent->right;
+                prevCurrent->right->down = newNode;
             }
 
             // Set diagonal connections
-            if (new_node->up != NULL) {
+            if (newNode->up != NULL) {
                 // upleft connection
-                if (new_node->up->left != NULL) {
-                    new_node->upleft = new_node->up->left;
-                    new_node->up->left->downright = new_node;
+                if (newNode->up->left != NULL) {
+                    newNode->upleft = newNode->up->left;
+                    newNode->up->left->downright = newNode;
                 }
                 // upright connection
-                if (j < 7 && new_node->up->right != NULL) {
-                    new_node->upright = new_node->up->right;
-                    new_node->up->right->downleft = new_node;
+                if (j < 7 && newNode->up->right != NULL) {
+                    newNode->upright = newNode->up->right;
+                    newNode->up->right->downleft = newNode;
                 }
             }
 
             // downleft connection for previous node in previous row
-            if (prev_current != NULL && current != NULL) {
-                prev_current->downright = new_node;
-                new_node->upleft = prev_current;
+            if (prevCurrent != NULL && current != NULL) {
+                prevCurrent->downright = newNode;
+                newNode->upleft = prevCurrent;
             }
 
-            current = new_node;
-            if (prev_current != NULL) {
-                prev_current = prev_current->right;
+            current = newNode;
+            if (prevCurrent != NULL) {
+                prevCurrent = prevCurrent->right;
             }
         }
 
-        prev_row_start = firstNode;
+        prevRowStart = firstNode;
     }
 
     return 1; // Board loaded successfully

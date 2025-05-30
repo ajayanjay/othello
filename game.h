@@ -15,7 +15,7 @@ Move playReplay();
 typedef struct {
     Move (*play)(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player);
     char symbol;
-    PlayerType PlayerType;
+    PlayerType playerType;
 } Player;
 
 int game();
@@ -26,7 +26,7 @@ int isGameOver(NodeOctuple *board);
 int hasValidMove(NodeOctuple * board, char player);
 
 void getValidMoves(NodeOctuple *board, char player, Move *validMoves, int *numValidMoves);
-void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int selected_idx, char player);
+void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int selectedIndex, char player);
 int isValidMove(NodeOctuple* node, char player);
 
 Move playHuman(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player);

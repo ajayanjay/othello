@@ -98,6 +98,9 @@ Input userInput()
 		case KEY_ENTER:
 			return ENTER;
 
+		case KEY_ESC:
+			return ESC;
+
 		// WASD movement
 		case 'w': case 'W':
 			return UP;

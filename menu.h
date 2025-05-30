@@ -9,6 +9,7 @@
 
 #ifdef _WIN32
 	#define KEY_ENTER 13
+	#define KEY_ESC 27
 #else
 	#define KEY_ENTER 10
 #endif
@@ -21,7 +22,8 @@ typedef enum input {
 	ENTER,
 	KEY_Z,
 	KEY_Y,
-	NUL
+	NUL,
+	ESC
 } Input ;
 
 int menu(const char* menuHeader, const char* menuItems[], const char* menuFooter);
