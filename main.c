@@ -3,6 +3,7 @@
 #include "menu.h"
 #include "game.h"
 #include "piece.h"
+#include "score.h"
 #include <time.h>
 
 void mainMenu();
@@ -12,6 +13,7 @@ void howToPlay();
 int main(void)
 {
     srand((unsigned int)time(NULL));
+    initScore();
     mainMenu();
     //test();
     return 0;
@@ -36,7 +38,7 @@ void mainMenu()
             case 0: selectMode(); break;
             case 1: //continue(); break;
             case 2: //watchReplay(); break;
-            case 3: //scoreboard(); break;
+            case 3: printScoreboard(); break;
             case 4: howToPlay(); break;
             case 5: return;
         }

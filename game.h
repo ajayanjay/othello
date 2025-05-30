@@ -7,6 +7,7 @@
 #include "player.h"
 #include "move.h"
 #include "activity.h"
+#include "boolean.h"
 
 typedef struct {
     Move (*play)(NodeOctuple*, Deque*, Stack*, char);
@@ -22,7 +23,7 @@ Move playAIEasy(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char p
 
 void getValidMoves(NodeOctuple *root, char player, Move *validMoves, int *numValidMoves);
 int isValidMove(NodeOctuple* node, char player);
-void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int selectedIndex, char player);
+void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int selectedIndex, char player, boolean showScore);
 void makeMove(NodeOctuple *board, Move *move, char player);
 int hasValidMove(NodeOctuple * board, char player);
 int isGameOver(NodeOctuple * board);

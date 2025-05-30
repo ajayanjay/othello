@@ -2,6 +2,7 @@
 #include "piece.h"
 #include "menu.h"
 #include "boolean.h"
+#include "score.h"
 #include "datastructures/octuple.h"
 #include "player.h"
 #include <stdlib.h>
@@ -63,9 +64,57 @@ int game(PlayerType player1Type, PlayerType player2Type, Stack *stackRedo, Deque
     while (1) {
         clearScreen();
         if (isGameOver(board)) {
-            printBoard(board, NULL, 0, 0, EMPTY);
-            printf("Game Over! No valid moves left for both players.\n");
-            inputUntilChar('P');
+            printBoard(board, NULL, 0, 0, EMPTY, false);
+            printf("Game Over! No valid moves left.\n\n");
+            
+            // Calculate final scores
+            int blackScore = calculateScore(board, BLACK);
+            int whiteScore = calculateScore(board, WHITE);
+            
+            printf("Final Scores:\n");
+            printf("Black (X): %d pieces\n", blackScore);
+            printf("White (O): %d pieces\n", whiteScore);
+            
+            // Determine winner and handle scoring for human players
+            if (blackScore > whiteScore) {
+                printf("Black wins!\n\n");
+                if (player1Type == HUMAN) {
+                    char playerName[4];
+                    printf("Congratulations! You achieved a high score!\n");
+                    getPlayerName(playerName);
+                    addHighScore(playerName, blackScore);
+                    printf("High score saved: %s - %d pieces\n", playerName, blackScore);
+                }
+            } else if (whiteScore > blackScore) {
+                printf("White wins!\n\n");
+                if (player2Type == HUMAN) {
+                    char playerName[4];
+                    printf("Congratulations! You achieved a high score!\n");
+                    getPlayerName(playerName);
+                    addHighScore(playerName, whiteScore);
+                    printf("High score saved: %s - %d pieces\n", playerName, whiteScore);
+                }
+            } else {
+                printf("It's a tie!\n\n");
+                // For ties, allow both human players to save their scores
+                if (player1Type == HUMAN) {
+                    char playerName[4];
+                    printf("Black player achieved a tie!\n");
+                    getPlayerName(playerName);
+                    addHighScore(playerName, blackScore);
+                    printf("Score saved: %s - %d pieces\n", playerName, blackScore);
+                }
+                if (player2Type == HUMAN) {
+                    char playerName[4];
+                    printf("White player achieved a tie!\n");
+                    getPlayerName(playerName);
+                    addHighScore(playerName, whiteScore);
+                    printf("Score saved: %s - %d pieces\n", playerName, whiteScore);
+                }
+            }
+            
+            printf("\nPress ENTER to return to the main menu...\n");
+            inputUntilEnter();
             break;
         }
         lastMove = currentPlayer->play(board, dequeUndo, stackRedo, currentPlayer->symbol);
@@ -114,7 +163,7 @@ Move playAIEasy(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char p
 
     while (1) {
         clearScreen();
-        printBoard (board, validMoves, numValidMoves, selected, player);
+        printBoard (board, validMoves, numValidMoves, selected, player, true);
 
         boolean unnecessaryInput = true;
         while (unnecessaryInput) switch (userInput()) {
@@ -158,7 +207,7 @@ Move playHuman(NodeOctuple *root, Deque * dequeUndo, Stack * stackRedo, char pla
     
     while (1){
         clearScreen();
-        printBoard (root, validMoves, numValidMoves, selected, player);
+        printBoard (root, validMoves, numValidMoves, selected, player, true);
 
         boolean unnecessaryInput = true;
         while (unnecessaryInput) switch (userInput()){
@@ -274,7 +323,7 @@ int isValidMove(NodeOctuple* node, char player) {
 
 // Author: Ihsan
 // Note: Moved to this file by Azzar
-void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int selectedIndex, char player) {
+void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int selectedIndex, char player, boolean showScore) {
     char buffer[1024];
     int offset = 0;
 
@@ -339,6 +388,12 @@ void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int sel
 
     // Print all
     printf("%s", buffer);
+    if (showScore == true){
+        printCurrentScores(board);
+    }
+    else{
+        return;
+    }
 }
 
 // Author: Azzar

@@ -8,6 +8,7 @@
 #else
 	#include <termios.h>
 	#include <unistd.h>
+	#include <fcntl.h>
 #endif
 
 // All functions in this file were authored by Azzar
