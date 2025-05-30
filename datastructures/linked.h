@@ -19,7 +19,6 @@ int isEmpty(address p);
 
 address createNodeSingle(infotype nilai);
 
-void printList(address p);
 void insertAwal(address *p, address PNew);
 void insertAkhir(address *p, address PNew);
 void insertAfter(address *pBef, address PNew);

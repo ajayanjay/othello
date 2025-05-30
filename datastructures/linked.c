@@ -21,22 +21,6 @@ address createNodeSingle(infotype nilai){
     return P;
 }
 
-void printList(address p) {
-    if (isEmpty(p)) {
-        printf("Empty List\n");
-        return;
-    }
-    address temp = p;
-    while (temp != nil) {
-        printf("%c", info(temp));
-        if (next(temp) != nil) {
-            printf(" -> ");
-        }
-        temp = next(temp);
-    }
-    printf("\n");
-}
-
 void insertAwal(address *p, address PNew) {
     if (isEmpty(*p)) {
         *p = PNew;

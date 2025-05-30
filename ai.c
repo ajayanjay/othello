@@ -113,7 +113,7 @@ void makeMoveArray(char board[8][8], Move *move, char currentPlayer) {
     char opPlayer = currentPlayer == BLACK ? WHITE : BLACK;
 
     // set the piece
-    board[move->y][move->x] = currentPlayer;
+    board[(int)move->y][(int)move->x] = currentPlayer;
 
     // flip the opponent's pieces
     static const char directions[8][2] = {
@@ -125,8 +125,8 @@ void makeMoveArray(char board[8][8], Move *move, char currentPlayer) {
     for (int i = 0; i < 8; ++i) {
         int dx = directions[i][0];
         int dy = directions[i][1];
-        int x = move->x + dx;
-        int y = move->y + dy;
+        int x = (int)move->x + dx;
+        int y = (int)move->y + dy;
         boolean foundOpponent = false;
 
         while (x >= 0 && x < 8 && y >= 0 && y < 8) {
@@ -135,8 +135,8 @@ void makeMoveArray(char board[8][8], Move *move, char currentPlayer) {
             } else if (board[y][x] == currentPlayer) {
                 if (foundOpponent) {
                     // flip the opponent's pieces
-                    int flipX = move->x + dx;
-                    int flipY = move->y + dy;
+                    int flipX = (int)move->x + dx;
+                    int flipY = (int)move->y + dy;
 
                     // continue flipping until we reach the current player's piece
                     while (flipX != x || flipY != y) {
@@ -160,7 +160,7 @@ void makeMoveArray(char board[8][8], Move *move, char currentPlayer) {
 int isValidMoveArray(char board[8][8], Move *move, char player) {
     char opPlayer = player == BLACK ? WHITE : BLACK;
 
-    if (board[move->y][move->x] != EMPTY)
+    if (board[(int)move->y][(int)move->x] != EMPTY)
         return 0;
 
     static const int directions[8][2] = {
@@ -172,8 +172,8 @@ int isValidMoveArray(char board[8][8], Move *move, char player) {
     for (int i = 0; i < 8; ++i) {
         int dx = directions[i][0];
         int dy = directions[i][1];
-        int x = move->x + dx;
-        int y = move->y + dy;
+        int x = (int)move->x + dx;
+        int y = (int)move->y + dy;
         boolean foundOpponent = false;
 
         while (x >= 0 && x < 8 && y >= 0 && y < 8) {
