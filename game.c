@@ -83,12 +83,13 @@ Move playAIEasy(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char p
     }
 
     int selected = rand() % numValidMoves;
-    boolean isExit = false;
 
-    while (!isExit){
+    while (1) {
         clearScreen();
         printBoard (board, validMoves, numValidMoves, selected, player);
-        switch (userInput()){
+
+        boolean unnecessaryInput = true;
+        while (unnecessaryInput) switch (userInput()) {
             case KEY_Z:
                 if (isDequeEmpty(dequeUndo)) break;
 
@@ -99,8 +100,7 @@ Move playAIEasy(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char p
 
                 return (Move) {-3, -3};
             case ENTER:
-                isExit = true;
-                break;
+                return validMoves[selected];
                 
             default:
                 break;
@@ -128,20 +128,22 @@ Move playHuman(NodeOctuple *root, Deque * dequeUndo, Stack * stackRedo, char pla
 
     int selected=0;
     
-    boolean isExit = false;
-    
-    while (!isExit){
+    while (1){
         clearScreen();
         printBoard (root, validMoves, numValidMoves, selected, player);
-        switch (userInput()){
+
+        boolean unnecessaryInput = true;
+        while (unnecessaryInput) switch (userInput()){
             case LEFT: 
             // % num valid for circular || + num valid ensure selected always positive
             //move selection left
                 selected = (selected-1 + numValidMoves) % numValidMoves;
+                unnecessaryInput = false;
                 break;
 
             case RIGHT:
                 selected = (selected+1) % numValidMoves;
+                unnecessaryInput = false;
                 break;
 
             case KEY_Z:
@@ -153,9 +155,9 @@ Move playHuman(NodeOctuple *root, Deque * dequeUndo, Stack * stackRedo, char pla
                 if (isStackEmpty(stackRedo)) break;
 
                 return (Move) {-3, -3};
+
             case ENTER:
-                isExit = true;
-                break;
+                return validMoves[selected];
                 
             default:
                 break;
