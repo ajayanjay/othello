@@ -277,6 +277,12 @@ int isValidMove(NodeOctuple* node, char player) {
 void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int selectedIndex, char player) {
     char buffer[1024];
     int offset = 0;
+    int blackCount = 0; // player 1 // X // Black
+    int whiteCount = 0;
+
+    // Print current player 
+    if (player==BLACK) offset += sprintf (buffer + offset, "Current turn : Player 1\n");
+    else offset += sprintf (buffer + offset, "Current turn : Player 2\n");
 
     // Baris atas
     offset += sprintf(buffer + offset, "  +-----------------+\n"); //border top
@@ -294,6 +300,10 @@ void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int sel
             int rowIndex = rowNumber -1;
             int isValid = 0;
             int isSelected=0;
+
+            //count total black and white pieces
+            if (c == BLACK) blackCount++;
+            else if (c == WHITE) whiteCount++;
 
             //check if position contain valid move or isSelected 
             int validMovesIndex = 0;
@@ -336,6 +346,8 @@ void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int sel
 
     offset += sprintf(buffer + offset, "  +-----------------+\n"); //border bottom
     offset += sprintf(buffer + offset, "    A B C D E F G H\n");
+    offset += sprintf(buffer + offset, "X: %d\n", blackCount);
+    offset += sprintf(buffer + offset, "O: %d\n", whiteCount);
 
     // Print all
     printf("%s", buffer);
