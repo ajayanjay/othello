@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <ctype.h>
 
-
+//Author: Azzar
 int game() {
 
     NodeOctuple * board;
@@ -68,6 +68,7 @@ int game() {
     return 0;
 }
 
+// Author: Azzar
 Move playAIEasy(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player) {
     Move validMoves[64]; // to collect valid moves and later will store by address
     int numValidMoves; // how many valid move
@@ -110,6 +111,8 @@ Move playAIEasy(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char p
     return validMoves[selected];
 }
 
+// Author: Ihsan
+// Note: Moved to this file by Azzar
 Move playHuman(NodeOctuple *root, Deque * dequeUndo, Stack * stackRedo, char player){
     Move validMoves[64]; // to collect valid moves and later will store by address
     int numValidMoves; // how many valid move
@@ -164,6 +167,7 @@ Move playHuman(NodeOctuple *root, Deque * dequeUndo, Stack * stackRedo, char pla
     return validMoves[selected];
 }
 
+// Author: Azzar
 int isGameOver(NodeOctuple * board) {
     return !hasValidMove(board, BLACK) && !hasValidMove(board, WHITE);
 }
@@ -175,6 +179,8 @@ int hasValidMove(NodeOctuple * board, char player) {
     return bufferSize > 0;
 }
 
+// Author: Ihsan
+// Note: Moved to this file by Azzar
 void getValidMoves (NodeOctuple *root, char player, Move *validMoves, int *numValidMoves) {
     //valid moves untuk pointer ke array
     //num valid moves passing by reference because will use in another method
@@ -236,7 +242,8 @@ int isValidMove(NodeOctuple* node, char player) {
     return false;
 }
 
-
+// Author: Ihsan
+// Note: Moved to this file by Azzar
 void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int selectedIndex, char player) {
     char buffer[1024];
     int offset = 0;
@@ -304,6 +311,7 @@ void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int sel
     printf("%s", buffer);
 }
 
+// Author: Azzar
 int undo(NodeOctuple * board, Deque * dequeUndo, Stack * stackRedo, char * currentPlayer) {
     
     Activity lastActivity;
@@ -316,6 +324,7 @@ int undo(NodeOctuple * board, Deque * dequeUndo, Stack * stackRedo, char * curre
     return 1;
 }
 
+// Author: Azzar
 int redo(NodeOctuple * board, Deque * dequeUndo, Stack * stackRedo, char * currentPlayer) {
 
     Move lastMove;
@@ -338,7 +347,7 @@ Activity activity(NodeOctuple * board, Move lastMove, char currentPlayer) {
     return newActivity;
 }
 
-// Author: Ihsan
+// Author: Idotoho
 // Note: Moved to this file by Azzar
 void makeMove(NodeOctuple *board, Move *move, char player) {
     char opponent = (player == BLACK) ? WHITE : BLACK;

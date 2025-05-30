@@ -6,6 +6,7 @@
 #include "datastructures/deque.h"
 #include "move.h"
 #include "activity.h"
+#include "player.h"
 
 Move playAIMedium();
 Move playAIHard();
@@ -14,6 +15,7 @@ Move playReplay();
 typedef struct {
     Move (*play)(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player);
     char symbol;
+    PlayerType PlayerType;
 } Player;
 
 int game();
