@@ -7,9 +7,10 @@
 #define PREVIOUS UP
 #define NEXT DOWN
 
+#define KEY_ESC 27
+
 #ifdef _WIN32
 	#define KEY_ENTER 13
-	#define KEY_ESC 27
 #else
 	#define KEY_ENTER 10
 #endif
