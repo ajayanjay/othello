@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+// All functions in this file were authored by Ihsan
+
 int isEmpty(address p) {
     return (p == nil);
 }

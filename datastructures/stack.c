@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
+// All functions in this file were authored by Azzar
 
 void initStack(Stack * stack, SizeData elementSize, SizeData capacity) {
     initArray(stack, elementSize, capacity);

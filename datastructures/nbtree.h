@@ -14,5 +14,6 @@ typedef struct nbtree {
 boolean isEmptyTree(NbTree *t);
 NbTree* createNodeTree (InfoNbTree info);
 void deleteEntireTree (NbTree** root);
+void disconnectTreeExcept (NbTree *root, NbTree *chosen);
 
 #endif

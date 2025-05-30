@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// All functions in this file were authored by Azzar
+
 void initArray(Array * array, SizeData elementSize, SizeData capacity) {
     array->data = malloc(capacity * elementSize);
     array->elementSize = elementSize;

@@ -10,6 +10,8 @@
 	#include <unistd.h>
 #endif
 
+// All functions in this file were authored by Azzar
+
 int menu(const char *menuHeader, const char **menuItems, const char *menuFooter)
 {
 	int cursor = 0, action;

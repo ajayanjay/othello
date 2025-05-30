@@ -7,13 +7,17 @@
 #include "move.h"
 #include "activity.h"
 
+typedef struct {
+    playerType player;
+} playerType;
+
 // cek jika game sudah berakhir.
 // antara board sudah penuh atau kedua player tidak bisa melakukan gerakan
 int isGameOver(NodeOctuple *board);
 int hasValidMove(NodeOctuple * board, char player);
 
-void getValidMoves(NodeOctuple *board, char player, Move *valid_moves, int *num_valid_moves);
-void printBoard(NodeOctuple *board, Move *valid_moves, int num_valid_moves, int selected_idx, char player);
+void getValidMoves(NodeOctuple *board, char player, Move *validMoves, int *numValidMoves);
+void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int selected_idx, char player);
 int isValidMove(NodeOctuple* node, char player);
 
 Move inputMove (NodeOctuple *root, char player);

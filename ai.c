@@ -2,6 +2,8 @@
 #include "piece.h"
 #include <stdlib.h>
 
+// All functions in this file were authored by Azzar
+
 int evaluateBoardArray(char board[8][8], char player) {
 
     int mobility = 100 * evaluateMobility(board, player);

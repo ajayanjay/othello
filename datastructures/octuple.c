@@ -5,6 +5,7 @@
 #include "../piece.h"
 #include "../menu.h"
 
+// Author: Ihsan
 NodeOctuple * createNodeOctuple (OctupleInfo info){
     NodeOctuple * new_node = malloc (sizeof(NodeOctuple));
     new_node->info = info;
@@ -19,6 +20,7 @@ NodeOctuple * createNodeOctuple (OctupleInfo info){
     return new_node;
 }
 
+// Author: Ihsan
 void constructOthelloBoard(NodeOctuple **root) {
     /*
     create octuple linked list for board othello 8x8
@@ -115,6 +117,7 @@ void constructOthelloBoard(NodeOctuple **root) {
     }
 }
 
+// Author: Ihsan
 NodeOctuple * setNodeAt (NodeOctuple *root, OctupleInfo info,  int row, int col){
     NodeOctuple *current= root;
     int i=0;
@@ -130,7 +133,7 @@ NodeOctuple * setNodeAt (NodeOctuple *root, OctupleInfo info,  int row, int col)
     return current;
 }
 
-
+// Author: Ihsan
 NodeOctuple * getNodeAt(NodeOctuple *root, int row, int col) {
     NodeOctuple *current = root;
     for (int i = 0; i < row; ++i)
@@ -140,6 +143,7 @@ NodeOctuple * getNodeAt(NodeOctuple *root, int row, int col) {
     return current;
 }
 
+// Author: Ihsan
 void convertOctupleToArray (NodeOctuple *root, char boardArray[8][8]){
     /*
     Convert Octuple link list to 8x8 array by traversing board
@@ -164,6 +168,7 @@ void convertOctupleToArray (NodeOctuple *root, char boardArray[8][8]){
     }
 }
 
+// Author: Ihsan
 void convertArrayToOctuple(NodeOctuple *root, char boardArray[8][8]) {
     /*
     Update the info field of an existing octuple linked list with values from an 8x8 array
@@ -188,6 +193,7 @@ void convertArrayToOctuple(NodeOctuple *root, char boardArray[8][8]) {
     }
 }
 
+// Author: Ihsan
 void saveBoard(NodeOctuple *root, const char *filename) {
     /*
     Save the octuple linked list board to a text file in 8x8 grid format
@@ -217,6 +223,7 @@ void saveBoard(NodeOctuple *root, const char *filename) {
     fclose(file);
 }
 
+// Author: Idotoho
 int loadBoard(NodeOctuple **root, const char *filename) {
     /*
     Load the octuple linked list board from a text file in 8x8 grid format
@@ -344,9 +351,9 @@ int loadBoard(NodeOctuple **root, const char *filename) {
     return 1; // Board loaded successfully
 }
 
-// Function helper to get access various direction
+// Author: Ihsan
 NodeOctuple* getNext(NodeOctuple* node, int dir) {
-    // Returns pointer node based on the direction code (0–7)
+    // Function helper to get access various direction. Returns pointer node
     switch(dir) {
         case 0: return node->left;
         case 1: return node->right;
@@ -360,12 +367,14 @@ NodeOctuple* getNext(NodeOctuple* node, int dir) {
     }
 }
 
+// Author: Ihsan
 void freeRow(NodeOctuple *col) {
     if (col == NULL) return;
     freeRow(col->right);
     free(col);
 }
 
+// Author: Ihsan
 void freeBoard(NodeOctuple *row) {
     if (row == NULL) return;
     freeBoard(row->down);

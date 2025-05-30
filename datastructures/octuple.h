@@ -1,7 +1,7 @@
 #ifndef octuple_h
 #define octuple_h
 
-typedef int OctupleInfo;
+typedef char OctupleInfo;
 
 typedef struct nodeoctuple {
     OctupleInfo info;
