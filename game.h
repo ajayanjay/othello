@@ -27,6 +27,7 @@ void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int sel
 void makeMove(NodeOctuple *board, Move *move, char player);
 int hasValidMove(NodeOctuple * board, char player);
 int isGameOver(NodeOctuple * board);
+void gameOverScreen(NodeOctuple * board, PlayerType player1Type, PlayerType player2Type);
 Activity activity(NodeOctuple * board, Move lastMove, char currentPlayer);
 int undo(NodeOctuple * board, Deque * dequeUndo, Stack * stackRedo, char * currentPlayer);
 int redo(NodeOctuple * board, Deque * dequeUndo, Stack * stackRedo, char * currentPlayer);

@@ -65,55 +65,7 @@ int game(PlayerType player1Type, PlayerType player2Type, Stack *stackRedo, Deque
         clearScreen();
         if (isGameOver(board)) {
             printBoard(board, NULL, 0, 0, EMPTY, false);
-            printf("Game Over! No valid moves left.\n\n");
-            
-            // Calculate final scores
-            int blackScore = calculateScore(board, BLACK);
-            int whiteScore = calculateScore(board, WHITE);
-            
-            printf("Final Scores:\n");
-            printf("Black (X): %d pieces\n", blackScore);
-            printf("White (O): %d pieces\n", whiteScore);
-            
-            // Determine winner and handle scoring for human players
-            if (blackScore > whiteScore) {
-                printf("Black wins!\n\n");
-                if (player1Type == HUMAN) {
-                    char playerName[4];
-                    printf("Congratulations! You achieved a high score!\n");
-                    getPlayerName(playerName);
-                    addHighScore(playerName, blackScore);
-                    printf("High score saved: %s - %d pieces\n", playerName, blackScore);
-                }
-            } else if (whiteScore > blackScore) {
-                printf("White wins!\n\n");
-                if (player2Type == HUMAN) {
-                    char playerName[4];
-                    printf("Congratulations! You achieved a high score!\n");
-                    getPlayerName(playerName);
-                    addHighScore(playerName, whiteScore);
-                    printf("High score saved: %s - %d pieces\n", playerName, whiteScore);
-                }
-            } else {
-                printf("It's a tie!\n\n");
-                // For ties, allow both human players to save their scores
-                if (player1Type == HUMAN) {
-                    char playerName[4];
-                    printf("Black player achieved a tie!\n");
-                    getPlayerName(playerName);
-                    addHighScore(playerName, blackScore);
-                    printf("Score saved: %s - %d pieces\n", playerName, blackScore);
-                }
-                if (player2Type == HUMAN) {
-                    char playerName[4];
-                    printf("White player achieved a tie!\n");
-                    getPlayerName(playerName);
-                    addHighScore(playerName, whiteScore);
-                    printf("Score saved: %s - %d pieces\n", playerName, whiteScore);
-                }
-            }
-            
-            printf("\nPress ENTER to return to the main menu...\n");
+            gameOverScreen(board, player1Type, player2Type);
             inputUntilEnter();
             break;
         }
@@ -394,6 +346,57 @@ void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int sel
     else{
         return;
     }
+}
+
+void gameOverScreen(NodeOctuple * board, PlayerType player1Type, PlayerType player2Type){
+    printf("Game Over! No valid moves left.\n\n");
+    // Calculate final scores
+    int blackScore = calculateScore(board, BLACK);
+    int whiteScore = calculateScore(board, WHITE);
+    
+    printf("Final Scores:\n");
+    printf("Black (X): %d pieces\n", blackScore);
+    printf("White (O): %d pieces\n", whiteScore);
+    
+    // Determine winner and handle scoring for human players
+    if (blackScore > whiteScore) {
+        printf("Black wins!\n\n");
+        if (player1Type == HUMAN) {
+            char playerName[4];
+            printf("Congratulations! You achieved a high score!\n");
+            getPlayerName(playerName);
+            addHighScore(playerName, blackScore);
+            printf("High score saved: %s - %d pieces\n", playerName, blackScore);
+        }
+    } else if (whiteScore > blackScore) {
+        printf("White wins!\n\n");
+        if (player2Type == HUMAN) {
+            char playerName[4];
+            printf("Congratulations! You achieved a high score!\n");
+            getPlayerName(playerName);
+            addHighScore(playerName, whiteScore);
+            printf("High score saved: %s - %d pieces\n", playerName, whiteScore);
+        }
+    } else {
+        printf("It's a tie!\n\n");
+        // For ties, allow both human players to save their scores
+        if (player1Type == HUMAN) {
+            char playerName[4];
+            printf("Black player achieved a tie!\n");
+            getPlayerName(playerName);
+            addHighScore(playerName, blackScore);
+            printf("Score saved: %s - %d pieces\n", playerName, blackScore);
+        }
+        if (player2Type == HUMAN) {
+            char playerName[4];
+            printf("White player achieved a tie!\n");
+            getPlayerName(playerName);
+            addHighScore(playerName, whiteScore);
+            printf("Score saved: %s - %d pieces\n", playerName, whiteScore);
+        }
+    }
+    
+    printf("\nPress ENTER to return to the main menu...\n");
 }
 
 // Author: Azzar

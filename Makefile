@@ -32,4 +32,4 @@ clean:
 	rm -rf $(BUILDDIR)
 
 run: all
-	./$(TARGET)
+	cd $(BUILDDIR) && ./build

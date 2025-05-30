@@ -77,7 +77,7 @@ void printCurrentScores(NodeOctuple *board) {
 }
 
 void getPlayerName(char* playerName) {
-    printf("Enter your 3-character name: ");
+    printf("Enter your name (3 characters): ");
     
     char input[10];
     while (1) {
