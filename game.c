@@ -19,7 +19,7 @@ int game() {
     initStack(&stackRedo, sizeof(Move), 64);
 
     Player player1 = {playHuman, BLACK};
-    Player player2 = {playHuman, WHITE};
+    Player player2 = {playAIEasy, WHITE};
 
     Player * currentPlayer = &player1;
 
@@ -82,8 +82,30 @@ Move playAIEasy(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char p
     }
 
     int selected = rand() % numValidMoves;
+    boolean isExit = false;
 
-    emptyStack(stackRedo);
+    while (!isExit){
+        clearScreen();
+        printBoard (board, validMoves, numValidMoves, selected, player);
+        switch (userInput()){
+            case KEY_Z:
+                if (isDequeEmpty(dequeUndo)) break;
+
+                return (Move) {-2, -2};
+
+            case KEY_Y:
+                if (isStackEmpty(stackRedo)) break;
+
+                return (Move) {-3, -3};
+            case ENTER:
+                isExit = true;
+                break;
+                
+            default:
+                break;
+        }
+        
+    }
 
     return validMoves[selected];
 }
