@@ -77,29 +77,32 @@ Input userInput()
 					case 77: return RIGHT;
 					default: return NUL;
 				}
+
+			case KEY_ESC:
+				return ESC;
 		#else
 			case 27:
-				switch(nonBlockingInput()) 
-				{
-					case 91:
-						switch(nonBlockingInput()) 
-						{
-							case 65: return UP;
-							case 68: return LEFT;  
-							case 66: return DOWN;
-							case 67: return RIGHT;
-							default: return NUL;
-						}
-					default:
-						return NUL;
-				}
+				if (keyboardHit()) {
+					switch(nonBlockingInput()) 
+					{
+						case 91:
+							switch(nonBlockingInput()) 
+							{
+								case 65: return UP;
+								case 68: return LEFT;  
+								case 66: return DOWN;
+								case 67: return RIGHT;
+								default: return NUL;
+							}
+						default:
+							return NUL;
+					}
+				} else
+					return ESC;
 		#endif
 
 		case KEY_ENTER:
 			return ENTER;
-
-		case KEY_ESC:
-			return ESC;
 
 		// WASD movement
 		case 'w': case 'W':
@@ -144,6 +147,35 @@ void clearScreen() {
 	#else
 		// For other platforms, you can use ANSI escape codes
 		system("clear");
+	#endif
+}
+
+int keyboardHit() {
+	#ifdef _WIN32
+		return kbhit();
+	#else
+		struct termios oldt, newt;
+		int ch;
+		int oldf;
+
+		tcgetattr(STDIN_FILENO, &oldt);
+		newt = oldt;
+		newt.c_lflag &= ~(ICANON | ECHO);
+		tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+		oldf = fcntl(STDIN_FILENO, F_GETFL, 0);
+		fcntl(STDIN_FILENO, F_SETFL, oldf | O_NONBLOCK);
+
+		ch = getchar();
+
+		tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+		fcntl(STDIN_FILENO, F_SETFL, oldf);
+
+		if (ch != EOF) {
+			ungetc(ch, stdin);
+			return 1;
+		}
+
+		return 0;
 	#endif
 }
 

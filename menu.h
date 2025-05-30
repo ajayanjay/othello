@@ -69,6 +69,9 @@ Input userInput();
 // bersihkan layar
 void clearScreen();
 
+// kbhit.
+int keyboardHit();
+
 // INSIDER FUNCTIONS. should not to be used outside this file.
 
 // move cursor to next or previous item. or execute action. or not at all.
