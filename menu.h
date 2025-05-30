@@ -19,6 +19,8 @@ typedef enum input {
 	LEFT,
 	RIGHT,
 	ENTER,
+	KEY_Z,
+	KEY_Y,
 	NUL
 } Input ;
 

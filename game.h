@@ -7,9 +7,16 @@
 #include "move.h"
 #include "activity.h"
 
+Move playAIMedium();
+Move playAIHard();
+Move playReplay();
+
 typedef struct {
-    playerType player;
-} playerType;
+    Move (*play)(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player);
+    char symbol;
+} Player;
+
+int game();
 
 // cek jika game sudah berakhir.
 // antara board sudah penuh atau kedua player tidak bisa melakukan gerakan
@@ -20,12 +27,13 @@ void getValidMoves(NodeOctuple *board, char player, Move *validMoves, int *numVa
 void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int selected_idx, char player);
 int isValidMove(NodeOctuple* node, char player);
 
-Move inputMove (NodeOctuple *root, char player);
+Move playHuman(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player);
+Move playAIEasy(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player);
 
 void makeMove(NodeOctuple *board, Move *move, char player);
 
-int undo(NodeOctuple * board, Deque * queue_undo, Stack * stack_undo, char * currentPlayer);
-int redo(NodeOctuple * board, Deque * queue_undo, Stack * stack_redo, char * currentPlayer);
+int undo(NodeOctuple * board, Deque * dequeUndo, Stack * stackUndo, char * currentPlayer);
+int redo(NodeOctuple * board, Deque * dequeUndo, Stack * stackRedo, char * currentPlayer);
 Activity activity(NodeOctuple * board, Move lastMove, char currentPlayer);
 
 #endif

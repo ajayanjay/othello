@@ -111,6 +111,12 @@ Input userInput()
 		case 'd': case 'D':
 			return RIGHT;
 
+		case 'z': case 'Z':
+			return KEY_Z;
+		
+		case 'y': case 'Y':
+			return KEY_Y;
+
 		default: 
 			return NUL;
 	}

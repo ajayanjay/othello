@@ -3,6 +3,7 @@
 #include "menu.h"
 #include "game.h"
 #include "piece.h"
+#include <time.h>
 
 void mainMenu();
 void howToPlay();
@@ -12,7 +13,7 @@ void test() {
     constructOthelloBoard(&root);
     char player = BLACK;
     while (1) {
-        Move move = inputMove(root, player);
+        Move move = playHuman(root, NULL, NULL, player);
 
         if (move.x == -1 && move.y == -1) {
             printf("Game Over!\n");
@@ -28,7 +29,9 @@ void test() {
 
 int main(void)
 {
-    test();
+    srand((unsigned int)time(NULL));
+    game();
+    //test();
     return 0;
 }
 
