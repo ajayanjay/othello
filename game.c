@@ -19,7 +19,7 @@ int game() {
     initStack(&stackRedo, sizeof(Move), 64);
 
     Player player1 = {playHuman, BLACK};
-    Player player2 = {playAIEasy, WHITE};
+    Player player2 = {playHuman, WHITE};
 
     Player * currentPlayer = &player1;
 
@@ -37,24 +37,31 @@ int game() {
 
         lastMove = currentPlayer->play(board, &dequeUndo, &stackRedo, currentPlayer->symbol);
         
+        // currentPlayer has no available moves.
         if (lastMove.x == -1 && lastMove.y == -1) {
-            // currentPlayer has no valid moves.
             currentPlayer = (currentPlayer == &player1) ? &player2 : &player1;
             continue;
         }
 
+        // undo
         else if (lastMove.x == -2 && lastMove.y == -2) {
-            // undo.
+            char temp = currentPlayer->symbol;
+            undo(board, &dequeUndo, &stackRedo, &temp);
+            currentPlayer = (temp == BLACK) ? &player1 : &player2;
             continue;
         }
 
+        // redo
         else if (lastMove.x == -3 && lastMove.y == -3) {
-            // exit.
-            break;
+            char temp = currentPlayer->symbol;
+            redo(board, &dequeUndo, &stackRedo, &temp);
+            currentPlayer = (temp == BLACK) ? &player1 : &player2;
+            continue;
         }
 
-        makeMove(board, &lastMove, currentPlayer->symbol);
+        emptyStack(&stackRedo); // if user make a move, empty the redo stack.
         pushHead(&dequeUndo, activity(board, lastMove, currentPlayer->symbol));
+        makeMove(board, &lastMove, currentPlayer->symbol);
         currentPlayer = (currentPlayer == &player1) ? &player2 : &player1;
     }
 
@@ -62,23 +69,77 @@ int game() {
 }
 
 Move playAIEasy(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player) {
-    Move valid_moves[64]; // to collect valid moves and later will store by address
-    int num_valid_moves; // how many valid move
+    Move validMoves[64]; // to collect valid moves and later will store by address
+    int numValidMoves; // how many valid move
 
     // Get all valid moves for the current player
-    getValidMoves(board, player, valid_moves, &num_valid_moves);
+    getValidMoves(board, player, validMoves, &numValidMoves);
 
     // If no valid moves 
-    if (num_valid_moves == 0) {
+    if (numValidMoves == 0) {
         Move invalid = {-1, -1};
         return invalid;
     }
 
-    int selected = rand() % num_valid_moves;
+    int selected = rand() % numValidMoves;
 
     emptyStack(stackRedo);
 
-    return valid_moves[selected];
+    return validMoves[selected];
+}
+
+Move playHuman(NodeOctuple *root, Deque * dequeUndo, Stack * stackRedo, char player){
+    Move validMoves[64]; // to collect valid moves and later will store by address
+    int numValidMoves; // how many valid move
+
+    // Get all valid moves for the current player
+    getValidMoves (root, player, validMoves, &numValidMoves);
+
+    // If no valid moves 
+    if (numValidMoves == 0){
+        Move invalid = {-1, -1};
+        return invalid;
+    }
+
+    int selected=0;
+    
+    boolean isExit = false;
+    
+    while (!isExit){
+        clearScreen();
+        printBoard (root, validMoves, numValidMoves, selected, player);
+        switch (userInput()){
+            case LEFT: 
+            // % num valid for circular || + num valid ensure selected always positive
+            //move selection left
+                selected = (selected-1 + numValidMoves) % numValidMoves;
+                break;
+
+            case RIGHT:
+                selected = (selected+1) % numValidMoves;
+                break;
+
+            case KEY_Z:
+                if (isDequeEmpty(dequeUndo)) break;
+
+                return (Move) {-2, -2};
+
+            case KEY_Y:
+                if (isStackEmpty(stackRedo)) break;
+
+                return (Move) {-3, -3};
+            case ENTER:
+                isExit = true;
+                break;
+                
+            default:
+                break;
+        }
+        // % num valid for circular || + num valid ensure selected always positive
+        //move selection left
+    }
+    //return selected move
+    return validMoves[selected];
 }
 
 int isGameOver(NodeOctuple * board) {
@@ -91,31 +152,31 @@ int hasValidMove(NodeOctuple * board, char player) {
     return bufferSize > 0;
 }
 
-void getValidMoves (NodeOctuple *root, char player, Move *valid_moves, int *num_valid_moves) {
+void getValidMoves (NodeOctuple *root, char player, Move *validMoves, int *numValidMoves) {
     //valid moves untuk pointer ke array
     //num valid moves passing by reference because will use in another method
 
-    *num_valid_moves = 0; // (*) acces score not pointer. Init count valid move
+    *numValidMoves = 0; // (*) acces score not pointer. Init count valid move
     NodeOctuple *row= root;
     NodeOctuple *col;
-    int row_idx = 0;
+    int rowIndex = 0;
 
-    while (row != NULL && row_idx <8){
+    while (row != NULL && rowIndex <8){
         col=row;
-        int col_idx = 0;
+        int colIndex = 0;
 
-        while (col != NULL && col_idx < 8){
+        while (col != NULL && colIndex < 8){
             //if isvalidmove, add to list
             if (isValidMove(col, player)){ //col=pointer node
-                valid_moves[*num_valid_moves].x = row_idx; //*numvalidmove beacuse acces score
-                valid_moves[*num_valid_moves].y = col_idx;
-                (*num_valid_moves)++; //update index validmoves
+                validMoves[*numValidMoves].x = rowIndex; //*numvalidmove beacuse acces score
+                validMoves[*numValidMoves].y = colIndex;
+                (*numValidMoves)++; //update index validmoves
             }
             col = col->right; //update collumn
-            col_idx++;
+            colIndex++;
         }
         row = row->down; // update row
-        row_idx++;
+        rowIndex++;
     }
 }
 
@@ -150,45 +211,45 @@ int isValidMove(NodeOctuple* node, char player) {
 }
 
 
-void printBoard(NodeOctuple *board, Move *valid_moves, int num_valid_moves, int selected_idx, char player) {
+void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int selectedIndex, char player) {
     char buffer[1024];
     int offset = 0;
 
     // Baris atas
     offset += sprintf(buffer + offset, "  +-----------------+\n"); //border top
 
-    NodeOctuple *current_row = board;
-    int row_number = 1;
+    NodeOctuple *currentRow = board;
+    int rowNumber = 1;
 
-    while (current_row != NULL && row_number <= 8) {
-        offset += sprintf(buffer + offset, "%d |", row_number); //print row number and border
-        NodeOctuple *current_col = current_row;
-        int col_idx = 0;
+    while (currentRow != NULL && rowNumber <= 8) {
+        offset += sprintf(buffer + offset, "%d |", rowNumber); //print row number and border
+        NodeOctuple *currentCol = currentRow;
+        int colIndex = 0;
 
-        while (current_col != NULL && col_idx < 8) {
-            char c = current_col->info;
-            int row_idx = row_number -1;
-            int is_valid = 0;
-            int is_selected=0;
+        while (currentCol != NULL && colIndex < 8) {
+            char c = currentCol->info;
+            int rowIndex = rowNumber -1;
+            int isValid = 0;
+            int isSelected=0;
 
-            //check if position contain valid move or is_selected 
-            int valid_moves_idx = 0;
-            while (valid_moves_idx < num_valid_moves){
-                if (valid_moves[valid_moves_idx].x == row_idx && valid_moves[valid_moves_idx].y == col_idx){
-                    is_valid = 1;
-                    if (valid_moves_idx == selected_idx){
-                        is_selected = 1;
+            //check if position contain valid move or isSelected 
+            int validMovesIndex = 0;
+            while (validMovesIndex < numValidMoves){
+                if (validMoves[validMovesIndex].x == rowIndex && validMoves[validMovesIndex].y == colIndex){
+                    isValid = 1;
+                    if (validMovesIndex == selectedIndex){
+                        isSelected = 1;
                     }
                     break;
                 }
 
-                valid_moves_idx++;
+                validMovesIndex++;
             }
 
-            if (is_selected){ // is_selected>0 with special formatting
+            if (isSelected){ // isSelected>0 with special formatting
                 offset += sprintf (buffer + offset, " \033[30;47m%c\033[0m", player);
             }
-            else if (is_valid){ // possible move
+            else if (isValid){ // possible move
                 offset += sprintf (buffer + offset, " \033[2m%c\033[m", tolower(player));
             }
             else { // regular cell
@@ -200,14 +261,14 @@ void printBoard(NodeOctuple *board, Move *valid_moves, int num_valid_moves, int 
                     offset += sprintf (buffer + offset, " %c", c);
             }
             
-            current_col = current_col->right; // update current to right
-            col_idx++;
+            currentCol = currentCol->right; // update current to right
+            colIndex++;
         }
         
         // end row
         offset += sprintf(buffer + offset, " |\n");
-        current_row = current_row->down; // update current to bottom
-        row_number++; //update row number
+        currentRow = currentRow->down; // update current to bottom
+        rowNumber++; //update row number
     }
 
     offset += sprintf(buffer + offset, "  +-----------------+\n"); //border bottom
@@ -217,32 +278,27 @@ void printBoard(NodeOctuple *board, Move *valid_moves, int num_valid_moves, int 
     printf("%s", buffer);
 }
 
-int undo(NodeOctuple * board, Deque * queue_undo, Stack * stack_undo, char * currentPlayer) {
-    
-    if (isDequeEmpty(queue_undo)) return 0;
+int undo(NodeOctuple * board, Deque * dequeUndo, Stack * stackRedo, char * currentPlayer) {
     
     Activity lastActivity;
-    popHead(queue_undo, &lastActivity);
+    popHead(dequeUndo, &lastActivity);
 
     convertArrayToOctuple(board, lastActivity.board);
     *currentPlayer = lastActivity.currentPlayer;
 
-    push(stack_undo, &(lastActivity.lastMove));
+    push(stackRedo, &(lastActivity.lastMove));
     return 1;
 }
 
-int redo(NodeOctuple * board, Deque * queue_undo, Stack * stack_redo, char * currentPlayer) {
-    
-    if (isStackEmpty(stack_redo)) return 0;
+int redo(NodeOctuple * board, Deque * dequeUndo, Stack * stackRedo, char * currentPlayer) {
 
     Move lastMove;
-    pop(stack_redo, &lastMove);
+    pop(stackRedo, &lastMove);
 
+    pushHead(dequeUndo, activity(board, lastMove, *currentPlayer));
+    
     makeMove(board, &lastMove, *currentPlayer);
-
     *currentPlayer = (*currentPlayer == BLACK) ? WHITE : BLACK;
-
-    pushHead(queue_undo, activity(board, lastMove, *currentPlayer));
 
     return 1;
 }
@@ -255,48 +311,6 @@ Activity activity(NodeOctuple * board, Move lastMove, char currentPlayer) {
     return newActivity;
 }
 
-Move playHuman(NodeOctuple *root, Deque * dequeUndo, Stack * stackRedo, char player){
-    Move valid_moves[64]; // to collect valid moves and later will store by address
-    int num_valid_moves; // how many valid move
-
-    // Get all valid moves for the current player
-    getValidMoves (root, player, valid_moves, &num_valid_moves);
-
-    // If no valid moves 
-    if (num_valid_moves == 0){
-        Move invalid = {-1, -1};
-        return invalid;
-    }
-
-    int selected=0;
-    
-    boolean isExit = false;
-    
-    while (!isExit){
-        clearScreen();
-        printBoard (root, valid_moves, num_valid_moves, selected, player);
-        switch (userInput()){
-            case LEFT: 
-            // % num valid for circular || + num valid ensure selected always positive
-            //move selection left
-                selected = (selected-1 + num_valid_moves) % num_valid_moves;
-                break;
-            case RIGHT:
-                selected = (selected+1) % num_valid_moves;
-                break;
-            case ENTER:
-                isExit = true;
-                break;
-            default:
-                break;
-        }
-        // % num valid for circular || + num valid ensure selected always positive
-        //move selection left
-    }
-    //return selected move
-    return valid_moves[selected];
-}
-
 void makeMove(NodeOctuple *board, Move *move, char player) {
     char opponent = (player == BLACK) ? WHITE : BLACK;
     
@@ -307,22 +321,22 @@ void makeMove(NodeOctuple *board, Move *move, char player) {
     // Check all directions and flip opponent pieces
     for (int dir = 0; dir < 8; dir++) {
         NodeOctuple *current = getNext(moveNode, dir);
-        NodeOctuple *pieces_to_flip[8]; // Max pieces that can be flipped in one direction
-        int flip_count = 0;
-        boolean found_opponent = false;
+        NodeOctuple *piecesToFlip[8]; // Max pieces that can be flipped in one direction
+        int flipCount = 0;
+        boolean foundOpponent = false;
         
         // Move in the direction while finding opponent pieces
         while (current != NULL && current->info == opponent) {
-            pieces_to_flip[flip_count] = current;
-            flip_count++;
-            found_opponent = true;
+            piecesToFlip[flipCount] = current;
+            flipCount++;
+            foundOpponent = true;
             current = getNext(current, dir);
         }
         
         // if found opponent pieces and ended at a player piece, flip
-        if (found_opponent && current != NULL && current->info == player) {
-            for (int i = 0; i < flip_count; i++) {
-                pieces_to_flip[i]->info = player;
+        if (foundOpponent && current != NULL && current->info == player) {
+            for (int i = 0; i < flipCount; i++) {
+                piecesToFlip[i]->info = player;
             }
         }
     }

@@ -12,7 +12,7 @@ Move playAIHard();
 Move playReplay();
 
 typedef struct {
-    Move (*play)(NodeOctuple *board, Deque * deque_undo, Stack * stack_redo, char player);
+    Move (*play)(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player);
     char symbol;
 } Player;
 
@@ -27,13 +27,13 @@ void getValidMoves(NodeOctuple *board, char player, Move *valid_moves, int *num_
 void printBoard(NodeOctuple *board, Move *valid_moves, int num_valid_moves, int selected_idx, char player);
 int isValidMove(NodeOctuple* node, char player);
 
-Move playHuman(NodeOctuple *board, Deque * deque_undo, Stack * stack_redo, char player);
-Move playAIEasy(NodeOctuple *board, Deque * deque_undo, Stack * stack_redo, char player);
+Move playHuman(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player);
+Move playAIEasy(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player);
 
 void makeMove(NodeOctuple *board, Move *move, char player);
 
-int undo(NodeOctuple * board, Deque * queue_undo, Stack * stack_undo, char * currentPlayer);
-int redo(NodeOctuple * board, Deque * queue_undo, Stack * stack_redo, char * currentPlayer);
+int undo(NodeOctuple * board, Deque * dequeUndo, Stack * stackUndo, char * currentPlayer);
+int redo(NodeOctuple * board, Deque * dequeUndo, Stack * stackRedo, char * currentPlayer);
 Activity activity(NodeOctuple * board, Move lastMove, char currentPlayer);
 
 #endif
