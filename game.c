@@ -3,68 +3,96 @@
 #include "menu.h"
 #include "boolean.h"
 #include "datastructures/octuple.h"
+#include "player.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
 
-//Author: Azzar
-int game() {
-
+//Author: Azzar & Ihsan
+int game(PlayerType player1Type, PlayerType player2Type, Stack *stackRedo, Deque *dequeUndo, char startingPlayer) {
     NodeOctuple * board;
-    Deque dequeUndo;
-    Stack stackRedo;
-
     constructOthelloBoard(&board);
-    initDeque(&dequeUndo);
-    initStack(&stackRedo, sizeof(Move), 64);
+    // stackRedo dan dequeUndo sudah diinisialisasi di luar
 
-    Player player1 = {playHuman, BLACK};
-    Player player2 = {playAIEasy, WHITE};
+    // Map player types to play functions
+    Move (*player1Function)(NodeOctuple*, Deque*, Stack*, char) = NULL;
+    Move (*player2Function)(NodeOctuple*, Deque*, Stack*, char) = NULL;
 
-    Player * currentPlayer = &player1;
+    switch(player1Type) {
+        case HUMAN:
+            player1Function = playHuman;
+            break;
+        case AI_EASY:
+            player1Function = playAIEasy;
+            break;
+        case AI_MEDIUM:
+            // player1Function = playAIMedium;
+            break;
+        case AI_HARD:
+            // player1Function = playAIHard;
+            break;
+        default:
+            player1Function = playHuman;
+            break;
+    }
 
+    switch(player2Type) {
+        case HUMAN:
+            player2Function = playHuman;
+            break;
+        case AI_EASY:
+            player2Function = playAIEasy;
+            break;
+        case AI_MEDIUM:
+            // player2Function = playAIMedium;
+            break;
+        case AI_HARD:
+            // player2Function = playAIHard;
+            break;
+        default:
+            player2Function = playHuman;
+            break;
+    }
+
+    Player player1 = {player1Function, BLACK};
+    Player player2 = {player2Function, WHITE};
+
+    Player * currentPlayer = (startingPlayer == BLACK) ? &player1 : &player2;
     Move lastMove = {-1, -1};
 
     while (1) {
         clearScreen();
-
         if (isGameOver(board)) {
             printBoard(board, NULL, 0, 0, EMPTY);
             printf("Game Over! No valid moves left for both players.\n");
             inputUntilChar('P');
             break;
         }
-
-        lastMove = currentPlayer->play(board, &dequeUndo, &stackRedo, currentPlayer->symbol);
-        
+        lastMove = currentPlayer->play(board, dequeUndo, stackRedo, currentPlayer->symbol);
         // currentPlayer has no available moves.
         if (lastMove.x == -1 && lastMove.y == -1) {
             currentPlayer = (currentPlayer == &player1) ? &player2 : &player1;
             continue;
         }
-
         // undo
         else if (lastMove.x == -2 && lastMove.y == -2) {
             char temp = currentPlayer->symbol;
-            undo(board, &dequeUndo, &stackRedo, &temp);
+            undo(board, dequeUndo, stackRedo, &temp);
             currentPlayer = (temp == BLACK) ? &player1 : &player2;
             continue;
         }
-
         // redo
         else if (lastMove.x == -3 && lastMove.y == -3) {
             char temp = currentPlayer->symbol;
-            redo(board, &dequeUndo, &stackRedo, &temp);
+            redo(board, dequeUndo, stackRedo, &temp);
             currentPlayer = (temp == BLACK) ? &player1 : &player2;
             continue;
         }
-
-        emptyStack(&stackRedo); // if user make a move, empty the redo stack.
-        pushHead(&dequeUndo, activity(board, lastMove, currentPlayer->symbol));
+        emptyStack(stackRedo); // if user make a move, empty the redo stack.
+        pushHead(dequeUndo, activity(board, lastMove, currentPlayer->symbol));
         makeMove(board, &lastMove, currentPlayer->symbol);
         currentPlayer = (currentPlayer == &player1) ? &player2 : &player1;
     }
-
     return 0;
 }
 

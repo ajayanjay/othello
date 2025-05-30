@@ -2,40 +2,32 @@
 #define game_h
 
 #include "datastructures/octuple.h"
-#include "datastructures/stack.h"
 #include "datastructures/deque.h"
+#include "datastructures/stack.h"
+#include "player.h"
 #include "move.h"
 #include "activity.h"
-#include "player.h"
-
-Move playAIMedium();
-Move playAIHard();
-Move playReplay();
 
 typedef struct {
-    Move (*play)(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player);
+    Move (*play)(NodeOctuple*, Deque*, Stack*, char);
     char symbol;
-    PlayerType playerType;
 } Player;
 
-int game();
-
-// cek jika game sudah berakhir.
-// antara board sudah penuh atau kedua player tidak bisa melakukan gerakan
-int isGameOver(NodeOctuple *board);
-int hasValidMove(NodeOctuple * board, char player);
-
-void getValidMoves(NodeOctuple *board, char player, Move *validMoves, int *numValidMoves);
-void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int selectedIndex, char player);
-int isValidMove(NodeOctuple* node, char player);
-
-Move playHuman(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player);
+int game(PlayerType player1Type, PlayerType player2Type, Stack *stackRedo, Deque *dequeUndo, char startingPlayer);
+        
+Move playHuman(NodeOctuple *root, Deque * dequeUndo, Stack * stackRedo, char player);
 Move playAIEasy(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player);
+// Move playAIMedium(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player);
+// Move playAIHard(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player);
 
+void getValidMoves(NodeOctuple *root, char player, Move *validMoves, int *numValidMoves);
+int isValidMove(NodeOctuple* node, char player);
+void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int selectedIndex, char player);
 void makeMove(NodeOctuple *board, Move *move, char player);
-
-int undo(NodeOctuple * board, Deque * dequeUndo, Stack * stackUndo, char * currentPlayer);
-int redo(NodeOctuple * board, Deque * dequeUndo, Stack * stackRedo, char * currentPlayer);
+int hasValidMove(NodeOctuple * board, char player);
+int isGameOver(NodeOctuple * board);
 Activity activity(NodeOctuple * board, Move lastMove, char currentPlayer);
+int undo(NodeOctuple * board, Deque * dequeUndo, Stack * stackRedo, char * currentPlayer);
+int redo(NodeOctuple * board, Deque * dequeUndo, Stack * stackRedo, char * currentPlayer);
 
 #endif

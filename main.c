@@ -6,31 +6,13 @@
 #include <time.h>
 
 void mainMenu();
+void selectMode();
 void howToPlay();
-
-void test() {
-    NodeOctuple * root = NULL;
-    constructOthelloBoard(&root);
-    char player = BLACK;
-    while (1) {
-        Move move = playHuman(root, NULL, NULL, player);
-
-        if (move.x == -1 && move.y == -1) {
-            printf("Game Over!\n");
-            inputUntilEnter();
-            freeBoard (root);
-            break;
-        }
-
-        makeMove(root, &move, player);
-        player = (player == BLACK) ? WHITE : BLACK;
-    }
-}
 
 int main(void)
 {
     srand((unsigned int)time(NULL));
-    game();
+    mainMenu();
     //test();
     return 0;
 }
@@ -51,13 +33,82 @@ void mainMenu()
 
     while (1) // Loop the game until the user exits.
         switch (menu(menuHeader, menuItems, menuFooter)) {
-            case 0: //newGame(); break;
+            case 0: selectMode(); break;
             case 1: //continue(); break;
             case 2: //watchReplay(); break;
             case 3: //scoreboard(); break;
             case 4: howToPlay(); break;
             case 5: return;
         }
+}
+
+// Author: Ihsan
+void selectMode() {
+    const char* player1Header = "Select Player 1\n\n";
+    const char* player2Header = "Select Player 2\n\n";
+    const char* playerOptions[] = {
+        "Human\n",
+        "Easy AI\n",
+        "Medium AI\n",
+        "Hard AI\n",
+        "Replay\n",
+        "Back\n\n",
+        NULL
+    };
+    const char* modeSelector = "Press Enter to Select...";
+
+    PlayerType player1, player2;
+    int player1Selection;
+
+    while (1) {
+        // Select Player 1
+        player1Selection = menu(player1Header, playerOptions, modeSelector);
+        
+        // Handle Back option
+        if (player1Selection == 5) {
+            return;
+        }
+        
+        // Map selection to PlayerType
+        switch (player1Selection) {
+            case 0: player1 = HUMAN; break;
+            case 1: player1 = AI_EASY; break;
+            case 2: player1 = AI_MEDIUM; break;
+            case 3: player1 = AI_HARD; break;
+            case 4: player1 = REPLAY; break;
+            default: continue;
+        }
+        
+        // Select Player 2
+        while (1) {
+            int player2Selection = menu(player2Header, playerOptions, modeSelector);
+            
+            // Handle Back option (return to Player 1 selection)
+            if (player2Selection == 5) {
+                break;
+            }
+            
+            // Map selection to PlayerType
+            switch (player2Selection) {
+                case 0: player2 = HUMAN; break;
+                case 1: player2 = AI_EASY; break;
+                case 2: player2 = AI_MEDIUM; break;
+                case 3: player2 = AI_HARD; break;
+                case 4: player2 = REPLAY; break;
+                default: continue; // Invalid selection, try again
+            }
+            
+            // Init stack dan queue
+            Stack stackRedo;
+            Deque dequeUndo;
+            initStack(&stackRedo, sizeof(Move), 64);
+            initDeque(&dequeUndo);
+            char startingPlayer = BLACK;
+            // Start the game with selected player types
+            game(player1, player2, &stackRedo, &dequeUndo, startingPlayer);
+            return; // Return to main menu after game ends
+        }
+    }
 }
 
 void howToPlay()
