@@ -12,6 +12,10 @@ void freeStack(Stack * stack) {
     freeArray(stack);
 }
 
+void emptyStack(Stack * stack) {
+    stack->size = 0;
+}
+
 void push(Stack * stack, void * element) {
     onArraySizeIncrease(stack);
     memcpy((char *)stack->data + stack->size * stack->elementSize, element, stack->elementSize); 

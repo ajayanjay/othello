@@ -7,6 +7,80 @@
 #include <stdio.h>
 #include <ctype.h>
 
+
+int game() {
+
+    NodeOctuple * board;
+    Deque dequeUndo;
+    Stack stackRedo;
+
+    constructOthelloBoard(&board);
+    initDeque(&dequeUndo);
+    initStack(&stackRedo, sizeof(Move), 64);
+
+    Player player1 = {playHuman, BLACK};
+    Player player2 = {playAIEasy, WHITE};
+
+    Player * currentPlayer = &player1;
+
+    Move lastMove = {-1, -1};
+
+    while (1) {
+        clearScreen();
+
+        if (isGameOver(board)) {
+            printBoard(board, NULL, 0, 0, EMPTY);
+            printf("Game Over! No valid moves left for both players.\n");
+            inputUntilChar('P');
+            break;
+        }
+
+        lastMove = currentPlayer->play(board, &dequeUndo, &stackRedo, currentPlayer->symbol);
+        
+        if (lastMove.x == -1 && lastMove.y == -1) {
+            // currentPlayer has no valid moves.
+            currentPlayer = (currentPlayer == &player1) ? &player2 : &player1;
+            continue;
+        }
+
+        else if (lastMove.x == -2 && lastMove.y == -2) {
+            // undo.
+            continue;
+        }
+
+        else if (lastMove.x == -3 && lastMove.y == -3) {
+            // exit.
+            break;
+        }
+
+        makeMove(board, &lastMove, currentPlayer->symbol);
+        pushHead(&dequeUndo, activity(board, lastMove, currentPlayer->symbol));
+        currentPlayer = (currentPlayer == &player1) ? &player2 : &player1;
+    }
+
+    return 0;
+}
+
+Move playAIEasy(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player) {
+    Move valid_moves[64]; // to collect valid moves and later will store by address
+    int num_valid_moves; // how many valid move
+
+    // Get all valid moves for the current player
+    getValidMoves(board, player, valid_moves, &num_valid_moves);
+
+    // If no valid moves 
+    if (num_valid_moves == 0) {
+        Move invalid = {-1, -1};
+        return invalid;
+    }
+
+    int selected = rand() % num_valid_moves;
+
+    emptyStack(stackRedo);
+
+    return valid_moves[selected];
+}
+
 int isGameOver(NodeOctuple * board) {
     return !hasValidMove(board, BLACK) && !hasValidMove(board, WHITE);
 }
@@ -181,7 +255,7 @@ Activity activity(NodeOctuple * board, Move lastMove, char currentPlayer) {
     return newActivity;
 }
 
-Move inputMove (NodeOctuple *root, char player){
+Move playHuman(NodeOctuple *root, Deque * dequeUndo, Stack * stackRedo, char player){
     Move valid_moves[64]; // to collect valid moves and later will store by address
     int num_valid_moves; // how many valid move
 

@@ -7,6 +7,7 @@ typedef Array Stack; // stack is a type of array
 
 void initStack(Stack * stack, SizeData elementSize, SizeData capacity);
 void freeStack(Stack * stack);
+void emptyStack(Stack * stack);
 
 void push(Stack * stack, void * element);
 void pop(Stack * stack, void * element);
