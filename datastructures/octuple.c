@@ -1,9 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "octuple.h"
-#include "../boolean.h"
 #include "../piece.h"
-#include "../menu.h"
 
 // Author: Ihsan
 NodeOctuple * createNodeOctuple (OctupleInfo info){

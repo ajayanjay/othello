@@ -1,6 +1,5 @@
 #include "game.h"
 #include "menu.h"
-#include "piece.h"
 #include <stdlib.h>
 
 // Author: Azzar
