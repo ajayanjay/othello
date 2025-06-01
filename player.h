@@ -1,6 +1,11 @@
 #ifndef player_h
 #define player_h
 
+#include "datastructures/octuple.h"
+#include "datastructures/deque.h"
+#include "datastructures/stack.h"
+#include "move.h"
+
 typedef enum {
     HUMAN,
     AI_EASY,
@@ -8,5 +13,16 @@ typedef enum {
     AI_HARD,
     REPLAY
 } PlayerType;
+
+typedef struct player{
+    PlayerType playerType;
+    Move (*play) (NodeOctuple *, Deque *, Stack *, char);
+    char symbol;
+} Player;
+
+Move playHuman(NodeOctuple *root, Deque * dequeUndo, Stack * stackRedo, char player);
+Move playAIEasy(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player);
+// Move playAIMedium(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player);
+// Move playAIHard(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player);
 
 #endif

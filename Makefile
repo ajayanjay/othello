@@ -3,7 +3,7 @@ CFLAGS = -Wall -Wextra -std=c99
 BUILDDIR = build
 
 # Source files
-SRCS = main.c menu.c game.c ai.c score.c
+SRCS = main.c menu.c game.c ai.c score.c player.c
 DATASTRUCTURE_SRCS = datastructures/stack.c datastructures/octuple.c datastructures/nbtree.c datastructures/linked.c datastructures/deque.c datastructures/array.c
 
 # Object files in build directory
