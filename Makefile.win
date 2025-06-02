@@ -1,0 +1,61 @@
+# Project: Othello
+# Makefile created by Embarcadero Dev-C++ 6.3
+
+CPP      = g++.exe -D__DEBUG__
+CC       = gcc.exe -D__DEBUG__
+WINDRES  = windres.exe
+OBJ      = ai.o game.o main.o menu.o player.o score.o datastructures/array.o datastructures/deque.o datastructures/linked.o datastructures/nbtree.o datastructures/octuple.o datastructures/stack.o
+LINKOBJ  = ai.o game.o main.o menu.o player.o score.o datastructures/array.o datastructures/deque.o datastructures/linked.o datastructures/nbtree.o datastructures/octuple.o datastructures/stack.o
+LIBS     = -L"E:/ajay/IDE/EmbarcaredoDevC/TDM-GCC-64/lib" -L"E:/ajay/IDE/EmbarcaredoDevC/TDM-GCC-64/x86_64-w64-mingw32/lib" -static-libgcc -g3
+INCS     = -I"E:/ajay/IDE/EmbarcaredoDevC/TDM-GCC-64/include" -I"E:/ajay/IDE/EmbarcaredoDevC/TDM-GCC-64/x86_64-w64-mingw32/include" -I"E:/ajay/IDE/EmbarcaredoDevC/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/9.2.0/include"
+CXXINCS  = -I"E:/ajay/IDE/EmbarcaredoDevC/TDM-GCC-64/include" -I"E:/ajay/IDE/EmbarcaredoDevC/TDM-GCC-64/x86_64-w64-mingw32/include" -I"E:/ajay/IDE/EmbarcaredoDevC/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/9.2.0/include" -I"E:/ajay/IDE/EmbarcaredoDevC/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/9.2.0/include/c++"
+BIN      = Othello.exe
+CXXFLAGS = $(CXXINCS) -g3
+CFLAGS   = $(INCS) -g3
+DEL      = E:\ajay\IDE\EmbarcaredoDevC\devcpp.exe INTERNAL_DEL
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before $(BIN) all-after
+
+clean: clean-custom
+	${DEL} $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CC) $(LINKOBJ) -o $(BIN) $(LIBS)
+
+ai.o: ai.c
+	$(CC) -c ai.c -o ai.o $(CFLAGS)
+
+game.o: game.c
+	$(CC) -c game.c -o game.o $(CFLAGS)
+
+main.o: main.c
+	$(CC) -c main.c -o main.o $(CFLAGS)
+
+menu.o: menu.c
+	$(CC) -c menu.c -o menu.o $(CFLAGS)
+
+player.o: player.c
+	$(CC) -c player.c -o player.o $(CFLAGS)
+
+score.o: score.c
+	$(CC) -c score.c -o score.o $(CFLAGS)
+
+datastructures/array.o: datastructures/array.c
+	$(CC) -c datastructures/array.c -o datastructures/array.o $(CFLAGS)
+
+datastructures/deque.o: datastructures/deque.c
+	$(CC) -c datastructures/deque.c -o datastructures/deque.o $(CFLAGS)
+
+datastructures/linked.o: datastructures/linked.c
+	$(CC) -c datastructures/linked.c -o datastructures/linked.o $(CFLAGS)
+
+datastructures/nbtree.o: datastructures/nbtree.c
+	$(CC) -c datastructures/nbtree.c -o datastructures/nbtree.o $(CFLAGS)
+
+datastructures/octuple.o: datastructures/octuple.c
+	$(CC) -c datastructures/octuple.c -o datastructures/octuple.o $(CFLAGS)
+
+datastructures/stack.o: datastructures/stack.c
+	$(CC) -c datastructures/stack.c -o datastructures/stack.o $(CFLAGS)
