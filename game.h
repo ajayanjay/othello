@@ -4,7 +4,7 @@
 #include "player.h"
 #include "boolean.h"
 
-int game(PlayerType player1Type, PlayerType player2Type, Stack *stackRedo, Deque *dequeUndo, char startingPlayer);
+int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, Deque *dequeUndo, char startingPlayer);
 
 void getValidMoves(NodeOctuple *root, char player, Move *validMoves, int *numValidMoves);
 int isValidMove(NodeOctuple* node, char player);
@@ -12,7 +12,7 @@ void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int sel
 void makeMove(NodeOctuple *board, Move *move, char player);
 int hasValidMove(NodeOctuple * board, char player);
 int isGameOver(NodeOctuple * board);
-void gameOverScreen(NodeOctuple * board, PlayerType player1Type, PlayerType player2Type);
+void gameOverScreen(NodeOctuple * board, Player player1, Player player2);
 Activity activity(NodeOctuple * board, Move lastMove, char currentPlayer);
 int undo(NodeOctuple * board, Deque * dequeUndo, Stack * stackRedo, char * currentPlayer);
 int redo(NodeOctuple * board, Deque * dequeUndo, Stack * stackRedo, char * currentPlayer);

@@ -104,3 +104,36 @@ Move playHuman(NodeOctuple *root, Deque * dequeUndo, Stack * stackRedo, char pla
 }
 // Move playAIMedium(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player);
 // Move playAIHard(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player);
+
+Player player(PlayerType type, char symbol) {
+    Player newPlayer;
+    switch(type) {
+        case HUMAN:
+            newPlayer.play = playHuman;
+            break;
+            
+        case AI_EASY:
+            newPlayer.play = playAIEasy;
+            break;
+
+        case AI_MEDIUM:
+            // newPlayer.play = playAIMedium;
+            break;
+
+        case AI_HARD:
+            // newPlayer.play = playAIHard;
+            break;
+
+        case REPLAY:
+            // newPlayer.play = playReplay;
+            break;
+        
+        default: 
+            break;
+    }
+
+    newPlayer.symbol = symbol;
+    newPlayer.type = type;
+
+    return newPlayer;
+}

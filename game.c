@@ -7,53 +7,7 @@
 #include <ctype.h>
 
 //Author: Azzar & Ihsan
-int game(PlayerType player1Type, PlayerType player2Type, Stack *stackRedo, Deque *dequeUndo, char startingPlayer) {
-    NodeOctuple * board;
-    constructOthelloBoard(&board);
-    // stackRedo dan dequeUndo sudah diinisialisasi di luar
-
-    // Map player types to play functions
-    Move (*player1Function)(NodeOctuple*, Deque*, Stack*, char) = NULL;
-    Move (*player2Function)(NodeOctuple*, Deque*, Stack*, char) = NULL;
-
-    switch(player1Type) {
-        case HUMAN:
-            player1Function = playHuman;
-            break;
-        case AI_EASY:
-            player1Function = playAIEasy;
-            break;
-        case AI_MEDIUM:
-            // player1Function = playAIMedium;
-            break;
-        case AI_HARD:
-            // player1Function = playAIHard;
-            break;
-        default:
-            player1Function = playHuman;
-            break;
-    }
-
-    switch(player2Type) {
-        case HUMAN:
-            player2Function = playHuman;
-            break;
-        case AI_EASY:
-            player2Function = playAIEasy;
-            break;
-        case AI_MEDIUM:
-            // player2Function = playAIMedium;
-            break;
-        case AI_HARD:
-            // player2Function = playAIHard;
-            break;
-        default:
-            player2Function = playHuman;
-            break;
-    }
-
-    Player player1 = {player1Type, player1Function, BLACK};
-    Player player2 = {player2Type, player2Function, WHITE};
+int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, Deque *dequeUndo, char startingPlayer) {
 
     Player * currentPlayer = (startingPlayer == BLACK) ? &player1 : &player2;
     Move lastMove = {-1, -1};
@@ -62,7 +16,7 @@ int game(PlayerType player1Type, PlayerType player2Type, Stack *stackRedo, Deque
         clearScreen();
         if (isGameOver(board)) {
             printBoard(board, NULL, 0, 0, EMPTY, false);
-            gameOverScreen(board, player1Type, player2Type);
+            gameOverScreen(board, player1, player2);
             inputUntilEnter();
             break;
         }
@@ -244,7 +198,7 @@ void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int sel
     }
 }
 
-void gameOverScreen(NodeOctuple * board, PlayerType player1Type, PlayerType player2Type){
+void gameOverScreen(NodeOctuple * board, Player player1, Player player2){
     printf("Game Over! No valid moves left.\n\n");
     // Calculate final scores
     int blackScore = calculateScore(board, BLACK);
@@ -257,7 +211,7 @@ void gameOverScreen(NodeOctuple * board, PlayerType player1Type, PlayerType play
     // Determine winner and handle scoring for human players
     if (blackScore > whiteScore) {
         printf("Black wins!\n\n");
-        if (player1Type == HUMAN) {
+        if (player1.type == HUMAN) {
             char playerName[4];
             printf("Congratulations! You achieved a high score!\n");
             getPlayerName(playerName);
@@ -266,7 +220,7 @@ void gameOverScreen(NodeOctuple * board, PlayerType player1Type, PlayerType play
         }
     } else if (whiteScore > blackScore) {
         printf("White wins!\n\n");
-        if (player2Type == HUMAN) {
+        if (player2.type == HUMAN) {
             char playerName[4];
             printf("Congratulations! You achieved a high score!\n");
             getPlayerName(playerName);
@@ -276,14 +230,14 @@ void gameOverScreen(NodeOctuple * board, PlayerType player1Type, PlayerType play
     } else {
         printf("It's a tie!\n\n");
         // For ties, allow both human players to save their scores
-        if (player1Type == HUMAN) {
+        if (player1.type == HUMAN) {
             char playerName[4];
             printf("Black player achieved a tie!\n");
             getPlayerName(playerName);
             addHighScore(playerName, blackScore);
             printf("Score saved: %s - %d pieces\n", playerName, blackScore);
         }
-        if (player2Type == HUMAN) {
+        if (player2.type == HUMAN) {
             char playerName[4];
             printf("White player achieved a tie!\n");
             getPlayerName(playerName);

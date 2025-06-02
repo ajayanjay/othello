@@ -15,7 +15,6 @@ int main(void)
     srand((unsigned int)time(NULL));
     initScore();
     mainMenu();
-    //test();
     return 0;
 }
 
@@ -53,31 +52,25 @@ void selectMode() {
         "Easy AI\n",
         "Medium AI\n",
         "Hard AI\n",
-        "Replay\n",
         "Back\n\n",
         NULL
     };
     const char* modeSelector = "Press Enter to Select...";
 
-    PlayerType player1, player2;
+    Player player1, player2;
     int player1Selection;
 
     while (1) {
         // Select Player 1
         player1Selection = menu(player1Header, playerOptions, modeSelector);
         
-        // Handle Back option
-        if (player1Selection == 5) {
-            return;
-        }
-        
         // Map selection to PlayerType
         switch (player1Selection) {
-            case 0: player1 = HUMAN; break;
-            case 1: player1 = AI_EASY; break;
-            case 2: player1 = AI_MEDIUM; break;
-            case 3: player1 = AI_HARD; break;
-            case 4: player1 = REPLAY; break;
+            case 0: player1 = player(HUMAN, BLACK); break;
+            case 1: player1 = player(AI_EASY, BLACK); break;
+            case 2: player1 = player(AI_MEDIUM, BLACK); break;
+            case 3: player1 = player(AI_HARD, BLACK); break;
+            case 4: return;
             default: continue;
         }
         
@@ -92,22 +85,25 @@ void selectMode() {
             
             // Map selection to PlayerType
             switch (player2Selection) {
-                case 0: player2 = HUMAN; break;
-                case 1: player2 = AI_EASY; break;
-                case 2: player2 = AI_MEDIUM; break;
-                case 3: player2 = AI_HARD; break;
-                case 4: player2 = REPLAY; break;
+                case 0: player2 = player(HUMAN, WHITE); break;
+                case 1: player2 = player(AI_EASY, WHITE); break;
+                case 2: player2 = player(AI_MEDIUM, WHITE); break;
+                case 3: player2 = player(AI_HARD, WHITE); break;
+                case 4: return;
                 default: continue; // Invalid selection, try again
             }
             
-            // Init stack dan queue
+            // Init stack dan queue dan board.
             Stack stackRedo;
             Deque dequeUndo;
+            NodeOctuple * board;
+            constructOthelloBoard(&board);
             initStack(&stackRedo, sizeof(Move), 64);
             initDeque(&dequeUndo);
+
             char startingPlayer = BLACK;
             // Start the game with selected player types
-            game(player1, player2, &stackRedo, &dequeUndo, startingPlayer);
+            game(player1, player2, board, &stackRedo, &dequeUndo, startingPlayer);
             return; // Return to main menu after game ends
         }
     }
