@@ -79,24 +79,30 @@ void printCurrentScores(NodeOctuple *board) {
 void getPlayerName(char* playerName) {
     printf("Enter your name (3 characters): ");
     
-    char input[10];
+    int count = 0;
+    char input;
+
     while (1) {
-        if (fgets(input, sizeof(input), stdin) != NULL) {
-            // Remove newline if present
-            input[strcspn(input, "\n")] = 0;
-            
-            // Check input chars
-            if (strlen(input) == 3) {
-                // Convert to uppercase and copy
-                for (int i = 0; i < 3; i++) {
-                    playerName[i] = toupper(input[i]);
-                }
-                playerName[3] = '\0';
-                break;
+        input = (char) toupper(nonBlockingInput()); // playerName must be capital.
+
+        if (input == KEY_ENTER && count > 0) break;
+
+        if (input == BACKSPC) {
+            if (count > 0) {
+                playerName[--count] = '\0';
+                printf("\b \b");
             }
+            continue;
         }
-        printf("Enter your name (3 characters): ");
+
+        // make sure player inputs characters between A - Z
+        if (count < 3 && input >= 'A' && input <= 'Z') {
+            playerName[count++] = input;
+            printf("%c", input);
+        }
     }
+    printf("\n");
+    playerName[count] = '\0';
 }
 
 void addHighScore(const char* playerName, int score) {

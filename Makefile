@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c99
+CFLAGS = -O2 -Wall -Wextra -std=c99
 BUILDDIR = build
 
 # Source files

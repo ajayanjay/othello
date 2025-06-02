@@ -11,8 +11,10 @@
 
 #ifdef _WIN32
 	#define KEY_ENTER 13
+	#define BACKSPC 8
 #else
 	#define KEY_ENTER 10
+	#define BACKSPC 127
 #endif
 
 typedef enum input {
