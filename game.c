@@ -2,6 +2,7 @@
 #include "piece.h"
 #include "menu.h"
 #include "score.h"
+#include "datastructures/nbtree.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
@@ -316,4 +317,26 @@ void makeMove(NodeOctuple *board, Move *move, char player) {
             }
         }
     }
+}
+
+Move getBestMove(NodeOctuple *board, char player, int depth) {
+    if (board == NULL) {
+        return (Move){-1, -1};
+    }
+    
+    // Convert octuple linked list to array for AI processing
+    char boardArray[8][8];
+    convertOctupleToArray(board, boardArray);
+    
+    // Use minimax to find the best move
+    AIInfo result = minimax(boardArray, player, depth, true, player);
+    
+    // Convert AI coordinate system to game coordinate system
+    // AI uses: x=column, y=row
+    // Game uses: x=row, y=column
+    Move gameMove;
+    gameMove.x = result.move.y;  // AI's y (row) becomes game's x (row)
+    gameMove.y = result.move.x;  // AI's x (column) becomes game's y (column)
+    
+    return gameMove;
 }

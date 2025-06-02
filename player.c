@@ -1,5 +1,6 @@
 #include "game.h"
 #include "menu.h"
+#include "datastructures/nbtree.h"
 #include <stdlib.h>
 
 // Author: Azzar
@@ -102,8 +103,106 @@ Move playHuman(NodeOctuple *root, Deque * dequeUndo, Stack * stackRedo, char pla
     //return selected move
     return validMoves[selected];
 }
-// Move playAIMedium(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player);
-// Move playAIHard(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player);
+
+// AI Medium difficulty using minimax with depth 1
+Move playAIMedium(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player) {
+    Move validMoves[64];
+    int numValidMoves;
+
+    // Get all valid moves for the current player
+    getValidMoves(board, player, validMoves, &numValidMoves);
+
+    // If no valid moves 
+    if (numValidMoves == 0) {
+        Move invalid = {-1, -1};
+        return invalid;
+    }
+
+    while (1) {
+        clearScreen();
+        
+        // Get the best move using minimax with depth 1
+        Move bestMove = getBestMove(board, player, 1);
+        
+        // Find the index of the best move in validMoves for display
+        int selectedIndex = 0;
+        for (int i = 0; i < numValidMoves; i++) {
+            if (validMoves[i].x == bestMove.x && validMoves[i].y == bestMove.y) {
+                selectedIndex = i;
+                break;
+            }
+        }
+        
+        printBoard(board, validMoves, numValidMoves, selectedIndex, player, true);
+        
+        boolean unnecessaryInput = true;
+        while (unnecessaryInput) switch (userInput()) {
+            case KEY_Z:
+                if (isDequeEmpty(dequeUndo)) break;
+                return (Move) {-2, -2};
+
+            case KEY_Y:
+                if (isStackEmpty(stackRedo)) break;
+                return (Move) {-3, -3};
+                
+            case ENTER:
+                return bestMove;
+                
+            default:
+                break;
+        }
+    }
+}
+
+// AI Hard difficulty using minimax with depth 5
+Move playAIHard(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player) {
+    Move validMoves[64];
+    int numValidMoves;
+
+    // Get all valid moves for the current player
+    getValidMoves(board, player, validMoves, &numValidMoves);
+
+    // If no valid moves 
+    if (numValidMoves == 0) {
+        Move invalid = {-1, -1};
+        return invalid;
+    }
+
+    while (1) {
+        clearScreen();
+        
+        // Get the best move using minimax with depth 5
+        Move bestMove = getBestMove(board, player, 5);
+        
+        // Find the index of the best move in validMoves for display
+        int selectedIndex = 0;
+        for (int i = 0; i < numValidMoves; i++) {
+            if (validMoves[i].x == bestMove.x && validMoves[i].y == bestMove.y) {
+                selectedIndex = i;
+                break;
+            }
+        }
+        
+        printBoard(board, validMoves, numValidMoves, selectedIndex, player, true);
+        
+        boolean unnecessaryInput = true;
+        while (unnecessaryInput) switch (userInput()) {
+            case KEY_Z:
+                if (isDequeEmpty(dequeUndo)) break;
+                return (Move) {-2, -2};
+
+            case KEY_Y:
+                if (isStackEmpty(stackRedo)) break;
+                return (Move) {-3, -3};
+                
+            case ENTER:
+                return bestMove;
+                
+            default:
+                break;
+        }
+    }
+}
 
 Player player(PlayerType type, char symbol) {
     Player newPlayer;
@@ -117,11 +216,11 @@ Player player(PlayerType type, char symbol) {
             break;
 
         case AI_MEDIUM:
-            // newPlayer.play = playAIMedium;
+            newPlayer.play = playAIMedium;
             break;
 
         case AI_HARD:
-            // newPlayer.play = playAIHard;
+            newPlayer.play = playAIHard;
             break;
 
         case REPLAY:

@@ -16,4 +16,6 @@ NbTree* createNodeTree (InfoNbTree info);
 void deleteEntireTree (NbTree** root);
 void disconnectTreeExcept (NbTree *root, NbTree *chosen);
 
+AIInfo minimax(char board[8][8], char currentPlayer, int depth, boolean isMaximizing, char aiPlayer);
+
 #endif

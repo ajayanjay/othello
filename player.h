@@ -22,8 +22,8 @@ typedef struct player{
 
 Move playHuman(NodeOctuple *root, Deque * dequeUndo, Stack * stackRedo, char player);
 Move playAIEasy(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player);
-// Move playAIMedium(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player);
-// Move playAIHard(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player);
+Move playAIMedium(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player);
+Move playAIHard(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player);
 
 Player player(PlayerType type, char symbol);
 

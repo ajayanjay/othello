@@ -6,13 +6,13 @@
 
 int evaluateBoardArray(char board[8][8], char player) {
 
-    int mobility = 100 * evaluateMobility(board, player);
-    int pieceDifference = 100 * evaluatePieceDifference(board, player);
-    int corner = 100 * evaluateCorner(board, player);
+    int mobility = evaluateMobility(board, player);
+    int pieceDifference = evaluatePieceDifference(board, player);
+    int corner = evaluateCorner(board, player);
 
     // corners are the most valuable.
     // mobility is also valuable, but not as much as corners.
-    return 2 * mobility + pieceDifference + 1000 * corner;
+    return 2 * mobility + pieceDifference + 10 * corner;
 }
 
 int evaluatePieceDifference(char board[8][8], char player) {
@@ -20,8 +20,10 @@ int evaluatePieceDifference(char board[8][8], char player) {
 
     int playerPieceCount = getPieceCountArray(board, player);
     int opponentPieceCount = getPieceCountArray(board, opPlayer);
+    int totalPieces = playerPieceCount + opponentPieceCount;
 
-    return (playerPieceCount - opponentPieceCount) / (playerPieceCount + opponentPieceCount + 1);
+    if (totalPieces == 0) return 0;
+    return (playerPieceCount - opponentPieceCount) * 100 / totalPieces;
 }
 
 // mobility is the number of valid moves a player can make.
@@ -38,7 +40,9 @@ int evaluateMobility(char board[8][8], char player) {
     if (opMoves != NULL) 
         free(opMoves);
     
-    return (mySize - opSize) / (mySize + opSize + 1);
+    int totalMoves = mySize + opSize;
+    if (totalMoves == 0) return 0;
+    return (mySize - opSize) * 100 / (totalMoves + 1);
 }
 
 int evaluateCorner(char board[8][8], char player) {
@@ -58,7 +62,9 @@ int evaluateCorner(char board[8][8], char player) {
     if (board[7][7] == player) myCorners++;
     else if (board[7][7] == opPlayer) opCorners++;
 
-    return (myCorners - opCorners) / (myCorners + opCorners + 1);
+    int totalCorners = myCorners + opCorners;
+    if (totalCorners == 0) return 0;
+    return (myCorners - opCorners) * 100 / (totalCorners + 1);
 }
 
 int getTotalPieceCountArray(char board[8][8]) {
