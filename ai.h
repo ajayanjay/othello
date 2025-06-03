@@ -17,6 +17,8 @@ typedef struct aiinfo {
     boolean isMax, evaluated, expanded;
 } AIInfo;
 
+void printBoardArray (char board [8][8], char player, Move *selectedMove);
+
 int evaluateBoardArray(char board[8][8], char player);
 
 int evaluateBoardMapArray(char board[8][8], char player);

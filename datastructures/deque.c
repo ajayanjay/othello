@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-// All functions in this file were authored by Azzar
-
 void pushTail(Deque *Q, infotype nilai) {
     address P = createNodeSingle(nilai);
     if (P == nil) {
@@ -72,7 +70,9 @@ void freeDeque (Deque *Q1){
 }
 
 void saveDeque(Deque * Q, const char * filename) {
-    FILE *file = fopen(filename, "w");
+    char path[256];
+    snprintf(path, sizeof(path), "storage/replay/%s", filename);
+    FILE *file = fopen(path, "w");
     if (file == NULL) {
         perror("Failed to open file for saving queue");
         return;
@@ -90,11 +90,12 @@ void saveDeque(Deque * Q, const char * filename) {
 Deque loadDeque(const char * filename) {
     Deque Q;
     initDeque(&Q);
-    
-    FILE *file = fopen(filename, "r");
+    char path[256];
+    snprintf(path, sizeof(path), "storage/replay/%s", filename);
+    FILE *file = fopen(path, "r");
     if (file == NULL) {
         perror("Failed to open file for loading queue");
-        return Q; // Return empty queue
+        return Q;
     }
     
     infotype nilai;

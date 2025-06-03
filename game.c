@@ -246,7 +246,7 @@ void gameOverScreen(NodeOctuple * board, Player player1, Player player2){
         }
     }
     
-    printf("\nPress ENTER to return to the main menu...\n");
+    printf("\nPress ENTER...\n");
 }
 
 // Author: Azzar

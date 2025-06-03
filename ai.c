@@ -1,8 +1,45 @@
 #include "ai.h"
 #include "piece.h"
 #include <stdlib.h>
+#include <stdio.h>
+#include <ctype.h>
 
-// All functions in this file were authored by Azzar
+void printBoardArray (char board [8][8], char player, Move *selectedMove){
+    char buffer[4096];
+    int offset = 0;
+
+    offset += sprintf(buffer + offset, "  +-----------------+\n");
+
+    int row=0;
+    while (row<8){
+        offset += sprintf(buffer + offset, "%d |", row+1);
+
+        int col=0;
+        while (col<8){
+            Move move = {col, row};
+            int isSelected = 0;
+            if (selectedMove != NULL &&
+                selectedMove->x >= 0 && selectedMove->x < 8 &&
+                selectedMove->y >= 0 && selectedMove->y < 8 &&
+                move.y == selectedMove->x && move.x == selectedMove->y) {
+                isSelected = 1;
+            }
+            if (isSelected) {
+                offset += sprintf(buffer + offset, " \033[30;47m%c\033[0m", tolower(player));
+            } else if (isValidMoveArray(board, &move, player)){
+                offset += sprintf (buffer + offset, " \033[2;91m%c\033[0m", tolower(player)); 
+            } else{
+                offset += sprintf(buffer + offset, " %c", board[row][col]);
+            }
+            col++;
+        } 
+        offset += sprintf (buffer + offset, " |\n");
+        row++;
+    }
+    offset += sprintf(buffer + offset, "  +-----------------+\n");
+    offset += sprintf(buffer + offset, "    A B C D E F G H\n");
+    printf ("%s", buffer);
+}
 
 int evaluateBoardArray(char board[8][8], char player) {
 
