@@ -155,7 +155,7 @@ Move playAIMedium(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char
 }
 
 // AI Hard difficulty using minimax with depth 5
-Move playAIHard(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player) {
+Move playAIHard(NodeOctuple *board, Deque * UNUSED(dequeUndo), Stack * UNUSED(stackRedo), char player) {
     Move validMoves[64];
     int numValidMoves;
 
@@ -187,14 +187,6 @@ Move playAIHard(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char p
         
         boolean unnecessaryInput = true;
         while (unnecessaryInput) switch (userInput()) {
-            case KEY_Z:
-                if (isDequeEmpty(dequeUndo)) break;
-                return (Move) {-2, -2};
-
-            case KEY_Y:
-                if (isStackEmpty(stackRedo)) break;
-                return (Move) {-3, -3};
-                
             case ENTER:
                 return bestMove;
                 
