@@ -106,7 +106,7 @@ void selectMode() {
             char startingPlayer = BLACK;
             // Start the game with selected player types
             game(player1, player2, board, &stackRedo, &dequeUndo, startingPlayer);
-            char filename[100];
+            char filename[51];
             if (menuSave(filename)) {
                 saveDeque (&dequeUndo, filename);
             }

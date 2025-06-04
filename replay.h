@@ -3,8 +3,10 @@
 
 #include "boolean.h"
 
-void printReplay(const char *fileName);
+int countFiles (const char *directoryPath);
 boolean menuSave(char *filename);
+void createDirectory (const char *path);
+void printReplay(const char *fileName);
 void selectReplay();
 
 #endif
