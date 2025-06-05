@@ -72,7 +72,7 @@ void freeDeque (Deque *Q1){
 }
 
 void saveDeque(Deque * Q, const char * filename) {
-    FILE *file = fopen(filename, "w");
+    FILE *file = fopen(filename, "wb");
     if (file == NULL) {
         perror("Failed to open file for saving queue");
         return;
@@ -87,23 +87,22 @@ void saveDeque(Deque * Q, const char * filename) {
     fclose(file);
 }
 
-Deque loadDeque(const char * filename) {
-    Deque Q;
-    initDeque(&Q);
+int loadDeque(Deque * Q, const char * filename) {
+    initDeque(Q);
     
-    FILE *file = fopen(filename, "r");
+    FILE *file = fopen(filename, "rb");
     if (file == NULL) {
         perror("Failed to open file for loading queue");
-        return Q; // Return empty queue
+        return 0;
     }
     
     infotype nilai;
     while (fread(&nilai, sizeof(infotype), 1, file) == 1) {
-        pushHead(&Q, nilai);
+        pushTail(Q, nilai);
     }
     
     fclose(file);
-    return Q;
+    return 1;
 }
 
 int isDequeEmpty(Deque *Q) {

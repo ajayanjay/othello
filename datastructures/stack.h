@@ -16,6 +16,6 @@ void top(Stack * stack, void * element);
 int isStackEmpty(Stack * stack);
 
 void saveStack(Stack * stack, const char* filename);
-Stack loadStack(const char* filename);
+int loadStack(Stack * stack, const char* filename);
  
 #endif
