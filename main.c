@@ -49,11 +49,11 @@ void continueGame() {
     Stack stackRedo;
     Deque dequeUndo;
     NodeOctuple * board;
+    char currentPlayer;
 
     // Load the last saved game
-    if (loadGame(&board, &player1, &player2, &stackRedo, &dequeUndo)) {
-        char startingPlayer = (player1.symbol == BLACK) ? BLACK : WHITE;
-        game(player1, player2, board, &stackRedo, &dequeUndo, startingPlayer);
+    if (loadGame(&board, &player1, &player2, &stackRedo, &dequeUndo, &currentPlayer)) {
+        game(player1, player2, board, &stackRedo, &dequeUndo, currentPlayer);
     } else {
         printf("No saved game found. please create a new game first.\n");
         inputUntilEnter();
