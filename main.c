@@ -1,10 +1,12 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
+#include <string.h>
 #include "menu.h"
 #include "game.h"
 #include "piece.h"
 #include "score.h"
-#include <time.h>
+#include "replay.h"
 
 void mainMenu();
 void continueGame();
@@ -37,7 +39,7 @@ void mainMenu()
         switch (menu(menuHeader, menuItems, menuFooter)) {
             case 0: selectMode(); break;
             case 1: continueGame(); break;
-            case 2: //watchReplay(); break;
+            case 2: watchReplay(); break;
             case 3: printScoreboard(); break;
             case 4: howToPlay(); break;
             case 5: return;
@@ -121,6 +123,11 @@ void selectMode() {
             char startingPlayer = BLACK;
             // Start the game with selected player types
             game(player1, player2, board, &stackRedo, &dequeUndo, startingPlayer);
+            char filename[51];
+            if (menuSave(filename)) {
+                saveDeque (&dequeUndo, filename);
+            }
+            saveDeque(&dequeUndo, "1LastGame.txt");
             return; // Return to main menu after game ends
         }
     }

@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-// All functions in this file were authored by Azzar
-
 void pushTail(Deque *Q, infotype nilai) {
     address P = createNodeSingle(nilai);
     if (P == nil) {
