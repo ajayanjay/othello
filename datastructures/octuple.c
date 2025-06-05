@@ -116,7 +116,7 @@ void constructOthelloBoard(NodeOctuple **root) {
 }
 
 // Author: Ihsan
-NodeOctuple * setNodeAt (NodeOctuple *root, OctupleInfo info,  int row, int col){
+NodeOctuple * setNodeAt (NodeOctuple *root, OctupleInfo info,  int col, int row){
     NodeOctuple *current= root;
     int i=0;
     while (i<row){
@@ -126,13 +126,14 @@ NodeOctuple * setNodeAt (NodeOctuple *root, OctupleInfo info,  int row, int col)
     i=0;
     while (i<col){
         current = current->right;
+        ++i;
     }
     current->info = info;
     return current;
 }
 
 // Author: Ihsan
-NodeOctuple * getNodeAt(NodeOctuple *root, int row, int col) {
+NodeOctuple * getNodeAt(NodeOctuple *root, int col, int row) {
     NodeOctuple *current = root;
     for (int i = 0; i < row; ++i)
         current = current->down;

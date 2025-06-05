@@ -6,6 +6,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
+#include <string.h>
+
+NbTree * root = NULL;
 
 //Author: Azzar & Ihsan
 int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, Deque *dequeUndo, char startingPlayer) {
@@ -22,6 +25,10 @@ int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, 
             break;
         }
         lastMove = currentPlayer->play(board, dequeUndo, stackRedo, currentPlayer->symbol);
+
+        if (player1.type == AI_HARD || player2.type == AI_HARD)
+            updateTree(lastMove);
+
         // currentPlayer has no available moves.
         if (lastMove.x == -1 && lastMove.y == -1) {
             currentPlayer = (currentPlayer == &player1) ? &player2 : &player1;
@@ -47,6 +54,17 @@ int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, 
         currentPlayer = (currentPlayer == &player1) ? &player2 : &player1;
     }
     return 0;
+}
+
+void updateTree(Move lastMove) {
+    NbTree * temp = root->fs;
+    while (temp != NULL) {
+        if (isMoveEqual(temp->info.move, lastMove)) {
+            disconnectTreeExcept(&root, temp);
+            break;
+        }
+        temp = temp->nb;
+    }
 }
 
 // Author: Azzar
@@ -79,8 +97,8 @@ void getValidMoves (NodeOctuple *root, char player, Move *validMoves, int *numVa
         while (col != NULL && colIndex < 8){
             //if isvalidmove, add to list
             if (isValidMove(col, player)){ //col=pointer node
-                validMoves[*numValidMoves].x = rowIndex; //*numvalidmove beacuse acces score
-                validMoves[*numValidMoves].y = colIndex;
+                validMoves[*numValidMoves].x = colIndex; //*numvalidmove beacuse acces score
+                validMoves[*numValidMoves].y = rowIndex;
                 (*numValidMoves)++; //update index validmoves
             }
             col = col->right; //update collumn
@@ -150,7 +168,7 @@ void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int sel
             //check if position contain valid move or isSelected 
             int validMovesIndex = 0;
             while (validMovesIndex < numValidMoves){
-                if (validMoves[validMovesIndex].x == rowIndex && validMoves[validMovesIndex].y == colIndex){
+                if (validMoves[validMovesIndex].x == colIndex && validMoves[validMovesIndex].y == rowIndex){
                     isValid = 1;
                     if (validMovesIndex == selectedIndex){
                         isSelected = 1;
@@ -319,24 +337,53 @@ void makeMove(NodeOctuple *board, Move *move, char player) {
     }
 }
 
-Move getBestMove(NodeOctuple *board, char player, int depth) {
-    if (board == NULL) {
-        return (Move){-1, -1};
+Move getBestMove(NodeOctuple *board, char player, Move * moves, int movesSize,  int depth) {
+    char tempBoard[8][8];
+    convertOctupleToArray(board, tempBoard);
+    
+    if (root == NULL) {
+        root = createNodeTree(createAIInfo(tempBoard, player, (Move){-1, -1}, true));
     }
-    
-    // Convert octuple linked list to array for AI processing
-    char boardArray[8][8];
-    convertOctupleToArray(board, boardArray);
-    
-    // Use minimax to find the best move
-    AIInfo result = minimax(boardArray, player, depth, true, player);
-    
-    // Convert AI coordinate system to game coordinate system
-    // AI uses: x=column, y=row
-    // Game uses: x=row, y=column
-    Move gameMove;
-    gameMove.x = result.move.y;  // AI's y (row) becomes game's x (row)
-    gameMove.y = result.move.x;  // AI's x (column) becomes game's y (column)
-    
-    return gameMove;
+
+    int bestScore = INT_MIN;
+    Move bestMove = {-1, -1};
+
+    if (root != NULL && root->fs != NULL) {
+        NbTree * child = root->fs;
+        while (child != NULL) {
+            int score = minimax(child, depth - 1, player);
+            if (score > bestScore) {
+                bestScore = score;
+                bestMove = child->info.move;
+            }
+            child = child->nb;
+        }
+        return bestMove;
+    }
+
+
+    NbTree * prevChild = NULL;
+    for (int i = 0; i < movesSize; ++i) {
+        char temp[8][8];
+        copyArray(temp, tempBoard);
+        makeMoveArray(temp, &moves[i], player);
+        char nextPlayer = (player == BLACK) ? WHITE : BLACK;
+        NbTree * child = createNodeTree(createAIInfo(temp, nextPlayer, moves[i], false));
+        
+        if (prevChild == NULL) {
+            root->fs = child;
+            prevChild = child;
+        } else {
+            prevChild->nb = child;
+            prevChild = child;
+        }
+
+        int score = minimax(child, depth - 1, player);
+        if (score > bestScore) {
+            bestScore = score;
+            bestMove = moves[i];
+        }
+    }
+
+    return bestMove;
 }

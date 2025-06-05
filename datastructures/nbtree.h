@@ -14,8 +14,8 @@ typedef struct nbtree {
 boolean isEmptyTree(NbTree *t);
 NbTree* createNodeTree (InfoNbTree info);
 void deleteEntireTree (NbTree** root);
-void disconnectTreeExcept (NbTree *root, NbTree *chosen);
+void disconnectTreeExcept (NbTree ** root, NbTree * chosen);
 
-AIInfo minimax(char board[8][8], char currentPlayer, int depth, boolean isMaximizing, char aiPlayer);
+int minimax(NbTree *root, int depth, char aiPlayer);
 
 #endif

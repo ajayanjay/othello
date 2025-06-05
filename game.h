@@ -17,6 +17,8 @@ Activity activity(NodeOctuple * board, Move lastMove, char currentPlayer);
 int undo(NodeOctuple * board, Deque * dequeUndo, Stack * stackRedo, char * currentPlayer);
 int redo(NodeOctuple * board, Deque * dequeUndo, Stack * stackRedo, char * currentPlayer);
 
-Move getBestMove(NodeOctuple *board, char player, int depth);
+Move getBestMove(NodeOctuple *board, char player, Move * moves, int movesSize,  int depth);
+
+void updateTree(Move lastMove);
 
 #endif

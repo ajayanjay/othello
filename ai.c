@@ -1,8 +1,18 @@
 #include "ai.h"
 #include "piece.h"
 #include <stdlib.h>
+#include <string.h>
 
 // All functions in this file were authored by Azzar
+
+AIInfo createAIInfo(char board[8][8], char currentPlayer, Move move, boolean isMax) {
+    AIInfo newInfo;
+    copyArray(newInfo.board, board);
+    newInfo.currentPlayer = currentPlayer;
+    newInfo.move = move;
+    newInfo.isMax = isMax;
+    return newInfo;
+}
 
 int evaluateBoardArray(char board[8][8], char player) {
 
@@ -129,8 +139,8 @@ void makeMoveArray(char board[8][8], Move *move, char currentPlayer) {
     };
 
     for (int i = 0; i < 8; ++i) {
-        int dx = directions[i][0];
-        int dy = directions[i][1];
+        int dx = directions[i][1];
+        int dy = directions[i][0];
         int x = (int)move->x + dx;
         int y = (int)move->y + dy;
         boolean foundOpponent = false;
@@ -176,8 +186,8 @@ int isValidMoveArray(char board[8][8], Move *move, char player) {
     };
 
     for (int i = 0; i < 8; ++i) {
-        int dx = directions[i][0];
-        int dy = directions[i][1];
+        int dx = directions[i][1];
+        int dy = directions[i][0];
         int x = (int)move->x + dx;
         int y = (int)move->y + dy;
         boolean foundOpponent = false;
@@ -209,6 +219,10 @@ int isValidMoveArray(char board[8][8], Move *move, char player) {
     }
 
     return 0;
+}
+
+void copyArray(char dst[8][8], char src[8][8]) {
+    memcpy(dst, src, sizeof(char) * 8 * 8);
 }
 
 int isGameFinishedArray(char board[8][8]) {

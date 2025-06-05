@@ -4,18 +4,14 @@
 #include "move.h"
 #include "boolean.h"
 
-// board duplicate for AI.
-typedef struct boardarray {
+typedef struct aiinfo {
     char board[8][8];
     char currentPlayer;
-} BoardArray;
-
-typedef struct aiinfo {
-    BoardArray board;
     Move move;
-    int score;
-    boolean isMax, evaluated, expanded;
+    boolean isMax;
 } AIInfo;
+
+AIInfo createAIInfo(char board[8][8], char currentPlayer, Move move, boolean isMax);
 
 int evaluateBoardArray(char board[8][8], char player);
 
@@ -41,6 +37,8 @@ int isValidMoveArray(char board[8][8], Move *move, char player);
 // Makes a move on the board.
 // This function modifies the board directly.
 void makeMoveArray(char board[8][8], Move *move, char player);
+
+void copyArray(char dst[8][8], char src[8][8]);
 
 int isGameFinishedArray(char board[8][8]);
 
