@@ -26,6 +26,21 @@ void createDirectory (const char *path) {
     }
 }
 
+boolean isFileExist (const char *path, const char *filename) {
+    char fullPath[1024];
+    snprintf(fullPath, sizeof(fullPath), "%s/%s", path, filename);
+    
+    DIR *d;
+    struct dirent *dir;
+
+    FILE *file = fopen(fullPath, "r");
+    if (file) {
+        fclose(file);
+        return true;  // File exists
+    }
+    return false;
+}
+
 boolean menuSave(char *filename) {
     const char* saveHeader = "Would you like to save replay this match\n";
     const char* saveItems[] = {
@@ -77,12 +92,39 @@ boolean menuSave(char *filename) {
 
                 printf("\n");
                 filename[count] = '\0';
-                break; // Valid input, exit loop
+
+                if (isFileExist("storage/replay", filename)){
+                    if (menuoverwrite()){
+                        break; // overwrite
+                    } else {
+                        continue; //enter name again
+                    }
+                } else {
+                    break; // new 
+                }
             }
             return true;
         } else if (result == 1) {
             return false;
         }
+    }
+}
+
+boolean menuoverwrite (){
+    const char* overwriteHeader = "File already exists! Do you want to overwrite?\n";
+    const char* overwriteItems[] = {
+        "No, enter new name\n",
+        "Yes, overwrite\n",
+        NULL
+    };
+    const char* overwriteSelector = "Press enter to select\n";
+
+    int overwriteResult = menu (overwriteHeader, overwriteItems, overwriteSelector);
+
+    if (overwriteResult == 1){
+        return true;
+    } else {
+        return false;
     }
 }
 
