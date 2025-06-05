@@ -1,14 +1,13 @@
 #include "replay.h"
 #include "menu.h"
 #include "storage.h"
-#include "datastructures/deque.h"
 #include "ai.h"
 #include <stdio.h>
 #include <dirent.h>
 #include <stdlib.h>
 #include <string.h>
 
-boolean menuSave(char *filename) {
+boolean menuSave(Deque *dequeundo) {
     const char* saveHeader = "Would you like to save replay this match\n";
     const char* saveItems[] = {
         "Yes\n",
@@ -17,10 +16,7 @@ boolean menuSave(char *filename) {
     };
     const char* saveSelector = "Press Enter to Select...";
 
-    // if not exist
-    createDirectory ("storage");
-    createDirectory ("storage/replay");
-
+    createDirectory ("replay");
     while (1) {
         int result = menu(saveHeader, saveItems, saveSelector);
         if (result == 0) {
@@ -29,6 +25,7 @@ boolean menuSave(char *filename) {
                 clearScreen();
                 printf("Enter the file name (max 50 character): ");
                 
+                char filename[51];
                 int count = 0;
                 char input;
 
@@ -60,18 +57,25 @@ boolean menuSave(char *filename) {
                 printf("\n");
                 filename[count] = '\0';
 
-                if (isFileExist("storage/replay", filename)){
-                    if (menuoverwrite()){
-                        break; // overwrite
-                    } else {
+                char fullPath[256];
+                snprintf(fullPath, sizeof(fullPath), "replay/%s.txt", filename);
+
+                if (isFileExist("replay", filename)){
+                    if (!menuoverwrite()){
                         continue; //enter name again
                     }
-                } else {
-                    break; // new 
                 }
+
+                //save file and exit
+                saveDeque (dequeundo, fullPath);
+                break;
             }
+
+            //Always save last game
+            saveDeque (dequeundo, "storage/replay/1LastGame.txt");
             return true;
         } else if (result == 1) {
+            saveDeque (dequeundo, "storage/replay/1LastGame.txt");
             return false;
         }
     }
@@ -96,7 +100,8 @@ boolean menuoverwrite (){
 }
 
 void printReplay(const char *fileName){
-    Deque replay = loadDeque(fileName);
+    Deque replay;
+    loadDeque(&replay, fileName);
     if (isDequeEmpty(&replay)){
         return;
     }
@@ -150,10 +155,6 @@ void selectReplay (){
     const char* menuReplayHeader = "Select replay you want to see\n";
     const char* replaySelector = "\nPress ENTER to select\n";
     const char* replayDir = "storage/replay";
-
-    // if not exist
-    createDirectory ("storage");
-    createDirectory ("storage/replay");
 
     int countTotalFile = countFiles (replayDir);
 

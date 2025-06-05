@@ -2,6 +2,7 @@
 #include "piece.h"
 #include "menu.h"
 #include "score.h"
+#include "storage.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
@@ -347,6 +348,7 @@ int loadCurrentPlayer(char *currentPlayer, const char *filename) {
 }
 
 int saveGame(NodeOctuple * board, Player player1, Player player2, Stack stackRedo, Deque dequeUndo, char currentPlayer) {
+    createDirectory ("savedata");
 
     const char* boardFilename = "savedata/board.dat";
     const char* player1Filename = "savedata/player1.dat";
