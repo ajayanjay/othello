@@ -58,7 +58,7 @@ boolean menuSave(Deque *dequeundo) {
                 filename[count] = '\0';
 
                 char fullPath[256];
-                snprintf(fullPath, sizeof(fullPath), "replay/%s.txt", filename);
+                snprintf(fullPath, sizeof(fullPath), "replay/%s", filename);
 
                 if (isFileExist("replay", filename)){
                     if (!menuoverwrite()){
@@ -72,10 +72,10 @@ boolean menuSave(Deque *dequeundo) {
             }
 
             //Always save last game
-            saveDeque (dequeundo, "storage/replay/1LastGame.txt");
+            saveDeque (dequeundo, "replay/1LastGame");
             return true;
         } else if (result == 1) {
-            saveDeque (dequeundo, "storage/replay/1LastGame.txt");
+            saveDeque (dequeundo, "replay/1LastGame");
             return false;
         }
     }
@@ -106,47 +106,61 @@ void printReplay(const char *fileName){
         return;
     }
 
+    // pre-build: Load all steps from head to tail
     address history[64] = {NULL};
+    int totalSteps = 0;
+    address current = replay.head;  // start from head
+    while (current != NULL && totalSteps < 64) {
+        history[totalSteps] = current;
+        current = current->next;
+        totalSteps++;
+    }
+    
+    if (totalSteps == 0) {
+        printf("No valid steps found!\n");
+        return;
+    }
+    
+    // REVERSE: because head is the last step, reverse sequence
+    address updatedHistory[64] = {NULL};
+    for (int i = 0; i < totalSteps; i++) {
+        updatedHistory[i] = history[totalSteps - 1 - i];
+    }
+    
     int pos = 0;
-    address current = replay.head;
-    history[0] = current; // Inisialisasi langkah pertama
-
-    while (current != NULL){
+    boolean keepPlaying = true;
+    
+    while (keepPlaying) {
+        if (pos < 0 || pos >= totalSteps) {
+            break;
+        }
+        
         clearScreen();
-        Activity act = history[pos]->info;
-        printf("Step %d (%c):\n", pos+1, act.currentPlayer);
+        Activity act = updatedHistory[pos]->info;
+        printf("Step %d of %d (%c):\n", pos+1, totalSteps, act.currentPlayer);
         printBoardArray(act.board, act.currentPlayer, &act.lastMove);
         printf("Use arrow left, arrow right, and ESC\n");
 
         int input = userInput();
         switch (input) {
-            case RIGHT:{
-                if (history[pos+1] != NULL) {
-                pos++;
-                current = history[pos];
-                } else {
-                // if never redo, next step
-                    if (current->next != NULL) {
-                        pos++;
-                        current = current->next;
-                        history[pos] = current;
-                    }
+            case RIGHT:
+                if (pos < totalSteps - 1) {
+                    pos++;
                 }
                 break;
-            }
-            case LEFT:{
-                if (pos > 0){
-                pos--;
-                current = history[pos];
+                
+            case LEFT:
+                if (pos > 0) {
+                    pos--;
                 }
                 break;
-            case ESC:{
-                return;
-            }
-            }
-            default:{
+                
+            case ESC:
+                keepPlaying = false;
                 break;
-            }
+                
+            default:
+                break;
         }
     }
 }
@@ -154,7 +168,7 @@ void printReplay(const char *fileName){
 void selectReplay (){
     const char* menuReplayHeader = "Select replay you want to see\n";
     const char* replaySelector = "\nPress ENTER to select\n";
-    const char* replayDir = "storage/replay";
+    const char* replayDir = "replay";
 
     int countTotalFile = countFiles (replayDir);
 
@@ -166,7 +180,7 @@ void selectReplay (){
     DIR *d;
     struct dirent *dir;
 
-    char listItem[countTotalFile][64]; //50 + .txt
+    char listItem[countTotalFile][64];
     const char *listptr[countTotalFile+1];
     int count = 0;
 
@@ -184,9 +198,14 @@ void selectReplay (){
         return;
     }
 
-    listptr[count] = NULL;
+    listptr[count] = "Back";
+    listptr[count+1] = NULL;
 
     int selected = menu(menuReplayHeader, listptr, replaySelector);
+
+    if (selected == count){
+        return; // case back
+    }
 
     if (selected >= 0 && selected < count) {
         // Hapus newline sebelum membuat path
@@ -197,7 +216,7 @@ void selectReplay (){
         if (newline) *newline = '\0';
 
         char path[128];
-        snprintf(path, sizeof(path), "%s", filename);
+        snprintf(path, sizeof(path), "replay/%s", filename);
         printReplay(path);
     }
 }
