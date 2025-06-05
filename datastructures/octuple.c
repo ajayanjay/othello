@@ -201,9 +201,7 @@ void saveBoard(NodeOctuple *root, const char *filename) {
         return;
     }
 
-    char path[256];
-    snprintf(path, sizeof(path), "storage/saved/%s", filename);
-    FILE *file = fopen(path, "w");
+    FILE *file = fopen(filename, "wb");
     if (file == NULL) {
         printf("Gagal membuka file %s untuk menulis\n", filename);
         return;
@@ -229,9 +227,7 @@ int loadBoard(NodeOctuple **root, const char *filename) {
     Load the octuple linked list board from a text file in 8x8 grid format
     Each line contains 8 characters ('X', 'O', or '.') followed by a newline
     */
-    char path[256];
-    snprintf(path, sizeof(path), "storage/saved/%s", filename);
-    FILE *file = fopen(path, "w");
+    FILE *file = fopen(filename, "rb");
     if (file == NULL) {
         return 0; // Failed to open file
     }

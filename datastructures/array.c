@@ -1,6 +1,7 @@
 #include "array.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 // All functions in this file were authored by Azzar
 
@@ -10,7 +11,6 @@ void initArray(Array * array, SizeData elementSize, SizeData capacity) {
     array->size = 0;
     array->capacity = capacity;
 }
-
 
 void freeArray(Array * array) {
     free(array->data);
@@ -28,4 +28,12 @@ void onArraySizeIncrease(Array * array) {
 
 int isArrayEmpty(Array * array) {
     return array->size == 0;
+}
+
+int getElement(Array * array, int index, void * element) {
+    if (index < 0 || index >= array->size) {
+        return 0;
+    }
+    memcpy(element, (char *) array->data + (index * array->elementSize), array->elementSize);
+    return 1;
 }

@@ -8,7 +8,7 @@ void printBoardArray (char board [8][8], char player, Move *selectedMove){
     char buffer[4096];
     int offset = 0;
 
-    offset += sprintf(buffer + offset, "  +-----------------+\n");
+    offset += sprintf(buffer + offset, "\n  +-----------------+\n");
 
     int row=0;
     while (row<8){
@@ -27,9 +27,14 @@ void printBoardArray (char board [8][8], char player, Move *selectedMove){
             if (isSelected) {
                 offset += sprintf(buffer + offset, " \033[30;47m%c\033[0m", tolower(player));
             } else if (isValidMoveArray(board, &move, player)){
-                offset += sprintf (buffer + offset, " \033[2;91m%c\033[0m", tolower(player)); 
-            } else{
-                offset += sprintf(buffer + offset, " %c", board[row][col]);
+                offset += sprintf (buffer + offset, " \033[2;2m%c\033[0m", tolower(player)); 
+            } else { // regular cell
+                if (board[row][col] == BLACK)
+                    offset += sprintf (buffer + offset, " \033[31m%c\033[m", board[row][col]);
+                else if (board[row][col] == WHITE)
+                    offset += sprintf (buffer + offset, " \033[36m%c\033[m", board[row][col]);
+                else
+                    offset += sprintf (buffer + offset, " %c", board[row][col]);
             }
             col++;
         } 

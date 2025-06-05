@@ -140,7 +140,7 @@ void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int sel
     int offset = 0;
 
     // Baris atas
-    offset += sprintf(buffer + offset, "  +-----------------+\n"); //border top
+    offset += sprintf(buffer + offset, "\n  +-----------------+\n"); //border top
 
     NodeOctuple *currentRow = board;
     int rowNumber = 1;

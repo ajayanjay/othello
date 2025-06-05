@@ -21,4 +21,6 @@ void onArraySizeIncrease(Array * array);
 
 int isArrayEmpty(Array * array);
 
+int getElement(Array * array, int index, void * element);
+
 #endif

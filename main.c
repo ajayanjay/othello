@@ -28,7 +28,7 @@ void mainMenu()
     const char* menuItems[] = {
                                 "New Game\n",
                                 "Continue\n",
-                                "Watch Replay\n",
+                                "Watch Replays\n",
                                 "Scoreboard\n",
                                 "How To Play\n",
                                 "Exit\n\n",
@@ -40,7 +40,7 @@ void mainMenu()
         switch (menu(menuHeader, menuItems, menuFooter)) {
             case 0: selectMode(); break;
             case 1: continueGame(); break;
-            case 2: selectReplay(); break;
+            case 2: selectReplays(); break;
             case 3: printScoreboard(); break;
             case 4: howToPlay(); break;
             case 5: return;
@@ -57,6 +57,7 @@ void continueGame() {
     // Load the last saved game
     if (loadGame(&board, &player1, &player2, &stackRedo, &dequeUndo, &currentPlayer)) {
         game(player1, player2, board, &stackRedo, &dequeUndo, currentPlayer);
+        saveReplayMenu(&dequeUndo);
     } else {
         printf("No saved game found. please create a new game first.\n");
         inputUntilEnter();
@@ -125,7 +126,7 @@ void selectMode() {
             // Start the game with selected player types
             game(player1, player2, board, &stackRedo, &dequeUndo, startingPlayer);
             
-            menuSave(&dequeUndo);
+            saveReplayMenu(&dequeUndo);
             
             return; // Return to main menu after game ends
         }

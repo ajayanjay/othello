@@ -24,9 +24,6 @@ void createDirectory (const char *path) {
 boolean isFileExist (const char *path, const char *filename) {
     char fullPath[1024];
     snprintf(fullPath, sizeof(fullPath), "%s/%s", path, filename);
-    
-    DIR *d;
-    struct dirent *dir;
 
     FILE *file = fopen(fullPath, "r");
     if (file) {

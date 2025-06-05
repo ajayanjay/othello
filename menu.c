@@ -129,6 +129,34 @@ Input userInput()
 	}
 }
 
+void inputLimitedString(char * buffer, int minSize, int maxSize, int (*isCharAllowed)(int), int (*modifyChar)(int)) {
+	int count = 0;
+	int input;
+
+	while (1) {
+		input = nonBlockingInput();
+
+		if (input == KEY_ENTER && count >= minSize) break;
+
+		if (input == BACKSPC) {
+			if (count > 0) {
+				buffer[--count] = '\0';
+				printf("\b \b");
+			}
+			continue;
+		}
+
+		if (count < maxSize && (isCharAllowed ? isCharAllowed(input) : 1)) {
+			buffer[count] = modifyChar ? modifyChar(input) : input;
+			printf("%c", buffer[count]);
+			count++;
+		}
+	}
+
+	buffer[count] = '\0';
+	printf("\n");
+}
+
 void clearScreen() {
 	#ifdef _WIN32
 		HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -200,6 +228,10 @@ int menuInput(int *item, int minSize, int maxSize)
 			return moveCursor(&*item, NEXT);
 
 		case ENTER:
+			return ENTER;
+
+		case ESC:
+			*item = maxSize;
 			return ENTER;
 
 		default:

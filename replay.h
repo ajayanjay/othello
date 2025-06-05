@@ -4,9 +4,9 @@
 #include "datastructures/deque.h"
 #include "boolean.h"
 
-boolean menuoverwrite();
-boolean menuSave(Deque *dequeundo);
-void printReplay(const char *fileName);
-void selectReplay();
+boolean overwriteReplayMenu();
+boolean saveReplayMenu(Deque * dequeUndo);
+void printReplay(const char *filename);
+void selectReplays();
 
 #endif
