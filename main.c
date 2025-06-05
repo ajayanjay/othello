@@ -17,6 +17,7 @@ void howToPlay();
 int main(void)
 {
     srand((unsigned int)time(NULL));
+    createDirectory("gamedata");
     initScore();
     mainMenu();
     return 0;

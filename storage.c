@@ -21,6 +21,19 @@ void createDirectory (const char *path) {
     }
 }
 
+int removeDirectory (const char *path) {
+    struct stat st = {0};
+    if (stat(path, &st) == -1)
+        return 0;
+    
+    
+    #ifdef _WIN32
+        return _rmdir(path);
+    #else 
+        return rmdir(path);
+    #endif
+}
+
 boolean isFileExist (const char *path, const char *filename) {
     char fullPath[1024];
     snprintf(fullPath, sizeof(fullPath), "%s/%s", path, filename);

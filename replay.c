@@ -16,6 +16,9 @@ int isAlphaOrNumberOrSpace(int c) {
 }
 
 boolean saveReplayMenu(Deque * dequeUndo) {
+
+    createDirectory (REPLAY_DIR);
+
     const char* saveHeader = "Would you like to save replay this match\n";
     const char* saveItems[] = {
         "Yes\n",
@@ -24,7 +27,6 @@ boolean saveReplayMenu(Deque * dequeUndo) {
     };
     const char* saveSelector = "Press Enter to Select...";
 
-    createDirectory ("replays");
     while (1) {
         int result = menu(saveHeader, saveItems, saveSelector);
         if (result == 0) {
@@ -37,9 +39,9 @@ boolean saveReplayMenu(Deque * dequeUndo) {
                 inputLimitedString(filename, 1, 24, isAlphaOrNumberOrSpace, NULL);
 
                 char fullPath[64];
-                snprintf(fullPath, sizeof(fullPath), "replays/%s", filename);
+                snprintf(fullPath, sizeof(fullPath), "gamedata/replays/%s", filename);
 
-                if (isFileExist("replays", filename)){
+                if (isFileExist("gamedata/replays", filename)){
                     if (!overwriteReplayMenu()){
                         continue; //enter name again
                     }
@@ -51,10 +53,10 @@ boolean saveReplayMenu(Deque * dequeUndo) {
             }
 
             //Always save last game
-            saveDeque (dequeUndo, "replays/1LastGame");
+            saveDeque (dequeUndo, "gamedata/replays/1LastGame");
             return true;
         } else if (result == 1) {
-            saveDeque (dequeUndo, "replays/1LastGame");
+            saveDeque (dequeUndo, "gamedata/replays/1LastGame");
             return false;
         }
     }
@@ -136,9 +138,8 @@ void printReplay(const char *fileName){
 void selectReplays(){
     const char* menuReplayHeader = "Select replay you want to see\n\n";
     const char* replaySelector = "\nPress ENTER to select\n";
-    const char* replayDir = "replays";
 
-    int countTotalFile = countFiles (replayDir);
+    int countTotalFile = countFiles (REPLAY_DIR);
 
     if (countTotalFile == 0) {
         printf("No replay files found!\n");
@@ -152,7 +153,7 @@ void selectReplays(){
     const char *listPtr[countTotalFile + 2];
     int count = 0;
 
-    d = opendir (replayDir);
+    d = opendir (REPLAY_DIR);
     if (!d) return;
 
     while ((dir = readdir (d)) != NULL){
@@ -183,7 +184,7 @@ void selectReplays(){
             if (newline) *newline = '\0';
 
             char path[128];
-            snprintf(path, sizeof(path), "replays/%s", filename);
+            snprintf(path, sizeof(path), "gamedata/replays/%s", filename);
             printReplay(path);
         }
     }

@@ -10,6 +10,8 @@
 //Author: Azzar & Ihsan
 int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, Deque *dequeUndo, char startingPlayer) {
 
+    createDirectory(SAVEDATA_DIR);
+
     char temp;
     Player * currentPlayer = (startingPlayer == BLACK) ? &player1 : &player2;
     Move lastMove = {-1, -1};
@@ -19,6 +21,7 @@ int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, 
         if (isGameOver(board)) {
             printBoard(board, NULL, 0, 0, EMPTY, false);
             gameOverScreen(board, player1, player2);
+            removeSavedGameFiles();
             inputUntilEnter();
             break;
         }
@@ -334,6 +337,7 @@ int saveCurrentPlayer(char currentPlayer, const char *filename) {
         return 0;
     }
     fwrite(&currentPlayer, sizeof(char), 1, file);
+    fclose(file);
     return 1;
 }
 
@@ -347,41 +351,34 @@ int loadCurrentPlayer(char *currentPlayer, const char *filename) {
     return 1;
 }
 
+void removeSavedGameFiles() {
+    remove(SAVEDATA_BOARD_FILE);
+    remove(SAVEDATA_PLAYER1_FILE);
+    remove(SAVEDATA_PLAYER2_FILE);
+    remove(SAVEDATA_REDO_FILE);
+    remove(SAVEDATA_UNDO_FILE);
+    remove(SAVEDATA_CURRENT_PLAYER_FILE);
+    removeDirectory(SAVEDATA_DIR);
+}
+
 int saveGame(NodeOctuple * board, Player player1, Player player2, Stack stackRedo, Deque dequeUndo, char currentPlayer) {
-    createDirectory ("savedata");
-
-    const char* boardFilename = "savedata/board.dat";
-    const char* player1Filename = "savedata/player1.dat";
-    const char* player2Filename = "savedata/player2.dat";
-    const char* stackRedoFilename = "savedata/redo.dat";
-    const char* dequeUndoFilename = "savedata/undo.dat";
-    const char* currentPlayerFilename = "savedata/currentPlayer.dat";
-
-    saveBoard(board, boardFilename);
-    saveStack(&stackRedo, stackRedoFilename);
-    saveDeque(&dequeUndo, dequeUndoFilename);
-    savePlayer(player1, player1Filename);
-    savePlayer(player2, player2Filename);
-    saveCurrentPlayer(currentPlayer, currentPlayerFilename);
+    saveBoard(board, SAVEDATA_BOARD_FILE);
+    saveStack(&stackRedo, SAVEDATA_REDO_FILE);
+    saveDeque(&dequeUndo, SAVEDATA_UNDO_FILE);
+    savePlayer(player1, SAVEDATA_PLAYER1_FILE);
+    savePlayer(player2, SAVEDATA_PLAYER2_FILE);
+    saveCurrentPlayer(currentPlayer, SAVEDATA_CURRENT_PLAYER_FILE);
 
     return 1;
 }
 
 int loadGame(NodeOctuple ** board, Player * player1, Player * player2, Stack * stackRedo, Deque * dequeUndo, char * currentPlayer) {
-
-    const char* boardFilename = "savedata/board.dat";
-    const char* player1Filename = "savedata/player1.dat";
-    const char* player2Filename = "savedata/player2.dat";
-    const char* stackRedoFilename = "savedata/redo.dat";
-    const char* dequeUndoFilename = "savedata/undo.dat";
-    const char* currentPlayerFilename = "savedata/currentPlayer.dat";
-
-    if (!loadBoard(board, boardFilename) ||
-        !loadStack(stackRedo, stackRedoFilename) ||
-        !loadDeque(dequeUndo, dequeUndoFilename) ||
-        !loadPlayer(player1, player1Filename) ||
-        !loadPlayer(player2, player2Filename) ||
-        !loadCurrentPlayer(currentPlayer, currentPlayerFilename)) {
+    if (!loadBoard(board, SAVEDATA_BOARD_FILE) ||
+        !loadStack(stackRedo, SAVEDATA_REDO_FILE) ||
+        !loadDeque(dequeUndo, SAVEDATA_UNDO_FILE) ||
+        !loadPlayer(player1, SAVEDATA_PLAYER1_FILE) ||
+        !loadPlayer(player2, SAVEDATA_PLAYER2_FILE) ||
+        !loadCurrentPlayer(currentPlayer, SAVEDATA_CURRENT_PLAYER_FILE)) {
             return 0;
         }
 

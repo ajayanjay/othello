@@ -4,6 +4,14 @@
 #include "player.h"
 #include "boolean.h"
 
+#define SAVEDATA_DIR "gamedata/savedata"
+#define SAVEDATA_BOARD_FILE "gamedata/savedata/board.dat"
+#define SAVEDATA_PLAYER1_FILE "gamedata/savedata/player1.dat"
+#define SAVEDATA_PLAYER2_FILE "gamedata/savedata/player2.dat"
+#define SAVEDATA_REDO_FILE "gamedata/savedata/redo.dat"
+#define SAVEDATA_UNDO_FILE "gamedata/savedata/undo.dat"
+#define SAVEDATA_CURRENT_PLAYER_FILE "gamedata/savedata/currentPlayer.dat"
+
 int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, Deque *dequeUndo, char startingPlayer);
 
 void getValidMoves(NodeOctuple *root, char player, Move *validMoves, int *numValidMoves);
@@ -19,5 +27,6 @@ int redo(NodeOctuple * board, Deque * dequeUndo, Stack * stackRedo, char * curre
 
 int saveGame(NodeOctuple * board, Player player1, Player player2, Stack stackRedo, Deque dequeUndo, char currentPlayer);
 int loadGame(NodeOctuple ** board, Player * player1, Player * player2, Stack * stackRedo, Deque * dequeUndo, char * currentPlayer);
+void removeSavedGameFiles();
 
 #endif
