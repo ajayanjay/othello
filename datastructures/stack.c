@@ -43,30 +43,30 @@ int isStackEmpty(Stack * stack) {
 void saveStack(Stack * stack, const char* filename) {
     FILE *f;
 
-    if ( (f = fopen(filename, "w")) == NULL)
+    if ( (f = fopen(filename, "wb")) == NULL)
         return;
 
-    fwrite(&stack->size, sizeof(SizeData), 1, f);
+    fwrite(&stack->capacity, sizeof(SizeData), 1, f);
     fwrite(&stack->elementSize, sizeof(SizeData), 1, f);
+
+    fwrite(&stack->size, sizeof(SizeData), 1, f);
     fwrite(stack->data, stack->elementSize, stack->size, f);
     fclose(f);
 }
 
-Stack loadStack(const char * filename) {
+int loadStack(Stack * s, const char* filename) {
     FILE *f;
-    Stack s;
 
-    if ( (f = fopen(filename, "r")) == NULL) {
-        s.size = 0;
-        s.elementSize = 0;
-        s.data = NULL;
-        return s;
+    if ( (f = fopen(filename, "rb")) == NULL) {
+        return 0;
     }
 
-    fread(&s.size, sizeof(SizeData), 1, f);
-    fread(&s.elementSize, sizeof(SizeData), 1, f);
-    s.data = malloc(s.size * s.elementSize);
-    fread(s.data, s.elementSize, s.size, f);
+    fread(&s->capacity, sizeof(SizeData), 1, f);
+    fread(&s->elementSize, sizeof(SizeData), 1, f);
+    initStack(s, s->elementSize, s->capacity);
+
+    fread(&s->size, sizeof(SizeData), 1, f);
+    fread(s->data, s->elementSize, s->size, f);
     fclose(f);
-    return s;
+    return 1;
 }

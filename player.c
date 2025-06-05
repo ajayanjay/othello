@@ -1,6 +1,7 @@
 #include "game.h"
 #include "menu.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 // Author: Azzar
 Move playAIEasy(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player) {
@@ -137,3 +138,30 @@ Player player(PlayerType type, char symbol) {
 
     return newPlayer;
 }
+
+int savePlayer(Player player, const char *filename) {
+    FILE *file = fopen(filename, "wb");
+    if (file == NULL) {
+        return 0;
+    }
+
+    fwrite(&player.type, sizeof(PlayerType), 1, file);
+    fwrite(&player.symbol, sizeof(char), 1, file);
+    fclose(file);
+    return 1;
+}
+
+int loadPlayer(Player * p, const char *filename) {
+    FILE *file = fopen(filename, "rb");
+    if (file == NULL) {
+        return 0;
+    }
+
+    fread(&p->type, sizeof(PlayerType), 1, file);
+    fread(&p->symbol, sizeof(char), 1, file);
+    fclose(file);
+
+    *p = player(p->type, p->symbol);
+
+    return 1;
+}   

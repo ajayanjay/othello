@@ -27,4 +27,7 @@ Move playAIEasy(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char p
 
 Player player(PlayerType type, char symbol);
 
+int savePlayer(Player player, const char *filename);
+int loadPlayer(Player * player, const char *filename);
+
 #endif

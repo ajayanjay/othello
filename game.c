@@ -9,6 +9,7 @@
 //Author: Azzar & Ihsan
 int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, Deque *dequeUndo, char startingPlayer) {
 
+    char temp;
     Player * currentPlayer = (startingPlayer == BLACK) ? &player1 : &player2;
     Move lastMove = {-1, -1};
 
@@ -20,30 +21,38 @@ int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, 
             inputUntilEnter();
             break;
         }
+
+        saveGame(board, player1, player2, *stackRedo, *dequeUndo, currentPlayer->symbol);
+        
         lastMove = currentPlayer->play(board, dequeUndo, stackRedo, currentPlayer->symbol);
-        // currentPlayer has no available moves.
-        if (lastMove.x == -1 && lastMove.y == -1) {
-            currentPlayer = (currentPlayer == &player1) ? &player2 : &player1;
-            continue;
+
+        switch (lastMove.x) {
+            case -1: // no valid moves
+                printBoard(board, NULL, 0, 0, currentPlayer->symbol, true);
+                printf("No valid moves for %c player.\n", currentPlayer->symbol);
+                nonBlockingInput();
+                currentPlayer = (currentPlayer == &player1) ? &player2 : &player1;
+                break;
+
+            case -2: // undo
+                temp = currentPlayer->symbol;
+                undo(board, dequeUndo, stackRedo, &temp);
+                currentPlayer = (temp == BLACK) ? &player1 : &player2;
+                break;
+
+            case -3: // redo
+                temp = currentPlayer->symbol;
+                redo(board, dequeUndo, stackRedo, &temp);
+                currentPlayer = (temp == BLACK) ? &player1 : &player2;
+                break;
+
+            default: // valid move
+                emptyStack(stackRedo); // if user make a move, empty the redo stack.
+                pushHead(dequeUndo, activity(board, lastMove, currentPlayer->symbol));
+                makeMove(board, &lastMove, currentPlayer->symbol);
+                currentPlayer = (currentPlayer == &player1) ? &player2 : &player1;
+                break;
         }
-        // undo
-        else if (lastMove.x == -2 && lastMove.y == -2) {
-            char temp = currentPlayer->symbol;
-            undo(board, dequeUndo, stackRedo, &temp);
-            currentPlayer = (temp == BLACK) ? &player1 : &player2;
-            continue;
-        }
-        // redo
-        else if (lastMove.x == -3 && lastMove.y == -3) {
-            char temp = currentPlayer->symbol;
-            redo(board, dequeUndo, stackRedo, &temp);
-            currentPlayer = (temp == BLACK) ? &player1 : &player2;
-            continue;
-        }
-        emptyStack(stackRedo); // if user make a move, empty the redo stack.
-        pushHead(dequeUndo, activity(board, lastMove, currentPlayer->symbol));
-        makeMove(board, &lastMove, currentPlayer->symbol);
-        currentPlayer = (currentPlayer == &player1) ? &player2 : &player1;
     }
     return 0;
 }
@@ -316,4 +325,63 @@ void makeMove(NodeOctuple *board, Move *move, char player) {
             }
         }
     }
+}
+
+int saveCurrentPlayer(char currentPlayer, const char *filename) {
+    FILE *file = fopen(filename, "wb");
+    if (file == NULL) {
+        return 0;
+    }
+    fwrite(&currentPlayer, sizeof(char), 1, file);
+    return 1;
+}
+
+int loadCurrentPlayer(char *currentPlayer, const char *filename) {
+    FILE *file = fopen(filename, "rb");
+    if (file == NULL) {
+        return 0;
+    }
+    fread(currentPlayer, sizeof(char), 1, file);
+    fclose(file);
+    return 1;
+}
+
+int saveGame(NodeOctuple * board, Player player1, Player player2, Stack stackRedo, Deque dequeUndo, char currentPlayer) {
+
+    const char* boardFilename = "savedata/board.dat";
+    const char* player1Filename = "savedata/player1.dat";
+    const char* player2Filename = "savedata/player2.dat";
+    const char* stackRedoFilename = "savedata/redo.dat";
+    const char* dequeUndoFilename = "savedata/undo.dat";
+    const char* currentPlayerFilename = "savedata/currentPlayer.dat";
+
+    saveBoard(board, boardFilename);
+    saveStack(&stackRedo, stackRedoFilename);
+    saveDeque(&dequeUndo, dequeUndoFilename);
+    savePlayer(player1, player1Filename);
+    savePlayer(player2, player2Filename);
+    saveCurrentPlayer(currentPlayer, currentPlayerFilename);
+
+    return 1;
+}
+
+int loadGame(NodeOctuple ** board, Player * player1, Player * player2, Stack * stackRedo, Deque * dequeUndo, char * currentPlayer) {
+
+    const char* boardFilename = "savedata/board.dat";
+    const char* player1Filename = "savedata/player1.dat";
+    const char* player2Filename = "savedata/player2.dat";
+    const char* stackRedoFilename = "savedata/redo.dat";
+    const char* dequeUndoFilename = "savedata/undo.dat";
+    const char* currentPlayerFilename = "savedata/currentPlayer.dat";
+
+    if (!loadBoard(board, boardFilename) ||
+        !loadStack(stackRedo, stackRedoFilename) ||
+        !loadDeque(dequeUndo, dequeUndoFilename) ||
+        !loadPlayer(player1, player1Filename) ||
+        !loadPlayer(player2, player2Filename) ||
+        !loadCurrentPlayer(currentPlayer, currentPlayerFilename)) {
+            return 0;
+        }
+
+    return 1;
 }
