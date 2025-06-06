@@ -2,6 +2,7 @@
 #include "piece.h"
 #include "menu.h"
 #include "score.h"
+#include "storage.h"
 #include "datastructures/nbtree.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -13,6 +14,9 @@ NbTree * root = NULL;
 //Author: Azzar & Ihsan
 int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, Deque *dequeUndo, char startingPlayer) {
 
+    createDirectory(SAVEDATA_DIR);
+
+    char temp;
     Player * currentPlayer = (startingPlayer == BLACK) ? &player1 : &player2;
     Move lastMove = {-1, -1};
 
@@ -22,9 +26,13 @@ int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, 
             printBoard(board, NULL, 0, 0, EMPTY, false);
             deleteEntireTree(&root);
             gameOverScreen(board, player1, player2);
+            removeSavedGameFiles();
             inputUntilEnter();
             break;
         }
+
+        saveGame(board, player1, player2, *stackRedo, *dequeUndo, currentPlayer->symbol);
+        
         lastMove = currentPlayer->play(board, dequeUndo, stackRedo, currentPlayer->symbol);
 
         if (player1.type == AI_HARD || player2.type == AI_HARD)
@@ -158,7 +166,7 @@ void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int sel
     int offset = 0;
 
     // Baris atas
-    offset += sprintf(buffer + offset, "  +-----------------+\n"); //border top
+    offset += sprintf(buffer + offset, "\n  +-----------------+\n"); //border top
 
     NodeOctuple *currentRow = board;
     int rowNumber = 1;
@@ -274,7 +282,7 @@ void gameOverScreen(NodeOctuple * board, Player player1, Player player2){
         }
     }
     
-    printf("\nPress ENTER to return to the main menu...\n");
+    printf("\nPress ENTER...\n");
 }
 
 // Author: Azzar
@@ -344,6 +352,60 @@ void makeMove(NodeOctuple *board, Move *move, char player) {
             }
         }
     }
+}
+
+int saveCurrentPlayer(char currentPlayer, const char *filename) {
+    FILE *file = fopen(filename, "wb");
+    if (file == NULL) {
+        return 0;
+    }
+    fwrite(&currentPlayer, sizeof(char), 1, file);
+    fclose(file);
+    return 1;
+}
+
+int loadCurrentPlayer(char *currentPlayer, const char *filename) {
+    FILE *file = fopen(filename, "rb");
+    if (file == NULL) {
+        return 0;
+    }
+    fread(currentPlayer, sizeof(char), 1, file);
+    fclose(file);
+    return 1;
+}
+
+void removeSavedGameFiles() {
+    remove(SAVEDATA_BOARD_FILE);
+    remove(SAVEDATA_PLAYER1_FILE);
+    remove(SAVEDATA_PLAYER2_FILE);
+    remove(SAVEDATA_REDO_FILE);
+    remove(SAVEDATA_UNDO_FILE);
+    remove(SAVEDATA_CURRENT_PLAYER_FILE);
+    removeDirectory(SAVEDATA_DIR);
+}
+
+int saveGame(NodeOctuple * board, Player player1, Player player2, Stack stackRedo, Deque dequeUndo, char currentPlayer) {
+    saveBoard(board, SAVEDATA_BOARD_FILE);
+    saveStack(&stackRedo, SAVEDATA_REDO_FILE);
+    saveDeque(&dequeUndo, SAVEDATA_UNDO_FILE);
+    savePlayer(player1, SAVEDATA_PLAYER1_FILE);
+    savePlayer(player2, SAVEDATA_PLAYER2_FILE);
+    saveCurrentPlayer(currentPlayer, SAVEDATA_CURRENT_PLAYER_FILE);
+
+    return 1;
+}
+
+int loadGame(NodeOctuple ** board, Player * player1, Player * player2, Stack * stackRedo, Deque * dequeUndo, char * currentPlayer) {
+    if (!loadBoard(board, SAVEDATA_BOARD_FILE) ||
+        !loadStack(stackRedo, SAVEDATA_REDO_FILE) ||
+        !loadDeque(dequeUndo, SAVEDATA_UNDO_FILE) ||
+        !loadPlayer(player1, SAVEDATA_PLAYER1_FILE) ||
+        !loadPlayer(player2, SAVEDATA_PLAYER2_FILE) ||
+        !loadCurrentPlayer(currentPlayer, SAVEDATA_CURRENT_PLAYER_FILE)) {
+            return 0;
+        }
+
+    return 1;
 }
 
 Move getBestMove(NodeOctuple *board, char player, Move * moves, int movesSize,  int depth) {

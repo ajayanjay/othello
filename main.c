@@ -1,12 +1,16 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
+#include <string.h>
 #include "menu.h"
 #include "game.h"
 #include "piece.h"
 #include "score.h"
-#include <time.h>
+#include "replay.h"
+#include "storage.h"
 
 void mainMenu();
+void continueGame();
 void selectMode();
 void howToPlay();
 
@@ -14,6 +18,7 @@ int main(void)
 {
     atexit(deleteTree);
     srand((unsigned int)time(NULL));
+    createDirectory("gamedata");
     initScore();
     mainMenu();
     return 0;
@@ -25,23 +30,40 @@ void mainMenu()
     const char* menuItems[] = {
                                 "New Game\n",
                                 "Continue\n",
-                                "Watch Replay\n",
+                                "Watch Replays\n",
                                 "Scoreboard\n",
                                 "How To Play\n",
                                 "Exit\n\n",
                                 NULL
     };
-    const char* menuFooter =    "Press ENTER to Select...";
+    const char* menuFooter =    "Press ENTER to Select...\n\n";
 
     while (1) // Loop the game until the user exits.
         switch (menu(menuHeader, menuItems, menuFooter)) {
             case 0: selectMode(); break;
-            case 1: //continue(); break;
-            case 2: //watchReplay(); break;
+            case 1: continueGame(); break;
+            case 2: selectReplays(); break;
             case 3: printScoreboard(); break;
             case 4: howToPlay(); break;
             case 5: return;
         }
+}
+
+void continueGame() {
+    Player player1, player2;
+    Stack stackRedo;
+    Deque dequeUndo;
+    NodeOctuple * board;
+    char currentPlayer;
+
+    // Load the last saved game
+    if (loadGame(&board, &player1, &player2, &stackRedo, &dequeUndo, &currentPlayer)) {
+        game(player1, player2, board, &stackRedo, &dequeUndo, currentPlayer);
+        saveReplayMenu(&dequeUndo);
+    } else {
+        printf("No saved game found. please create a new game first.\n");
+        inputUntilEnter();
+    }
 }
 
 // Author: Ihsan
@@ -105,6 +127,9 @@ void selectMode() {
             char startingPlayer = BLACK;
             // Start the game with selected player types
             game(player1, player2, board, &stackRedo, &dequeUndo, startingPlayer);
+            
+            saveReplayMenu(&dequeUndo);
+            
             return; // Return to main menu after game ends
         }
     }

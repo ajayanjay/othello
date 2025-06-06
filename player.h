@@ -33,4 +33,7 @@ Move playAIHard(NodeOctuple *board, Deque * UNUSED(dequeUndo), Stack * UNUSED(st
 
 Player player(PlayerType type, char symbol);
 
+int savePlayer(Player player, const char *filename);
+int loadPlayer(Player * player, const char *filename);
+
 #endif

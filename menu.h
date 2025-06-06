@@ -68,6 +68,9 @@ void inputUntilEnter();
 // konversi input dari user ke enum input_e.
 Input userInput();
 
+// input string dengan batasan karakter yang diizinkan dan modifikasi karakter.
+void inputLimitedString(char * buffer, int minSize, int maxSize, int (*isCharAllowed)(int), int (*modifyChar)(int));
+
 // bersihkan layar
 void clearScreen();
 
