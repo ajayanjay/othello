@@ -38,7 +38,8 @@ int isValidMoveArray(char board[8][8], Move *move, char player);
 // This function modifies the board directly.
 void makeMoveArray(char board[8][8], Move *move, char player);
 
-void copyArray(char dst[8][8], char src[8][8]);
+void copyBoard(char dst[8][8], char src[8][8]);
+int isBoardEqual(char board[8][8], char other[8][8]);
 
 int isGameFinishedArray(char board[8][8]);
 

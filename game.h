@@ -21,4 +21,6 @@ Move getBestMove(NodeOctuple *board, char player, Move * moves, int movesSize,  
 
 void updateTree(Move lastMove);
 
+void deleteTree();
+
 #endif

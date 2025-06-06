@@ -173,7 +173,7 @@ Move playAIHard(NodeOctuple *board, Deque * UNUSED(dequeUndo), Stack * UNUSED(st
     printf("   AI is thinking...\n");
 
     // Get the best move using minimax with depth 5
-    Move bestMove = getBestMove(board, player, validMoves, numValidMoves, 5);
+    Move bestMove = getBestMove(board, player, validMoves, numValidMoves, 6);
     
     // Find the index of the best move in validMoves for display
     int selectedIndex = 0;

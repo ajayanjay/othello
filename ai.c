@@ -7,7 +7,7 @@
 
 AIInfo createAIInfo(char board[8][8], char currentPlayer, Move move, boolean isMax) {
     AIInfo newInfo;
-    copyArray(newInfo.board, board);
+    copyBoard(newInfo.board, board);
     newInfo.currentPlayer = currentPlayer;
     newInfo.move = move;
     newInfo.isMax = isMax;
@@ -221,8 +221,12 @@ int isValidMoveArray(char board[8][8], Move *move, char player) {
     return 0;
 }
 
-void copyArray(char dst[8][8], char src[8][8]) {
+void copyBoard(char dst[8][8], char src[8][8]) {
     memcpy(dst, src, sizeof(char) * 8 * 8);
+}
+
+int isBoardEqual(char board[8][8], char other[8][8]) {
+    return memcmp(board, other, sizeof(char) * 8 * 8) == 0;
 }
 
 int isGameFinishedArray(char board[8][8]) {

@@ -20,6 +20,7 @@ int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, 
         clearScreen();
         if (isGameOver(board)) {
             printBoard(board, NULL, 0, 0, EMPTY, false);
+            deleteEntireTree(&root);
             gameOverScreen(board, player1, player2);
             inputUntilEnter();
             break;
@@ -48,8 +49,13 @@ int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, 
             currentPlayer = (temp == BLACK) ? &player1 : &player2;
             continue;
         }
-        emptyStack(stackRedo); // if user make a move, empty the redo stack.
-        pushHead(dequeUndo, activity(board, lastMove, currentPlayer->symbol));
+
+        // if we are not against HARD AI, we allow undo or redo.
+        if (player1.type != AI_HARD && player2.type != AI_HARD) {
+            emptyStack(stackRedo); // if user make a move, empty the redo stack.
+            pushHead(dequeUndo, activity(board, lastMove, currentPlayer->symbol));
+        }
+
         makeMove(board, &lastMove, currentPlayer->symbol);
         currentPlayer = (currentPlayer == &player1) ? &player2 : &player1;
     }
@@ -57,6 +63,9 @@ int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, 
 }
 
 void updateTree(Move lastMove) {
+    if (root == NULL) return;
+    if (lastMove.x < 0 || lastMove.y < 0) return;
+
     NbTree * temp = root->fs;
     while (temp != NULL) {
         if (isMoveEqual(temp->info.move, lastMove)) {
@@ -340,8 +349,11 @@ void makeMove(NodeOctuple *board, Move *move, char player) {
 Move getBestMove(NodeOctuple *board, char player, Move * moves, int movesSize,  int depth) {
     char tempBoard[8][8];
     convertOctupleToArray(board, tempBoard);
-    
-    if (root == NULL) {
+
+    // if the current board is different from the root node,
+    // we reset.
+    if (root == NULL || !isBoardEqual(root->info.board, tempBoard)) {
+        deleteEntireTree(&root);
         root = createNodeTree(createAIInfo(tempBoard, player, (Move){-1, -1}, true));
     }
 
@@ -351,21 +363,30 @@ Move getBestMove(NodeOctuple *board, char player, Move * moves, int movesSize,  
     if (root != NULL && root->fs != NULL) {
         NbTree * child = root->fs;
         while (child != NULL) {
-            int score = minimax(child, depth - 1, player);
+            int score = minimax(child, depth - 1, player, INT_MIN, INT_MAX);
             if (score > bestScore) {
                 bestScore = score;
                 bestMove = child->info.move;
             }
             child = child->nb;
         }
-        return bestMove;
+        
+        for (int i = 0; i < movesSize; ++i) 
+            if (isMoveEqual(moves[i], bestMove)) 
+                return bestMove;
+            
+        // if move is not found in moves, this mean there's a bug somewhere.
+        // we will reset the tree and return the best move.
+        deleteEntireTree(&root);
+        root = createNodeTree(createAIInfo(tempBoard, player, (Move){-1, -1}, true));
+        bestScore = INT_MIN;
     }
 
 
     NbTree * prevChild = NULL;
     for (int i = 0; i < movesSize; ++i) {
         char temp[8][8];
-        copyArray(temp, tempBoard);
+        copyBoard(temp, tempBoard);
         makeMoveArray(temp, &moves[i], player);
         char nextPlayer = (player == BLACK) ? WHITE : BLACK;
         NbTree * child = createNodeTree(createAIInfo(temp, nextPlayer, moves[i], false));
@@ -378,7 +399,7 @@ Move getBestMove(NodeOctuple *board, char player, Move * moves, int movesSize,  
             prevChild = child;
         }
 
-        int score = minimax(child, depth - 1, player);
+        int score = minimax(child, depth - 1, player, INT_MIN, INT_MAX);
         if (score > bestScore) {
             bestScore = score;
             bestMove = moves[i];
@@ -386,4 +407,11 @@ Move getBestMove(NodeOctuple *board, char player, Move * moves, int movesSize,  
     }
 
     return bestMove;
+}
+
+void deleteTree() {
+    if (root != NULL) {
+        deleteEntireTree(&root);
+        root = NULL;
+    }
 }

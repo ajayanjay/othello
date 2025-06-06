@@ -12,6 +12,7 @@ void howToPlay();
 
 int main(void)
 {
+    atexit(deleteTree);
     srand((unsigned int)time(NULL));
     initScore();
     mainMenu();
