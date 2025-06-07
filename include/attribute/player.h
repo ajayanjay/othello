@@ -7,9 +7,9 @@
     #define UNUSED(x) UNUSED_ ## x
 #endif
 
-#include "datastructures/octuple.h"
-#include "datastructures/deque.h"
-#include "datastructures/stack.h"
+#include "../datastructure/octuple.h"
+#include "../datastructure/deque.h"
+#include "../datastructure/stack.h"
 #include "move.h"
 
 typedef enum {

@@ -1,6 +1,6 @@
-#include "score.h"
-#include "menu.h"
-#include "piece.h"
+#include "../../include/attribute/score.h"
+#include "../../include/util/menu.h"
+#include "../../include/attribute/piece.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

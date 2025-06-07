@@ -1,9 +1,10 @@
 #ifndef game_h
 #define game_h
 
-#include "player.h"
-#include "boolean.h"
-#include "datastructures/nbtree.h"
+#include "attribute/player.h"
+#include "util/boolean.h"
+#include "datastructure/octuple.h"
+#include "datastructure/nbtree.h"
 
 #define SAVEDATA_DIR "gamedata/savedata"
 #define SAVEDATA_BOARD_FILE "gamedata/savedata/board.dat"

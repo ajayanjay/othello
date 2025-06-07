@@ -1,8 +1,8 @@
 #ifndef replay_h
 #define replay_h
 
-#include "datastructures/deque.h"
-#include "boolean.h"
+#include "datastructure/deque.h"
+#include "util/boolean.h"
 
 #define REPLAY_DIR "gamedata/replays"
 

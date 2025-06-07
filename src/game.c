@@ -1,9 +1,8 @@
-#include "game.h"
-#include "piece.h"
-#include "menu.h"
-#include "score.h"
-#include "storage.h"
-#include "datastructures/nbtree.h"
+#include "../include/game.h"
+#include "../include/attribute/piece.h"
+#include "../include/attribute/score.h"
+#include "../include/util/menu.h"
+#include "../include/util/storage.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>

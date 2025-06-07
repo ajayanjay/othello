@@ -1,4 +1,4 @@
-#include "deque.h"
+#include "../../include/datastructure/deque.h"
 #include <stdlib.h>
 #include <stdio.h>
 

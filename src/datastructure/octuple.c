@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "octuple.h"
-#include "../piece.h"
+#include "../../include/datastructure/octuple.h"
+#include "../../include/attribute/piece.h"
 
 // Author: Ihsan
 NodeOctuple * createNodeOctuple (OctupleInfo info){

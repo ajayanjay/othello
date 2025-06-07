@@ -1,8 +1,8 @@
-#include "replay.h"
-#include "menu.h"
-#include "storage.h"
-#include "ai.h"
-#include "datastructures/stack.h"
+#include "../include/replay.h"
+#include "../include/util/menu.h"
+#include "../include/util/storage.h"
+#include "../include/ai/ai.h"
+#include "../include/datastructure/stack.h"
 #include <stdio.h>
 #include <dirent.h>
 #include <stdlib.h>

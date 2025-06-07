@@ -1,7 +1,7 @@
 #ifndef linked_H
 #define linked_H
 
-#include "../activity.h"
+#include "../attribute/activity.h"
 
 #define nil NULL
 

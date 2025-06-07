@@ -1,8 +1,8 @@
 #ifndef ai_h
 #define ai_h
 
-#include "move.h"
-#include "boolean.h"
+#include "../attribute/move.h"
+#include "../util/boolean.h"
 
 typedef struct aiinfo {
     char board[8][8];

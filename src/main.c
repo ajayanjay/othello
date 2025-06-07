@@ -2,12 +2,13 @@
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
-#include "menu.h"
-#include "game.h"
-#include "piece.h"
-#include "score.h"
-#include "replay.h"
-#include "storage.h"
+
+#include "../include/util/menu.h"
+#include "../include/game.h"
+#include "../include/attribute/piece.h"
+#include "../include/attribute/score.h"
+#include "../include/replay.h"
+#include "../include/util/storage.h"
 
 void mainMenu();
 void continueGame();

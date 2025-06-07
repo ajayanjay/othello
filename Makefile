@@ -1,35 +1,75 @@
-CC = gcc
-CFLAGS = -O2 -Wall -Wextra -std=c99
-BUILDDIR = build
+# Project: Othello
+# Makefile created by Dev-C++ 5.11
 
-# Source files
-SRCS = main.c menu.c game.c ai.c score.c player.c
-DATASTRUCTURE_SRCS = datastructures/stack.c datastructures/octuple.c datastructures/nbtree.c datastructures/linked.c datastructures/deque.c datastructures/array.c
+CPP      = g++.exe
+CC       = gcc.exe
+WINDRES  = windres.exe
+OBJ      = build/out/game.o build/out/main.o build/out/replay.o build/out/util/menu.o build/out/util/storage.o build/out/datastructure/array.o build/out/datastructure/deque.o build/out/datastructure/linked.o build/out/datastructure/nbtree.o build/out/datastructure/octuple.o build/out/datastructure/stack.o build/out/attribute/move.o build/out/attribute/player.o build/out/attribute/score.o build/out/ai/ai.o
+LINKOBJ  = $(OBJ)
+BIN      = build/Othello.exe
+CXXFLAGS = $(CXXINCS) 
+CFLAGS   = $(INCS) 
+RM       = rm.exe -f
 
-# Object files in build directory
-OBJS = $(addprefix $(BUILDDIR)/, $(SRCS:.c=.o))
-DATASTRUCTURE_OBJS = $(addprefix $(BUILDDIR)/, $(DATASTRUCTURE_SRCS:.c=.o))
-ALL_OBJS = $(OBJS) $(DATASTRUCTURE_OBJS)
+.PHONY: all all-before all-after clean clean-custom
 
-# Target executable
-TARGET = $(BUILDDIR)/build
+all: all-before create-build-out-dirs $(BIN) all-after
 
-all: $(TARGET)
+create-build-out-dirs:
+	powershell -Command "if (!(Test-Path -Path 'build')) { New-Item -ItemType Directory -Path 'build' | Out-Null }"
+	powershell -Command "if (!(Test-Path -Path 'build/out')) { New-Item -ItemType Directory -Path 'build/out' | Out-Null }"
+	powershell -Command "if (!(Test-Path -Path 'build/out/util')) { New-Item -ItemType Directory -Path 'build/out/util' | Out-Null }"
+	powershell -Command "if (!(Test-Path -Path 'build/out/datastructure')) { New-Item -ItemType Directory -Path 'build/out/datastructure' | Out-Null }"
+	powershell -Command "if (!(Test-Path -Path 'build/out/attribute')) { New-Item -ItemType Directory -Path 'build/out/attribute' | Out-Null }"
+	powershell -Command "if (!(Test-Path -Path 'build/out/ai')) { New-Item -ItemType Directory -Path 'build/out/ai' | Out-Null }"
 
-$(TARGET): $(ALL_OBJS) | $(BUILDDIR)
-	$(CC) $(ALL_OBJS) -o $(TARGET)
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
 
-$(BUILDDIR)/%.o: %.c | $(BUILDDIR) $(BUILDDIR)/datastructures
-	$(CC) $(CFLAGS) -c $< -o $@
+$(BIN): $(OBJ)
+	$(CC) $(LINKOBJ) -o $(BIN) $(LIBS)
 
-$(BUILDDIR):
-	mkdir -p $(BUILDDIR)
+build/out/game.o: src/game.c | create-build-out-dirs
+	$(CC) -c src/game.c -o build/out/game.o $(CFLAGS)
 
-$(BUILDDIR)/datastructures:
-	mkdir -p $(BUILDDIR)/datastructures
+build/out/main.o: src/main.c | create-build-out-dirs
+	$(CC) -c src/main.c -o build/out/main.o $(CFLAGS)
 
-clean:
-	rm -rf $(BUILDDIR)
+build/out/replay.o: src/replay.c | create-build-out-dirs
+	$(CC) -c src/replay.c -o build/out/replay.o $(CFLAGS)
 
-run: all
-	cd $(BUILDDIR) && ./build
+build/out/util/menu.o: src/util/menu.c | create-build-out-dirs
+	$(CC) -c src/util/menu.c -o build/out/util/menu.o $(CFLAGS)
+
+build/out/util/storage.o: src/util/storage.c | create-build-out-dirs
+	$(CC) -c src/util/storage.c -o build/out/util/storage.o $(CFLAGS)
+
+build/out/datastructure/array.o: src/datastructure/array.c | create-build-out-dirs
+	$(CC) -c src/datastructure/array.c -o build/out/datastructure/array.o $(CFLAGS)
+
+build/out/datastructure/deque.o: src/datastructure/deque.c | create-build-out-dirs
+	$(CC) -c src/datastructure/deque.c -o build/out/datastructure/deque.o $(CFLAGS)
+
+build/out/datastructure/linked.o: src/datastructure/linked.c | create-build-out-dirs
+	$(CC) -c src/datastructure/linked.c -o build/out/datastructure/linked.o $(CFLAGS)
+
+build/out/datastructure/nbtree.o: src/datastructure/nbtree.c | create-build-out-dirs
+	$(CC) -c src/datastructure/nbtree.c -o build/out/datastructure/nbtree.o $(CFLAGS)
+
+build/out/datastructure/octuple.o: src/datastructure/octuple.c | create-build-out-dirs
+	$(CC) -c src/datastructure/octuple.c -o build/out/datastructure/octuple.o $(CFLAGS)
+
+build/out/datastructure/stack.o: src/datastructure/stack.c | create-build-out-dirs
+	$(CC) -c src/datastructure/stack.c -o build/out/datastructure/stack.o $(CFLAGS)
+
+build/out/attribute/move.o: src/attribute/move.c | create-build-out-dirs
+	$(CC) -c src/attribute/move.c -o build/out/attribute/move.o $(CFLAGS)
+
+build/out/attribute/player.o: src/attribute/player.c | create-build-out-dirs
+	$(CC) -c src/attribute/player.c -o build/out/attribute/player.o $(CFLAGS)
+
+build/out/attribute/score.o: src/attribute/score.c | create-build-out-dirs
+	$(CC) -c src/attribute/score.c -o build/out/attribute/score.o $(CFLAGS)
+
+build/out/ai/ai.o: src/ai/ai.c | create-build-out-dirs
+	$(CC) -c src/ai/ai.c -o build/out/ai/ai.o $(CFLAGS)

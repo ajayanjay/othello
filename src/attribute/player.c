@@ -1,6 +1,6 @@
-#include "game.h"
-#include "menu.h"
-#include "datastructures/nbtree.h"
+#include "../../include/game.h"
+#include "../../include/util/menu.h"
+#include "../../include/datastructure/nbtree.h"
 #include <stdlib.h>
 #include <stdio.h>
 

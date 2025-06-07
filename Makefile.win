@@ -1,61 +1,70 @@
 # Project: Othello
-# Makefile created by Embarcadero Dev-C++ 6.3
+# Makefile created by Dev-C++ 5.11
 
-CPP      = g++.exe -D__DEBUG__
-CC       = gcc.exe -D__DEBUG__
+CPP      = g++.exe
+CC       = gcc.exe
 WINDRES  = windres.exe
-OBJ      = ai.o game.o main.o menu.o player.o score.o datastructures/array.o datastructures/deque.o datastructures/linked.o datastructures/nbtree.o datastructures/octuple.o datastructures/stack.o
-LINKOBJ  = ai.o game.o main.o menu.o player.o score.o datastructures/array.o datastructures/deque.o datastructures/linked.o datastructures/nbtree.o datastructures/octuple.o datastructures/stack.o
-LIBS     = -L"E:/ajay/IDE/EmbarcaredoDevC/TDM-GCC-64/lib" -L"E:/ajay/IDE/EmbarcaredoDevC/TDM-GCC-64/x86_64-w64-mingw32/lib" -static-libgcc -g3
-INCS     = -I"E:/ajay/IDE/EmbarcaredoDevC/TDM-GCC-64/include" -I"E:/ajay/IDE/EmbarcaredoDevC/TDM-GCC-64/x86_64-w64-mingw32/include" -I"E:/ajay/IDE/EmbarcaredoDevC/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/9.2.0/include"
-CXXINCS  = -I"E:/ajay/IDE/EmbarcaredoDevC/TDM-GCC-64/include" -I"E:/ajay/IDE/EmbarcaredoDevC/TDM-GCC-64/x86_64-w64-mingw32/include" -I"E:/ajay/IDE/EmbarcaredoDevC/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/9.2.0/include" -I"E:/ajay/IDE/EmbarcaredoDevC/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/9.2.0/include/c++"
+OBJ      = src/game.o src/main.o src/replay.o src/util/menu.o src/util/storage.o src/datastructure/array.o src/datastructure/deque.o src/datastructure/linked.o src/datastructure/nbtree.o src/datastructure/octuple.o src/datastructure/stack.o src/attribute/move.o src/attribute/player.o src/attribute/score.o src/ai/ai.o
+LINKOBJ  = src/game.o src/main.o src/replay.o src/util/menu.o src/util/storage.o src/datastructure/array.o src/datastructure/deque.o src/datastructure/linked.o src/datastructure/nbtree.o src/datastructure/octuple.o src/datastructure/stack.o src/attribute/move.o src/attribute/player.o src/attribute/score.o src/ai/ai.o
+LIBS     = -L"E:/ajay/IDE/DevCpp/MinGW64/lib" -L"E:/ajay/IDE/DevCpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc
+INCS     = -I"E:/ajay/IDE/DevCpp/MinGW64/include" -I"E:/ajay/IDE/DevCpp/MinGW64/x86_64-w64-mingw32/include" -I"E:/ajay/IDE/DevCpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include"
+CXXINCS  = -I"E:/ajay/IDE/DevCpp/MinGW64/include" -I"E:/ajay/IDE/DevCpp/MinGW64/x86_64-w64-mingw32/include" -I"E:/ajay/IDE/DevCpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"E:/ajay/IDE/DevCpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
 BIN      = Othello.exe
-CXXFLAGS = $(CXXINCS) -g3
-CFLAGS   = $(INCS) -g3
-DEL      = E:\ajay\IDE\EmbarcaredoDevC\devcpp.exe INTERNAL_DEL
+CXXFLAGS = $(CXXINCS) 
+CFLAGS   = $(INCS) 
+RM       = rm.exe -f
 
 .PHONY: all all-before all-after clean clean-custom
 
 all: all-before $(BIN) all-after
 
 clean: clean-custom
-	${DEL} $(OBJ) $(BIN)
+	${RM} $(OBJ) $(BIN)
 
 $(BIN): $(OBJ)
 	$(CC) $(LINKOBJ) -o $(BIN) $(LIBS)
 
-ai.o: ai.c
-	$(CC) -c ai.c -o ai.o $(CFLAGS)
+src/game.o: src/game.c
+	$(CC) -c src/game.c -o src/game.o $(CFLAGS)
 
-game.o: game.c
-	$(CC) -c game.c -o game.o $(CFLAGS)
+src/main.o: src/main.c
+	$(CC) -c src/main.c -o src/main.o $(CFLAGS)
 
-main.o: main.c
-	$(CC) -c main.c -o main.o $(CFLAGS)
+src/replay.o: src/replay.c
+	$(CC) -c src/replay.c -o src/replay.o $(CFLAGS)
 
-menu.o: menu.c
-	$(CC) -c menu.c -o menu.o $(CFLAGS)
+src/util/menu.o: src/util/menu.c
+	$(CC) -c src/util/menu.c -o src/util/menu.o $(CFLAGS)
 
-player.o: player.c
-	$(CC) -c player.c -o player.o $(CFLAGS)
+src/util/storage.o: src/util/storage.c
+	$(CC) -c src/util/storage.c -o src/util/storage.o $(CFLAGS)
 
-score.o: score.c
-	$(CC) -c score.c -o score.o $(CFLAGS)
+src/datastructure/array.o: src/datastructure/array.c
+	$(CC) -c src/datastructure/array.c -o src/datastructure/array.o $(CFLAGS)
 
-datastructures/array.o: datastructures/array.c
-	$(CC) -c datastructures/array.c -o datastructures/array.o $(CFLAGS)
+src/datastructure/deque.o: src/datastructure/deque.c
+	$(CC) -c src/datastructure/deque.c -o src/datastructure/deque.o $(CFLAGS)
 
-datastructures/deque.o: datastructures/deque.c
-	$(CC) -c datastructures/deque.c -o datastructures/deque.o $(CFLAGS)
+src/datastructure/linked.o: src/datastructure/linked.c
+	$(CC) -c src/datastructure/linked.c -o src/datastructure/linked.o $(CFLAGS)
 
-datastructures/linked.o: datastructures/linked.c
-	$(CC) -c datastructures/linked.c -o datastructures/linked.o $(CFLAGS)
+src/datastructure/nbtree.o: src/datastructure/nbtree.c
+	$(CC) -c src/datastructure/nbtree.c -o src/datastructure/nbtree.o $(CFLAGS)
 
-datastructures/nbtree.o: datastructures/nbtree.c
-	$(CC) -c datastructures/nbtree.c -o datastructures/nbtree.o $(CFLAGS)
+src/datastructure/octuple.o: src/datastructure/octuple.c
+	$(CC) -c src/datastructure/octuple.c -o src/datastructure/octuple.o $(CFLAGS)
 
-datastructures/octuple.o: datastructures/octuple.c
-	$(CC) -c datastructures/octuple.c -o datastructures/octuple.o $(CFLAGS)
+src/datastructure/stack.o: src/datastructure/stack.c
+	$(CC) -c src/datastructure/stack.c -o src/datastructure/stack.o $(CFLAGS)
 
-datastructures/stack.o: datastructures/stack.c
-	$(CC) -c datastructures/stack.c -o datastructures/stack.o $(CFLAGS)
+src/attribute/move.o: src/attribute/move.c
+	$(CC) -c src/attribute/move.c -o src/attribute/move.o $(CFLAGS)
+
+src/attribute/player.o: src/attribute/player.c
+	$(CC) -c src/attribute/player.c -o src/attribute/player.o $(CFLAGS)
+
+src/attribute/score.o: src/attribute/score.c
+	$(CC) -c src/attribute/score.c -o src/attribute/score.o $(CFLAGS)
+
+src/ai/ai.o: src/ai/ai.c
+	$(CC) -c src/ai/ai.c -o src/ai/ai.o $(CFLAGS)
