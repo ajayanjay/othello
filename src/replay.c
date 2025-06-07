@@ -80,51 +80,51 @@ boolean overwriteReplayMenu (){
 
 void printReplay(const char *fileName){
     Deque replay;
-    loadDeque(&replay, fileName);
-    if (isDequeEmpty(&replay)){
+    if (!loadDeque(&replay, fileName) || isDequeEmpty(&replay)){
         return;
     }
 
-    address history[64] = {NULL};
-    int pos = 0;
     address current = replay.tail;
-    history[0] = current; // Inisialisasi langkah pertama
+    int pos = 0;
 
-    while (current != NULL){
-        Activity act = history[pos]->info;
-        printf("Step %d (%c):\n", pos+1, act.currentPlayer);
+    while (1){
+        clearScreen();
+
+        Activity act = current->info;
+        printf("      Step %d (%c):", pos+1, act.currentPlayer);
         printBoardArray(act.board, act.currentPlayer, &act.lastMove);
-        printf("Use arrow left, arrow right, and ESC\n");
+        printf(
+            "\n"
+            "   LEFT_KEY = Previous Step\n"
+            "   RIGHT_KEY = Next Step\n"
+            "   ESC_KEY = Exit Replay\n"
+        );
 
-        int input = userInput();
-        switch (input) {
-            case RIGHT:{
-                if (history[pos+1] != NULL) {
-                pos++;
-                current = history[pos];
-                } else {
-                // if never redo, next step
-                    if (current->prev != NULL) {
-                        pos++;
-                        current = current->prev;
-                        history[pos] = current;
-                    }
+        boolean unnecessaryInput = true;
+        while (unnecessaryInput) switch (userInput()) {
+            case RIGHT:
+                if (current->prev != NULL) {
+                    current = current->prev;
+                    pos++;
+                    unnecessaryInput = false;
                 }
                 break;
-            }
-            case LEFT:{
-                if (pos > 0){
-                pos--;
-                current = history[pos];
+
+            case LEFT:
+                if (current->next != NULL) {
+                    current = current->next;
+                    pos--;
+                    unnecessaryInput = false;
                 }
                 break;
-            case ESC:{
+
+            case ESC:
+                freeDeque(&replay);
                 return;
-            }
-            }
-            default:{
+            
+            default:
                 break;
-            }
+            
         }
     }
 }

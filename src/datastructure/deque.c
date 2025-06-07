@@ -11,8 +11,10 @@ void pushTail(Deque *Q, infotype nilai) {
         Q->head = P;
         Q->tail = P;
     } else {
-        insertAkhir(&(Q->tail), P);
+        Q->tail->next = P;
+        P->prev = Q->tail;
         Q->tail = P;
+        
     }
 }
 
@@ -30,27 +32,28 @@ void pushHead(Deque *Q, infotype nilai) {
 }
 
 void popHead(Deque *Q, infotype *nilai){
-    if (!isEmpty(Q->head)) {
-        freeAwal(&Q->head, nilai);
-        if (Q->head == nil) {
-            Q->tail = nil;
-        }
+    if (isEmpty(Q->head)) 
+        return;
+
+    freeAwal(&Q->head, nilai);
+    if (Q->head == nil) {
+        Q->tail = nil;
     }
+
 }
 
 void popTail(Deque *Q, infotype *nilai){
-    if (!isEmpty(Q->head)) {
-        freeAkhir(&Q->tail, nilai);
-        if (Q->head == nil) {
-            Q->tail = nil;
-        } else {
-            // Update tail pointer to previous node
-            ElmtList *current = Q->head;
-            while (current->next != nil) {
-                current = current->next;
-            }
-            Q->tail = current;
-        }
+    if (isEmpty(Q->head)) 
+        return;
+
+    address last = Q->tail;
+    *nilai = last->info;
+    if (last->prev != nil) {
+        Q->tail = last->prev;
+        Q->tail->next = nil;
+    } else {
+        Q->head = nil;
+        Q->tail = nil;
     }
 }
 

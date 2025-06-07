@@ -435,7 +435,7 @@ Move getBestMove(NodeOctuple *board, char player, Move * moves, int movesSize, i
     int bestValue = INT_MIN;
 
     while (child != NULL) {
-        int val = minimax(child, depth - 1, player, false, INT_MIN, INT_MAX);
+        int val = minimax(child, depth - 1, player, false, bestValue, INT_MAX);
         
         if (val > bestValue) {
             bestValue = val;
