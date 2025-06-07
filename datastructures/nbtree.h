@@ -16,6 +16,6 @@ NbTree* createNodeTree (InfoNbTree info);
 void deleteEntireTree (NbTree** root);
 void disconnectTreeExcept (NbTree ** root, NbTree * chosen);
 
-int minimax(NbTree *root, int depth, char aiPlayer, int alpha, int beta);
+int insertChild(NbTree * parent, NbTree * son);
 
 #endif

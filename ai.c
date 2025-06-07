@@ -22,7 +22,7 @@ void printBoardArray (char board [8][8], char player, Move *selectedMove){
             if (selectedMove != NULL &&
                 selectedMove->x >= 0 && selectedMove->x < 8 &&
                 selectedMove->y >= 0 && selectedMove->y < 8 &&
-                move.y == selectedMove->x && move.x == selectedMove->y) {
+                move.y == selectedMove->y && move.x == selectedMove->x) {
                 isSelected = 1;
             }
             if (isSelected) {
@@ -47,12 +47,12 @@ void printBoardArray (char board [8][8], char player, Move *selectedMove){
     printf ("%s", buffer);
 }
 
-AIInfo createAIInfo(char board[8][8], char currentPlayer, Move move, boolean isMax) {
+AIInfo createAIInfo(char board[8][8], char currentPlayer, Move move) {
     AIInfo newInfo;
     copyBoard(newInfo.board, board);
     newInfo.currentPlayer = currentPlayer;
     newInfo.move = move;
-    newInfo.isMax = isMax;
+    newInfo.isGameFinished = isGameFinishedArray(board);
     return newInfo;
 }
 

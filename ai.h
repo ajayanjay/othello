@@ -8,10 +8,10 @@ typedef struct aiinfo {
     char board[8][8];
     char currentPlayer;
     Move move;
-    boolean isMax;
+    boolean isGameFinished;
 } AIInfo;
 
-AIInfo createAIInfo(char board[8][8], char currentPlayer, Move move, boolean isMax);
+AIInfo createAIInfo(char board[8][8], char currentPlayer, Move move);
 
 void printBoardArray (char board [8][8], char player, Move *selectedMove);
 

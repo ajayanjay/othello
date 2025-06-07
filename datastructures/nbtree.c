@@ -76,72 +76,16 @@ void disconnectTreeExcept(NbTree **root, NbTree * chosen) {
     deleteEntireTree(&oldRoot);
 }
 
+int insertChild(NbTree *parent, NbTree * son) {
+    if (parent == NULL) return 0;
 
-int minimax(NbTree * node, int depth, char aiPlayer, int alpha, int beta) {
-
-    if (depth == 0 || isGameFinishedArray(node->info.board)) {
-        return evaluateBoardArray(node->info.board, aiPlayer);
+    NbTree *current = parent->fs;
+    if (current == NULL) {
+        parent->fs = son;
+    } else {
+        son->nb = current;
+        parent->fs = son;
     }
-
-    int bestScore = (node->info.isMax) ? INT_MIN : INT_MAX;
-    if (node->fs != NULL) {
-        NbTree * child = node->fs;
-        while (child != NULL) {
-            int score = minimax(child, depth - 1, aiPlayer, alpha, beta);
-            if (node->info.isMax) {
-                if (score > bestScore) bestScore = score;
-                if (score > alpha) alpha = score;
-                if (beta <= alpha) break;
-            } else {
-                if (score < bestScore) bestScore = score;
-                if (score < beta) beta = score;
-                if (beta <= alpha) break;
-            }
-            child = child->nb;
-        }
-        return bestScore;
-    }
-
-    int moveCount;
-    Move *validMoves = getValidMovesArray(node->info.board, node->info.currentPlayer, &moveCount);
-
-    if (moveCount == 0) {
-        char opponent = (node->info.currentPlayer == BLACK) ? WHITE : BLACK;
-        NbTree * passNode = createNodeTree(createAIInfo(node->info.board, opponent, (Move){-1, -1}, !node->info.isMax));
-        node->fs = passNode;
-        int score = minimax(passNode, depth - 1, aiPlayer, alpha, beta);
-        return score;
-    }
-
-    NbTree * prevChild = NULL;
-    for (int i = 0; i < moveCount; ++i) {
-        char tempBoard[8][8];
-        copyBoard(tempBoard, node->info.board);
-
-        makeMoveArray(tempBoard, &validMoves[i], node->info.currentPlayer);
-        char nextPlayer = (node->info.currentPlayer == BLACK) ? WHITE : BLACK;
-
-        NbTree * child = createNodeTree(createAIInfo(tempBoard, nextPlayer, validMoves[i], !node->info.isMax));
-        if (prevChild == NULL) {
-            node->fs = child;
-            prevChild = child;
-        } else {
-            prevChild->nb = child;
-            prevChild = child;
-        }
-
-        int score = minimax(child, depth - 1, aiPlayer, alpha, beta);
-        if (node->info.isMax) {
-            if (score > bestScore) bestScore = score;
-            if (score > alpha) alpha = score;
-            if (beta <= alpha) break;
-        } else {
-            if (score < bestScore) bestScore = score;
-            if (score < beta) beta = score;
-            if (beta <= alpha) break;
-        }
-    }
-
-    free(validMoves);
-    return bestScore;
+    
+    return 1;
 }

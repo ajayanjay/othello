@@ -9,6 +9,9 @@
 #include <ctype.h>
 #include <string.h>
 
+#define max(a,b) ((a) > (b) ? (a) : (b))
+#define min(a,b) ((a) < (b) ? (a) : (b))
+
 NbTree * root = NULL;
 
 //Author: Azzar & Ihsan
@@ -16,7 +19,6 @@ int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, 
 
     createDirectory(SAVEDATA_DIR);
 
-    char temp;
     Player * currentPlayer = (startingPlayer == BLACK) ? &player1 : &player2;
     Move lastMove = {-1, -1};
 
@@ -24,7 +26,7 @@ int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, 
         clearScreen();
         if (isGameOver(board)) {
             printBoard(board, NULL, 0, 0, EMPTY, false);
-            deleteEntireTree(&root);
+            deleteTree();
             gameOverScreen(board, player1, player2);
             removeSavedGameFiles();
             inputUntilEnter();
@@ -35,7 +37,7 @@ int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, 
         
         lastMove = currentPlayer->play(board, dequeUndo, stackRedo, currentPlayer->symbol);
 
-        if (player1.type == AI_HARD || player2.type == AI_HARD)
+        if (player1.type == AI_HARD || player2.type == AI_HARD || player1.type == AI_MEDIUM ||  player2.type == AI_MEDIUM)
             updateTree(lastMove);
 
         // currentPlayer has no available moves.
@@ -58,12 +60,8 @@ int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, 
             continue;
         }
 
-        // if we are not against HARD AI, we allow undo or redo.
-        if (player1.type != AI_HARD && player2.type != AI_HARD) {
-            emptyStack(stackRedo); // if user make a move, empty the redo stack.
-            pushHead(dequeUndo, activity(board, lastMove, currentPlayer->symbol));
-        }
-
+        emptyStack(stackRedo);
+        pushHead(dequeUndo, activity(board, lastMove, currentPlayer->symbol));
         makeMove(board, &lastMove, currentPlayer->symbol);
         currentPlayer = (currentPlayer == &player1) ? &player2 : &player1;
     }
@@ -72,7 +70,7 @@ int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, 
 
 void updateTree(Move lastMove) {
     if (root == NULL) return;
-    if (lastMove.x < 0 || lastMove.y < 0) return;
+    if (lastMove.x < -1 || lastMove.y < -1) return;
 
     NbTree * temp = root->fs;
     while (temp != NULL) {
@@ -408,68 +406,129 @@ int loadGame(NodeOctuple ** board, Player * player1, Player * player2, Stack * s
     return 1;
 }
 
-Move getBestMove(NodeOctuple *board, char player, Move * moves, int movesSize,  int depth) {
-    char tempBoard[8][8];
-    convertOctupleToArray(board, tempBoard);
+Move getBestMove(NodeOctuple *board, char player, Move * moves, int movesSize, int depth) {
+    char boardArray[8][8];
+    convertOctupleToArray(board, boardArray);
 
-    // if the current board is different from the root node,
-    // we reset.
-    if (root == NULL || !isBoardEqual(root->info.board, tempBoard)) {
-        deleteEntireTree(&root);
-        root = createNodeTree(createAIInfo(tempBoard, player, (Move){-1, -1}, true));
+    if (root == NULL) root = createNodeTree(createAIInfo(boardArray, player, (Move){-1, -1}));
+
+    if (root->fs == NULL) {
+        // create the first level of the tree with all possible moves.
+        for (int i = 0; i < movesSize; ++i) {
+            char tempBoard[8][8];
+            copyBoard(tempBoard, boardArray);
+            makeMoveArray(tempBoard, &moves[i], player);
+
+            char nextPlayer = (player == BLACK) ? WHITE : BLACK;
+            NbTree * childNode = createNodeTree(createAIInfo(tempBoard, nextPlayer, moves[i]));
+            insertChild(root, childNode);
+        }
     }
 
-    int bestScore = INT_MIN;
+    NbTree * child = root->fs;
     Move bestMove = {-1, -1};
+    int bestValue = INT_MIN;
 
-    if (root != NULL && root->fs != NULL) {
-        NbTree * child = root->fs;
-        while (child != NULL) {
-            int score = minimax(child, depth - 1, player, INT_MIN, INT_MAX);
-            if (score > bestScore) {
-                bestScore = score;
-                bestMove = child->info.move;
-            }
-            child = child->nb;
+    while (child != NULL) {
+        int val = minimax(child, depth - 1, player, false, INT_MIN, INT_MAX);
+        
+        if (val > bestValue) {
+            bestValue = val;
+            bestMove = child->info.move;
         }
         
-        for (int i = 0; i < movesSize; ++i) 
-            if (isMoveEqual(moves[i], bestMove)) 
-                return bestMove;
-            
-        // if move is not found in moves, this mean there's a bug somewhere.
-        // we will reset the tree and return the best move.
-        deleteEntireTree(&root);
-        root = createNodeTree(createAIInfo(tempBoard, player, (Move){-1, -1}, true));
-        bestScore = INT_MIN;
-    }
-
-
-    NbTree * prevChild = NULL;
-    for (int i = 0; i < movesSize; ++i) {
-        char temp[8][8];
-        copyBoard(temp, tempBoard);
-        makeMoveArray(temp, &moves[i], player);
-        char nextPlayer = (player == BLACK) ? WHITE : BLACK;
-        NbTree * child = createNodeTree(createAIInfo(temp, nextPlayer, moves[i], false));
-        
-        if (prevChild == NULL) {
-            root->fs = child;
-            prevChild = child;
-        } else {
-            prevChild->nb = child;
-            prevChild = child;
-        }
-
-        int score = minimax(child, depth - 1, player, INT_MIN, INT_MAX);
-        if (score > bestScore) {
-            bestScore = score;
-            bestMove = moves[i];
-        }
+        child = child->nb;
     }
 
     return bestMove;
+    
 }
+
+int minimax(NbTree * node, int depth, char player, boolean isMax, int alpha, int beta) {
+    if (depth == 0 || node->info.isGameFinished)
+        return evaluateBoardArray(node->info.board, player);
+
+    if (node->fs == NULL) {
+
+        // if has no son, build the tree from this node.
+
+        int validMoveCount;
+        Move * validMoves = getValidMovesArray(node->info.board, node->info.currentPlayer, &validMoveCount);
+
+        if (validMoveCount == 0) {
+            char opPlayer = (node->info.currentPlayer == BLACK) ? WHITE : BLACK;
+            NbTree * passNode = createNodeTree(createAIInfo(node->info.board, opPlayer, (Move){-1, -1}));
+            node->fs = passNode;
+            return minimax(passNode, depth - 1, player, !isMax, alpha, beta);
+        }
+
+        int bestScore = isMax ? INT_MIN : INT_MAX;
+        boolean cutoff = false;
+        for (int i = 0; i < validMoveCount; ++i) {
+            char tempBoard[8][8];
+            copyBoard(tempBoard, node->info.board);
+            makeMoveArray(tempBoard, &validMoves[i], node->info.currentPlayer);
+
+            char nextPlayer = (node->info.currentPlayer == BLACK) ? WHITE : BLACK;
+            NbTree * childNode = createNodeTree(createAIInfo(tempBoard, nextPlayer, validMoves[i]));
+            insertChild(node, childNode);
+
+            int eval = isMax ? INT_MIN : INT_MAX;
+            if (!cutoff) eval = minimax(childNode, depth - 1, player, !isMax, alpha, beta);
+            
+            if (isMax) {
+                bestScore = max(bestScore, eval);
+                alpha = max(alpha, eval);
+            } else {
+                bestScore = min(bestScore, eval);
+                beta = min(beta, eval);
+            }
+
+            // if cutoff did happen, stop evaluation but keep adding children of the current note.
+            if (beta <= alpha) cutoff = true;
+        }
+
+        free(validMoves);
+        return bestScore;
+
+    } else {
+
+        // if has son, we will iterate through all of the sons.
+
+        NbTree * child = node->fs;
+        if (child == NULL)
+            return evaluateBoardArray(node->info.board, player);
+        
+        // if the node is a pass node, we will evaluate the first son.
+        if (isMoveEqual(node->info.move, (Move){-1, -1})) 
+            return minimax(child, depth - 1, player, !isMax, alpha, beta);
+        
+        // if the node has children, we will iterate through them.
+        // this is used to build the tree from an existing node.
+        int bestScore = isMax ? INT_MIN : INT_MAX;
+        while (child != NULL) {
+            int eval = minimax(child, depth - 1, player, !isMax, alpha, beta);
+            
+            if (isMax) {
+                bestScore = max(bestScore, eval);
+                alpha = max(alpha, eval);
+            } else {
+                bestScore = min(bestScore, eval);
+                beta = min(beta, eval);
+            }
+
+            if (beta <= alpha) break;
+
+            child = child->nb;
+        }
+        return bestScore;
+    }
+
+    return 0;
+}
+
+
+
 
 void deleteTree() {
     if (root != NULL) {

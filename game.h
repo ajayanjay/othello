@@ -3,6 +3,7 @@
 
 #include "player.h"
 #include "boolean.h"
+#include "datastructures/nbtree.h"
 
 #define SAVEDATA_DIR "gamedata/savedata"
 #define SAVEDATA_BOARD_FILE "gamedata/savedata/board.dat"
@@ -30,6 +31,9 @@ int loadGame(NodeOctuple ** board, Player * player1, Player * player2, Stack * s
 void removeSavedGameFiles();
 
 Move getBestMove(NodeOctuple *board, char player, Move * moves, int movesSize,  int depth);
+
+int minimax(NbTree *root, int depth, char aiPlayer, boolean isMax, int alpha, int beta);
+
 void updateTree(Move lastMove);
 void deleteTree();
 
