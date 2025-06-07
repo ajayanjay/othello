@@ -4,7 +4,7 @@
 CPP      = g++.exe
 CC       = gcc.exe
 WINDRES  = windres.exe
-OBJ      = build/out/game.o build/out/main.o build/out/replay.o build/out/util/menu.o build/out/util/storage.o build/out/datastructure/array.o build/out/datastructure/deque.o build/out/datastructure/linked.o build/out/datastructure/nbtree.o build/out/datastructure/octuple.o build/out/datastructure/stack.o build/out/attribute/move.o build/out/attribute/player.o build/out/attribute/score.o build/out/ai/ai.o
+OBJ      = build/out/game.o build/out/main.o build/out/replay.o build/out/util/menu.o build/out/util/storage.o build/out/datastructure/array.o build/out/datastructure/deque.o build/out/datastructure/linked.o build/out/datastructure/nbtree.o build/out/datastructure/octuple.o build/out/datastructure/stack.o build/out/attribute/move.o build/out/attribute/player.o build/out/attribute/score.o build/out/attribute/piece.o build/out/ai/ai.o
 LINKOBJ  = $(OBJ)
 BIN      = build/Othello.exe
 CXXFLAGS = $(CXXINCS) 
@@ -70,6 +70,9 @@ build/out/attribute/player.o: src/attribute/player.c | create-build-out-dirs
 
 build/out/attribute/score.o: src/attribute/score.c | create-build-out-dirs
 	$(CC) -c src/attribute/score.c -o build/out/attribute/score.o $(CFLAGS)
+
+build/out/attribute/piece.o: src/attribute/piece.c | create-build-out-dirs
+	$(CC) -c src/attribute/piece.c -o build/out/attribute/piece.o $(CFLAGS)
 
 build/out/ai/ai.o: src/ai/ai.c | create-build-out-dirs
 	$(CC) -c src/ai/ai.c -o build/out/ai/ai.o $(CFLAGS)

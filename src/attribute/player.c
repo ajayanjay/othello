@@ -1,6 +1,5 @@
 #include "../../include/game.h"
 #include "../../include/util/menu.h"
-#include "../../include/datastructure/nbtree.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -209,10 +208,6 @@ Player player(PlayerType type, char symbol) {
             newPlayer.play = playAIHard;
             break;
 
-        case REPLAY:
-            // newPlayer.play = playReplay;
-            break;
-        
         default: 
             break;
     }

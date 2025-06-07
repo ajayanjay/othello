@@ -68,10 +68,10 @@ int evaluateBoardArray(char board[8][8], char player) {
 }
 
 int evaluatePieceDifference(char board[8][8], char player) {
-    char opPlayer = player == BLACK ? WHITE : BLACK;
+    char opponent = getOppositePiece(player);
 
     int playerPieceCount = getPieceCountArray(board, player);
-    int opponentPieceCount = getPieceCountArray(board, opPlayer);
+    int opponentPieceCount = getPieceCountArray(board, opponent);
     int totalPieces = playerPieceCount + opponentPieceCount;
 
     if (totalPieces == 0) return 0;
@@ -80,11 +80,11 @@ int evaluatePieceDifference(char board[8][8], char player) {
 
 // mobility is the number of valid moves a player can make.
 int evaluateMobility(char board[8][8], char player) {
-    char opPlayer = player == BLACK ? WHITE : BLACK;
+    char opponent = getOppositePiece(player);
 
     int mySize = 0, opSize = 0;
     Move *myMoves = getValidMovesArray(board, player, &mySize);
-    Move *opMoves = getValidMovesArray(board, opPlayer, &opSize);
+    Move *opMoves = getValidMovesArray(board, opponent, &opSize);
 
     if (myMoves != NULL) 
         free(myMoves);
@@ -98,21 +98,21 @@ int evaluateMobility(char board[8][8], char player) {
 }
 
 int evaluateCorner(char board[8][8], char player) {
-    char opPlayer = player == BLACK ? WHITE : BLACK;
+    char opponent = getOppositePiece(player);
 
     int myCorners = 0, opCorners = 0;
 
     if (board[0][0] == player) myCorners++;
-    else if (board[0][0] == opPlayer) opCorners++;
+    else if (board[0][0] == opponent) opCorners++;
 
     if (board[0][7] == player) myCorners++;
-    else if (board[0][7] == opPlayer) opCorners++;
+    else if (board[0][7] == opponent) opCorners++;
 
     if (board[7][0] == player) myCorners++;
-    else if (board[7][0] == opPlayer) opCorners++;
+    else if (board[7][0] == opponent) opCorners++;
 
     if (board[7][7] == player) myCorners++;
-    else if (board[7][7] == opPlayer) opCorners++;
+    else if (board[7][7] == opponent) opCorners++;
 
     int totalCorners = myCorners + opCorners;
     if (totalCorners == 0) return 0;
@@ -168,7 +168,7 @@ Move * getValidMovesArray(char board[8][8], char player, int *returnSize) {
 
 // move is VALID.
 void makeMoveArray(char board[8][8], Move *move, char currentPlayer) {
-    char opPlayer = currentPlayer == BLACK ? WHITE : BLACK;
+    char opponent = getOppositePiece(currentPlayer);
 
     // set the piece
     board[(int)move->y][(int)move->x] = currentPlayer;
@@ -188,7 +188,7 @@ void makeMoveArray(char board[8][8], Move *move, char currentPlayer) {
         boolean foundOpponent = false;
 
         while (x >= 0 && x < 8 && y >= 0 && y < 8) {
-            if (board[y][x] == opPlayer) {
+            if (board[y][x] == opponent) {
                 foundOpponent = true;
             } else if (board[y][x] == currentPlayer) {
                 if (foundOpponent) {
@@ -216,7 +216,7 @@ void makeMoveArray(char board[8][8], Move *move, char currentPlayer) {
 }
 
 int isValidMoveArray(char board[8][8], Move *move, char player) {
-    char opPlayer = player == BLACK ? WHITE : BLACK;
+    char opponent = getOppositePiece(player);
 
     if (board[(int)move->y][(int)move->x] != EMPTY)
         return 0;
@@ -236,7 +236,7 @@ int isValidMoveArray(char board[8][8], Move *move, char player) {
 
         while (x >= 0 && x < 8 && y >= 0 && y < 8) {
             // nemu musuh. berarti ada kemungkinan kita bisa nge capture.
-            if (board[y][x] == opPlayer)
+            if (board[y][x] == opponent)
                 foundOpponent = true;
 
             // nemu kita
@@ -284,181 +284,3 @@ int isGameFinishedArray(char board[8][8]) {
 
     return 0;
 }
-
-/* bruteforce check
-                // upleft check
-                if (board->board[y - 1][x - 1] == opPlayer && y > 0 && x > 0) {
-                    while (y > 0 && x > 0 && board->board[y - 1][x - 1] == opPlayer) {
-                        y--;
-                        x--;
-                    }
-
-                    if (y > 0 && x > 0 && board->board[y - 1][x - 1] == 0) {
-                        buffer[*count].x = x - 1;
-                        buffer[*count].y = y - 1;
-                        (*count)++;
-                    }
-                }
-
-                // up check
-                y = i;
-                x = j;
-                if (board->board[y - 1][x] == opPlayer && y > 0) {
-                    while (y > 0 && board->board[y - 1][x] == opPlayer) {
-                        y--;
-                    }
-
-                    if (y > 0 && board->board[y - 1][x] == 0) {
-                        buffer[*count].x = x;
-                        buffer[*count].y = y - 1;
-                        (*count)++;
-                    }
-                }
-
-                // upright check
-                y = i;
-                x = j;
-                if (board->board[y - 1][x + 1] == opPlayer && y > 0 && x < 7) {
-                    while (y > 0 && x < 7 && board->board[y - 1][x + 1] == opPlayer) {
-                        y--;
-                        x++;
-                    }
-
-                    if (y > 0 && x < 7 && board->board[y - 1][x + 1] == 0) {
-                        buffer[*count].x = x + 1;
-                        buffer[*count].y = y - 1;
-                        (*count)++;
-                    }
-                }
-
-                // right check
-                y = i;
-                x = j;
-                if (board->board[y][x + 1] == opPlayer && x < 7) {
-                    while (x < 7 && board->board[y][x + 1] == opPlayer) {
-                        x++;
-                    }
-
-                    if (x < 7 && board->board[y][x + 1] == 0) {
-                        buffer[*count].x = x + 1;
-                        buffer[*count].y = y;
-                        (*count)++;
-                    }
-                }
-
-                // downright check
-                y = i;
-                x = j;
-                if (board->board[y + 1][x + 1] == opPlayer && y < 7 && x < 7) {
-                    while (y < 7 && x < 7 && board->board[y + 1][x + 1] == opPlayer) {
-                        y++;
-                        x++;
-                    }
-
-                    if (y < 7 && x < 7 && board->board[y + 1][x + 1] == 0) {
-                        buffer[*count].x = x + 1;
-                        buffer[*count].y = y + 1;
-                        (*count)++;
-                    }
-                }
-
-                // down check
-                y = i;
-                x = j;
-                if (board->board[y + 1][x] == opPlayer && y < 7) {
-                    while (y < 7 && board->board[y + 1][x] == opPlayer) {
-                        y++;
-                    }
-
-                    if (y < 7 && board->board[y + 1][x] == 0) {
-                        buffer[*count].x = x;
-                        buffer[*count].y = y + 1;
-                        (*count)++;
-                    }
-                }
-
-                // downleft check
-                y = i;
-                x = j;
-                if (board->board[y + 1][x - 1] == opPlayer && y < 7 && x > 0) {
-                    while (y < 7 && x > 0 && board->board[y + 1][x - 1] == opPlayer) {
-                        y++;
-                        x--;
-                    }
-
-                    if (y < 7 && x > 0 && board->board[y + 1][x - 1] == 0) {
-                        buffer[*count].x = x - 1;
-                        buffer[*count].y = y + 1;
-                        (*count)++;
-                    }
-                }
-
-                // left check
-                y = i;
-                x = j;
-                if (board->board[y][x - 1] == opPlayer && x > 0) {
-                    while (x > 0 && board->board[y][x - 1] == opPlayer) {
-                        x--;
-                    }
-
-                    if (x > 0 && board->board[y][x - 1] == 0) {
-                        buffer[*count].x = x - 1;
-                        buffer[*count].y = y;
-                        (*count)++;
-                    }
-                }
-                    int evaluateBoardMapArray(char board[8][8], char player) {
-    char opPlayer = player == BLACK ? WHITE : BLACK;
-
-    // weight map for the board, corners are the most valuable.
-    // the pieces next to corners are the worst.
-    int weight[8][8] = {
-        { 200, -100, 100,  50,  50, 100, -100,  200},
-        {-100, -200, -50, -10, -10, -50, -200, -100},
-        { 100, -50,    0,   0,   0,   0, -50,   100},
-        {  50, -10,    0,   0,   0,   0, -10,    50},
-        {  50, -10,    0,   0,   0,   0, -10,    50},
-        { 100, -50,    0,   0,   0,   0, -50,   100},
-        {-100, -200, -50, -10, -10, -50, -200, -100},
-        { 200, -100, 100,  50,  50, 100, -100,  200}
-    };
-
-    if (board[0][0] != EMPTY) {
-        for (int i = 0; i < 3; ++i)
-            for (int j = 0; j < 4; ++j)
-                weight[i][j] = 0; 
-    }
-
-    if (board[0][7] != EMPTY) {
-        for (int i = 0; i < 3; ++i)
-            for (int j = 4; j < 8; ++j)
-                weight[i][j] = 0; 
-    }
-
-    if (board[7][0] != EMPTY) {
-        for (int i = 5; i < 8; ++i)
-            for (int j = 0; j < 4; ++j)
-                weight[i][j] = 0; 
-    }
-
-    if (board[7][7] != EMPTY) {
-        for (int i = 5; i < 8; ++i)
-            for (int j = 4; j < 8; ++j)
-                weight[i][j] = 0; 
-    }
-
-    int myScore = 0, opScore = 0;
-
-    for (int i = 0; i < 8; ++i) {
-        for (int j = 0; j < 8; ++j) {
-            if (board[i][j] == player) 
-                myScore += weight[i][j];
-            else if (board[i][j] == opPlayer) 
-                opScore += weight[i][j];
-        }
-    }
-
-    return myScore - opScore;
-}
-                    */
-

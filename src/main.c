@@ -61,6 +61,10 @@ void continueGame() {
     if (loadGame(&board, &player1, &player2, &stackRedo, &dequeUndo, &currentPlayer)) {
         game(player1, player2, board, &stackRedo, &dequeUndo, currentPlayer);
         saveReplayMenu(&dequeUndo);
+        
+        freeStack(&stackRedo);
+        freeDeque(&dequeUndo);
+        freeBoard(board);
     } else {
         printf("No saved game found. please create a new game first.\n");
         inputUntilEnter();
@@ -130,6 +134,10 @@ void selectMode() {
             game(player1, player2, board, &stackRedo, &dequeUndo, startingPlayer);
             
             saveReplayMenu(&dequeUndo);
+
+            freeStack(&stackRedo);
+            freeDeque(&dequeUndo);
+            freeBoard(board);
             
             return; // Return to main menu after game ends
         }

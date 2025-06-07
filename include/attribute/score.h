@@ -3,6 +3,8 @@
 
 #include "../datastructure/octuple.h"
 
+#define SCORE_FILE "gamedata/scores.dat"
+
 typedef struct {
     char playerName[4]; // 3 characters + null terminator
     int highScore;      // Highest piece count achieved

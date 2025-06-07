@@ -5,4 +5,6 @@
 #define WHITE 'O'
 #define EMPTY '.'
 
+char getOppositePiece(char piece);
+
 #endif

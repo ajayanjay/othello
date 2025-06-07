@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../../include/datastructure/nbtree.h"
-#include "../../include/attribute/piece.h"
 
 // Author: Ihsan
 boolean isEmptyTree(NbTree *root){

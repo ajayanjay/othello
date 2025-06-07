@@ -16,8 +16,7 @@ typedef enum {
     HUMAN,
     AI_EASY,
     AI_MEDIUM,
-    AI_HARD,
-    REPLAY
+    AI_HARD
 } PlayerType;
 
 typedef struct player{

@@ -93,6 +93,7 @@ void printReplay(const char *fileName){
         push(&stackActivity, &current->info);
         current = current->next;
     }
+    freeDeque(&replay);
     
     int totalSteps = stackActivity.size;
    
@@ -127,6 +128,7 @@ void printReplay(const char *fileName){
                 break;
                 
             case ESC:
+                freeStack(&stackActivity);
                 return;
                 
             default:

@@ -7,7 +7,6 @@
 #include <ctype.h>
 
 static Scoreboard scoreboard = {0};
-static const char* SCORE_FILE = "gamedata/scores.dat";
 
 void initScore() {
     scoreboard.playerCount = 0;

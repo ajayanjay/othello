@@ -134,7 +134,7 @@ int isValidMove(NodeOctuple* node, char player) {
     if (node->info != EMPTY) return false;
 
     // Determine the opponent's symbol
-    char opponent = (player == BLACK) ? WHITE : BLACK;
+    char opponent = getOppositePiece(player);
     // player x then opponent O, otherwise
 
     // Check all all direction
@@ -306,7 +306,7 @@ int redo(NodeOctuple * board, Deque * dequeUndo, Stack * stackRedo, char * curre
     pushHead(dequeUndo, activity(board, lastMove, *currentPlayer));
     
     makeMove(board, &lastMove, *currentPlayer);
-    *currentPlayer = (*currentPlayer == BLACK) ? WHITE : BLACK;
+    *currentPlayer = getOppositePiece(*currentPlayer);
 
     return 1;
 }
@@ -323,7 +323,7 @@ Activity activity(NodeOctuple * board, Move lastMove, char currentPlayer) {
 // Author: Idotoho
 // Note: Moved to this file by Azzar
 void makeMove(NodeOctuple *board, Move *move, char player) {
-    char opponent = (player == BLACK) ? WHITE : BLACK;
+    char opponent = getOppositePiece(player);
     
     NodeOctuple *moveNode = getNodeAt(board, move->x, move->y);
     
@@ -420,7 +420,7 @@ Move getBestMove(NodeOctuple *board, char player, Move * moves, int movesSize, i
             copyBoard(tempBoard, boardArray);
             makeMoveArray(tempBoard, &moves[i], player);
 
-            char nextPlayer = (player == BLACK) ? WHITE : BLACK;
+            char nextPlayer = getOppositePiece(player);
             NbTree * childNode = createNodeTree(createAIInfo(tempBoard, nextPlayer, moves[i]));
             insertChild(gRoot, childNode);
         }
@@ -457,8 +457,8 @@ int minimax(NbTree * node, int depth, char player, boolean isMax, int alpha, int
         Move * validMoves = getValidMovesArray(node->info.board, node->info.currentPlayer, &validMoveCount);
 
         if (validMoveCount == 0) {
-            char opPlayer = (node->info.currentPlayer == BLACK) ? WHITE : BLACK;
-            NbTree * passNode = createNodeTree(createAIInfo(node->info.board, opPlayer, (Move){-1, -1}));
+            char opponent = getOppositePiece(node->info.currentPlayer);
+            NbTree * passNode = createNodeTree(createAIInfo(node->info.board, opponent, (Move){-1, -1}));
             node->fs = passNode;
             return minimax(passNode, depth - 1, player, !isMax, alpha, beta);
         }
@@ -470,7 +470,7 @@ int minimax(NbTree * node, int depth, char player, boolean isMax, int alpha, int
             copyBoard(tempBoard, node->info.board);
             makeMoveArray(tempBoard, &validMoves[i], node->info.currentPlayer);
 
-            char nextPlayer = (node->info.currentPlayer == BLACK) ? WHITE : BLACK;
+            char nextPlayer = getOppositePiece(node->info.currentPlayer);
             NbTree * childNode = createNodeTree(createAIInfo(tempBoard, nextPlayer, validMoves[i]));
             insertChild(node, childNode);
 
@@ -527,9 +527,6 @@ int minimax(NbTree * node, int depth, char player, boolean isMax, int alpha, int
 
     return 0;
 }
-
-
-
 
 void deleteTree() {
     if (gRoot != NULL) {
