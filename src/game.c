@@ -12,11 +12,14 @@
 #define min(a,b) ((a) < (b) ? (a) : (b))
 
 NbTree * gRoot = NULL;
+boolean gIsAgainstHardAI = false;
 
 //Author: Azzar & Ihsan
 int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, Deque *dequeUndo, char startingPlayer) {
 
     createDirectory(SAVEDATA_DIR);
+
+    gIsAgainstHardAI = player1.type == AI_HARD || player2.type == AI_HARD;
 
     Player * currentPlayer = (startingPlayer == BLACK) ? &player1 : &player2;
     Move lastMove = {-1, -1};
@@ -38,7 +41,7 @@ int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, 
         
         lastMove = currentPlayer->play(board, dequeUndo, stackRedo, currentPlayer->symbol);
 
-        if (player1.type == AI_HARD || player2.type == AI_HARD || player1.type == AI_MEDIUM ||  player2.type == AI_MEDIUM)
+        if (gIsAgainstHardAI || player1.type == AI_MEDIUM ||  player2.type == AI_MEDIUM)
             updateTree(lastMove);
 
         switch (lastMove.x) {
@@ -166,7 +169,7 @@ void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int sel
     int offset = 0;
 
     // Baris atas
-    offset += sprintf(buffer + offset, "\n  +-----------------+\n"); //border top
+    offset += sprintf(buffer + offset, "  +-----------------+\n"); //border top
 
     NodeOctuple *currentRow = board;
     int rowNumber = 1;
@@ -235,7 +238,7 @@ void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int sel
 }
 
 void gameOverScreen(NodeOctuple * board, Player player1, Player player2){
-    printf("Game Over! No valid moves left.\n\n");
+    printf("\nGame Over! No valid moves left.\n\n");
     // Calculate final scores
     int blackScore = calculateScore(board, BLACK);
     int whiteScore = calculateScore(board, WHITE);
@@ -282,7 +285,7 @@ void gameOverScreen(NodeOctuple * board, Player player1, Player player2){
         }
     }
     
-    printf("\nPress ENTER...\n");
+    printf("Press ENTER...\n");
 }
 
 // Author: Azzar
@@ -415,6 +418,12 @@ Move getBestMove(NodeOctuple *board, char player, Move * moves, int movesSize, i
     convertOctupleToArray(board, boardArray);
 
     if (gRoot == NULL) gRoot = createNodeTree(createAIInfo(boardArray, player, (Move){-1, -1}));
+
+    if (!isBoardEqual(gRoot->info.board, boardArray)) {
+        // if the board is not equal, we will reset the tree.
+        deleteTree();
+        gRoot = createNodeTree(createAIInfo(boardArray, player, (Move){-1, -1}));
+    }
 
     if (gRoot->fs == NULL) {
         // create the first level of the tree with all possible moves.

@@ -18,17 +18,23 @@ int menu(const char *menuHeader, const char **menuItems, const char *menuFooter)
 	int cursor = 0, action;
 	int n = getMenuItemsLength(menuItems);
 
+	char buffer[64 * (n + 2)];
+	int offset = 0;
+
 	while (1) 
 	{
 		clearScreen();
+		buffer[0] = 0; offset = 0;
 
-		printf("%s", menuHeader);
+		offset += sprintf(buffer + offset, "%s", menuHeader);
 		int i;
 		for (i = 0; i < n; ++i) {
-			if (i == cursor) printf("> %s", menuItems[i]);
-			else printf("%s", menuItems[i]);
+			if (i == cursor) offset += sprintf(buffer + offset ,"> %s", menuItems[i]);
+			else offset += sprintf(buffer + offset, "%s", menuItems[i]);
 		}
-		printf("%s", menuFooter);
+		offset += sprintf(buffer + offset, "%s", menuFooter);
+
+		printf("%s", buffer);
 
 		while ((action = menuInput(&cursor, 0, n - 1)) == UNNECESSARY_INPUT);
 

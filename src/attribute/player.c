@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+extern boolean gIsAgainstHardAI;
+
 // Author: Azzar
 Move playAIEasy(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player) {
     Move validMoves[64]; // to collect valid moves and later will store by address
@@ -26,12 +28,18 @@ Move playAIEasy(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char p
         boolean unnecessaryInput = true;
         while (unnecessaryInput) switch (userInput()) {
             case KEY_Z:
-                if (isDequeEmpty(dequeUndo)) break;
+
+                if (gIsAgainstHardAI) {
+                    printf("\rCannot undo against Hard AI.");
+                    break;
+                } else if (isDequeEmpty(dequeUndo))
+                    break;
 
                 return (Move) {-2, -2};
 
             case KEY_Y:
-                if (isStackEmpty(stackRedo)) break;
+                if (isStackEmpty(stackRedo))
+                    break;
 
                 return (Move) {-3, -3};
             case ENTER:
@@ -82,12 +90,17 @@ Move playHuman(NodeOctuple *root, Deque * dequeUndo, Stack * stackRedo, char pla
                 break;
 
             case KEY_Z:
-                if (isDequeEmpty(dequeUndo)) break;
+                if (gIsAgainstHardAI) {
+                    printf("\rCannot undo against Hard AI.");
+                    break;
+                } else if (isDequeEmpty(dequeUndo))
+                    break;
 
                 return (Move) {-2, -2};
 
             case KEY_Y:
-                if (isStackEmpty(stackRedo)) break;
+                if (isStackEmpty(stackRedo))
+                    break;
 
                 return (Move) {-3, -3};
 
@@ -139,12 +152,17 @@ Move playAIMedium(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char
         boolean unnecessaryInput = true;
         while (unnecessaryInput) switch (userInput()) {
             case KEY_Z:
-                if (isDequeEmpty(dequeUndo)) break;
+                if (gIsAgainstHardAI) {
+                    printf("\rCannot undo against Hard AI.");
+                    break;
+                } else if (isDequeEmpty(dequeUndo))
+                    break;
+
                 return (Move) {-2, -2};
 
             case KEY_Y:
-                if (isStackEmpty(stackRedo)) break;
-                return (Move) {-3, -3};
+                if (isStackEmpty(stackRedo))
+                    break;
                 
             case ENTER:
                 return bestMove;

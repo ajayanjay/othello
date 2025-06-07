@@ -107,7 +107,7 @@ void selectMode() {
             int player2Selection = menu(player2Header, playerOptions, modeSelector);
             
             // Handle Back option (return to Player 1 selection)
-            if (player2Selection == 5) {
+            if (player2Selection == 4) {
                 break;
             }
             
@@ -117,7 +117,6 @@ void selectMode() {
                 case 1: player2 = player(AI_EASY, WHITE); break;
                 case 2: player2 = player(AI_MEDIUM, WHITE); break;
                 case 3: player2 = player(AI_HARD, WHITE); break;
-                case 4: return;
                 default: continue; // Invalid selection, try again
             }
             
