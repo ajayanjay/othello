@@ -79,60 +79,52 @@ boolean overwriteReplayMenu (){
 }
 
 void printReplay(const char *fileName){
-    
     Deque replay;
-    if (loadDeque(&replay, fileName) == 0 || isDequeEmpty(&replay))
+    loadDeque(&replay, fileName);
+    if (isDequeEmpty(&replay)){
         return;
-
-    Stack stackActivity;
-    initStack(&stackActivity, sizeof(Activity), 64);
-
-    // pre-build: Load all steps from head to tail
-    address current = replay.head;  // start from head
-    while (current != NULL && stackActivity.size < 64) {
-        push(&stackActivity, &current->info);
-        current = current->next;
     }
-    freeDeque(&replay);
-    
-    int totalSteps = stackActivity.size;
-   
-    int pos = 1;
-    
-    while (1) {
-        clearScreen();
 
-        Activity act;
-        getElement(&stackActivity, totalSteps - pos, &act);
+    address history[64] = {NULL};
+    int pos = 0;
+    address current = replay.tail;
+    history[0] = current; // Inisialisasi langkah pertama
 
-        printf("Step %d of %d (%c):\n", pos, totalSteps, act.currentPlayer);
+    while (current != NULL){
+        Activity act = history[pos]->info;
+        printf("Step %d (%c):\n", pos+1, act.currentPlayer);
         printBoardArray(act.board, act.currentPlayer, &act.lastMove);
-        printf("(LEFT = Previous)\n(RIGHT = Next)\n(ESC = Leave)\n");
+        printf("Use arrow left, arrow right, and ESC\n");
 
-        boolean unnessecaryInput = true;
-        while (unnessecaryInput) switch (userInput()) {
-            case RIGHT:
-                if (pos < totalSteps) {
-                    pos++;
-                    unnessecaryInput = false;
+        int input = userInput();
+        switch (input) {
+            case RIGHT:{
+                if (history[pos+1] != NULL) {
+                pos++;
+                current = history[pos];
+                } else {
+                // if never redo, next step
+                    if (current->prev != NULL) {
+                        pos++;
+                        current = current->prev;
+                        history[pos] = current;
+                    }
                 }
-                
                 break;
-                
-            case LEFT:
-                if (pos > 1) {
-                    pos--;
-                    unnessecaryInput = false;
+            }
+            case LEFT:{
+                if (pos > 0){
+                pos--;
+                current = history[pos];
                 }
-                
                 break;
-                
-            case ESC:
-                freeStack(&stackActivity);
+            case ESC:{
                 return;
-                
-            default:
+            }
+            }
+            default:{
                 break;
+            }
         }
     }
 }

@@ -126,7 +126,8 @@ Move playAIMedium(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char
         
         // Find the index of the best move in validMoves for display
         int selectedIndex = 0;
-        for (int i = 0; i < numValidMoves; i++) {
+        int i;
+        for (i = 0; i < numValidMoves; i++) {
             if (validMoves[i].x == bestMove.x && validMoves[i].y == bestMove.y) {
                 selectedIndex = i;
                 break;
@@ -176,7 +177,8 @@ Move playAIHard(NodeOctuple *board, Deque * UNUSED(dequeUndo), Stack * UNUSED(st
     
     // Find the index of the best move in validMoves for display
     int selectedIndex = 0;
-    for (int i = 0; i < numValidMoves; i++) {
+    int i;
+    for (i = 0; i < numValidMoves; i++) {
         if (validMoves[i].x == bestMove.x && validMoves[i].y == bestMove.y) {
             selectedIndex = i;
             break;
@@ -243,4 +245,4 @@ int loadPlayer(Player * p, const char *filename) {
     *p = player(p->type, p->symbol);
 
     return 1;
-}   
+}

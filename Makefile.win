@@ -1,14 +1,14 @@
 # Project: Othello
-# Makefile created by Dev-C++ 5.11
+# Makefile created by Dev-C++ 5.9.2
 
 CPP      = g++.exe
 CC       = gcc.exe
 WINDRES  = windres.exe
-OBJ      = src/game.o src/main.o src/replay.o src/util/menu.o src/util/storage.o src/datastructure/array.o src/datastructure/deque.o src/datastructure/linked.o src/datastructure/nbtree.o src/datastructure/octuple.o src/datastructure/stack.o src/attribute/move.o src/attribute/player.o src/attribute/score.o src/ai/ai.o
-LINKOBJ  = src/game.o src/main.o src/replay.o src/util/menu.o src/util/storage.o src/datastructure/array.o src/datastructure/deque.o src/datastructure/linked.o src/datastructure/nbtree.o src/datastructure/octuple.o src/datastructure/stack.o src/attribute/move.o src/attribute/player.o src/attribute/score.o src/ai/ai.o
-LIBS     = -L"E:/ajay/IDE/DevCpp/MinGW64/lib" -L"E:/ajay/IDE/DevCpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc
-INCS     = -I"E:/ajay/IDE/DevCpp/MinGW64/include" -I"E:/ajay/IDE/DevCpp/MinGW64/x86_64-w64-mingw32/include" -I"E:/ajay/IDE/DevCpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include"
-CXXINCS  = -I"E:/ajay/IDE/DevCpp/MinGW64/include" -I"E:/ajay/IDE/DevCpp/MinGW64/x86_64-w64-mingw32/include" -I"E:/ajay/IDE/DevCpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"E:/ajay/IDE/DevCpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
+OBJ      = src/game.o src/main.o src/replay.o src/util/menu.o src/util/storage.o src/datastructure/array.o src/datastructure/deque.o src/datastructure/linked.o src/datastructure/nbtree.o src/datastructure/octuple.o src/datastructure/stack.o src/attribute/move.o src/attribute/player.o src/attribute/score.o src/ai/ai.o src/attribute/piece.o
+LINKOBJ  = src/game.o src/main.o src/replay.o src/util/menu.o src/util/storage.o src/datastructure/array.o src/datastructure/deque.o src/datastructure/linked.o src/datastructure/nbtree.o src/datastructure/octuple.o src/datastructure/stack.o src/attribute/move.o src/attribute/player.o src/attribute/score.o src/ai/ai.o src/attribute/piece.o
+LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc
+INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.8.1/include"
+CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.8.1/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++"
 BIN      = Othello.exe
 CXXFLAGS = $(CXXINCS) 
 CFLAGS   = $(INCS) 
@@ -68,3 +68,6 @@ src/attribute/score.o: src/attribute/score.c
 
 src/ai/ai.o: src/ai/ai.c
 	$(CC) -c src/ai/ai.c -o src/ai/ai.o $(CFLAGS)
+
+src/attribute/piece.o: src/attribute/piece.c
+	$(CC) -c src/attribute/piece.c -o src/attribute/piece.o $(CFLAGS)

@@ -31,7 +31,8 @@ void printScoreboard() {
     printf("RANK  NAME  SCORE\n");
     printf("================\n");
     
-    for (int i = 0; i < scoreboard.playerCount; i++) {
+    int i;
+    for (i = 0; i < scoreboard.playerCount; i++) {
         printf("%2d.   %s   %3d\n", 
                i + 1,
                scoreboard.scores[i].playerName,
@@ -50,9 +51,11 @@ int calculateScore(NodeOctuple *board, char player) {
     NodeOctuple *row = board;
     
     // Count pieces for the specified player
-    for (int i = 0; i < 8 && row != NULL; i++) {
+    int i;
+    for (i = 0; i < 8 && row != NULL; i++) {
         NodeOctuple *col = row;
-        for (int j = 0; j < 8 && col != NULL; j++) {
+        int j;
+        for (j = 0; j < 8 && col != NULL; j++) {
             if (col->info == player) {
                 pieceCount++;
             }
@@ -129,8 +132,10 @@ void loadScoreboard() {
 
 void sortScoreboard() {
     // Simple bubble sort by high score (descending)
-    for (int i = 0; i < scoreboard.playerCount - 1; i++) {
-        for (int j = 0; j < scoreboard.playerCount - i - 1; j++) {
+    int i;
+    for (i = 0; i < scoreboard.playerCount - 1; i++) {
+        int j;
+        for (j = 0; j < scoreboard.playerCount - i - 1; j++) {
             if (scoreboard.scores[j].highScore < scoreboard.scores[j + 1].highScore) {
                 // Swap scores
                 PlayerScore temp = scoreboard.scores[j];

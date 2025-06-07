@@ -121,21 +121,28 @@ int evaluateCorner(char board[8][8], char player) {
 
 int getTotalPieceCountArray(char board[8][8]) {
     int count = 0;
-    for (int i = 0; i < 8; ++i) 
-        for (int j = 0; j < 8; ++j)
+    int i;
+    for (i = 0; i < 8; ++i) {
+        int j;
+        for (j = 0; j < 8; ++j){
             if (board[i][j] != EMPTY)
                 ++count;
-
+        }
+    }
     return count;
 }
 
+
 int getPieceCountArray(char board[8][8], char player) {
     int count = 0;
-    for (int i = 0; i < 8; i++) 
-        for (int j = 0; j < 8; j++) 
+    int i;
+    for (i = 0; i < 8; i++) {
+        int j;
+        for (j = 0; j < 8; j++){
             if (board[i][j] == player) 
                 count++;
-            
+        }
+    }
     return count;
 }
 
@@ -146,8 +153,10 @@ Move * getValidMovesArray(char board[8][8], char player, int *returnSize) {
     *returnSize = 0;
 
     // get all possible moves for the player.
-    for (int i = 0; i < 8; ++i) {
-        for (int j = 0; j < 8; ++j) {
+    int i;
+    for (i = 0; i < 8; ++i) {
+        int j;
+        for (j = 0; j < 8; ++j) {
             Move temp = {.x = j, .y = i};
             if (isValidMoveArray(board, &temp, player) == 1) {
                 buffer[*returnSize] = temp;
@@ -160,8 +169,9 @@ Move * getValidMovesArray(char board[8][8], char player, int *returnSize) {
 
     Move *moves = malloc(sizeof(Move) * (*returnSize));
 
-    for (int i = 0; i < *returnSize; ++i)
-        moves[i] = buffer[i];
+    int l;
+    for (l = 0; l < *returnSize; ++l)
+        moves[l] = buffer[l];
 
     return moves;
 }
@@ -180,7 +190,8 @@ void makeMoveArray(char board[8][8], Move *move, char currentPlayer) {
         { 1, -1}, { 1, 0}, { 1, 1}      // Down
     };
 
-    for (int i = 0; i < 8; ++i) {
+    int i;
+    for (i = 0; i < 8; ++i) {
         int dx = directions[i][1];
         int dy = directions[i][0];
         int x = (int)move->x + dx;
@@ -227,7 +238,8 @@ int isValidMoveArray(char board[8][8], Move *move, char player) {
         { 1, -1}, { 1, 0}, { 1, 1}      // Down
     };
 
-    for (int i = 0; i < 8; ++i) {
+    int i;
+    for (i = 0; i < 8; ++i) {
         int dx = directions[i][1];
         int dy = directions[i][0];
         int x = (int)move->x + dx;

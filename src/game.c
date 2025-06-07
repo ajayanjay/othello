@@ -138,7 +138,8 @@ int isValidMove(NodeOctuple* node, char player) {
     // player x then opponent O, otherwise
 
     // Check all all direction
-    for (int dir = 0; dir < 8; dir++) {
+    int dir;
+    for (dir = 0; dir < 8; dir++) {
         NodeOctuple* current = getNext(node, dir);
         int count = 0;
 
@@ -330,7 +331,8 @@ void makeMove(NodeOctuple *board, Move *move, char player) {
     moveNode->info = player;
     
     // Check all directions and flip opponent pieces
-    for (int dir = 0; dir < 8; dir++) {
+    int dir;
+    for (dir = 0; dir < 8; dir++) {
         NodeOctuple *current = getNext(moveNode, dir);
         NodeOctuple *piecesToFlip[8]; // Max pieces that can be flipped in one direction
         int flipCount = 0;
@@ -346,7 +348,8 @@ void makeMove(NodeOctuple *board, Move *move, char player) {
         
         // if found opponent pieces and ended at a player piece, flip
         if (foundOpponent && current != NULL && current->info == player) {
-            for (int i = 0; i < flipCount; i++) {
+            int i;
+            for (i = 0; i < flipCount; i++) {
                 piecesToFlip[i]->info = player;
             }
         }
@@ -415,7 +418,8 @@ Move getBestMove(NodeOctuple *board, char player, Move * moves, int movesSize, i
 
     if (gRoot->fs == NULL) {
         // create the first level of the tree with all possible moves.
-        for (int i = 0; i < movesSize; ++i) {
+        int i;
+        for (i = 0; i < movesSize; ++i) {
             char tempBoard[8][8];
             copyBoard(tempBoard, boardArray);
             makeMoveArray(tempBoard, &moves[i], player);
@@ -465,7 +469,8 @@ int minimax(NbTree * node, int depth, char player, boolean isMax, int alpha, int
 
         int bestScore = isMax ? INT_MIN : INT_MAX;
         boolean cutoff = false;
-        for (int i = 0; i < validMoveCount; ++i) {
+        int i;
+        for (i = 0; i < validMoveCount; ++i) {
             char tempBoard[8][8];
             copyBoard(tempBoard, node->info.board);
             makeMoveArray(tempBoard, &validMoves[i], node->info.currentPlayer);

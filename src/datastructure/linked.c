@@ -18,6 +18,7 @@ address createNodeSingle(infotype nilai){
     }
     info(P) = nilai;
     next(P) = nil;
+    prev(P) = nil;
     return P;
 }
 
@@ -26,6 +27,7 @@ void insertAwal(address *p, address PNew) {
         *p = PNew;
     } else {
         next(PNew) = *p;
+        prev(*p) = PNew;
         *p = PNew;
     }
 }
@@ -39,12 +41,17 @@ void insertAkhir(address *p, address PNew) {
             temp = next(temp);
         }
         next(temp) = PNew;
+        prev(PNew) = temp;
     }
 }
 
 void insertAfter(address *pBef, address PNew) {
     if (*pBef != nil) {
         next(PNew) = next(*pBef);
+        prev(PNew) = *pBef;
+        if (next(*pBef) != nil) {
+            prev(next(*pBef)) = PNew;
+        }
         next(*pBef) = PNew;
     }
 }
@@ -54,6 +61,9 @@ void freeAwal(address *p, infotype *X) {
         address temp = *p;
         *X = info(temp);
         *p = next(temp);
+        if (*p != nil) {
+            prev(*p) = nil;
+        }
         free(temp);
     }
 }
@@ -67,12 +77,14 @@ void freeAkhir(address *p, infotype *X) {
         *p = nil;
     } else {
         address temp = *p;
-        while (next(next(temp)) != nil) {
+        while (next(temp) != nil) {
             temp = next(temp);
         }
-        *X = info(next(temp));
-        free(next(temp));
-        next(temp) = nil;
+        *X = info(temp);
+        if (prev(temp) != nil) {
+            next(prev(temp)) = nil;
+        }
+        free(temp);
     }
 }
 

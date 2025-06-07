@@ -23,7 +23,8 @@ int menu(const char *menuHeader, const char **menuItems, const char *menuFooter)
 		clearScreen();
 
 		printf("%s", menuHeader);
-		for (int i = 0; i < n; ++i) {
+		int i;
+		for (i = 0; i < n; ++i) {
 			if (i == cursor) printf("> %s", menuItems[i]);
 			else printf("%s", menuItems[i]);
 		}

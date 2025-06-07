@@ -29,7 +29,7 @@ IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
 CompilerSettings=0000000000000000000000000
-UnitCount=32
+UnitCount=33
 
 [VersionInfo]
 Major=1
@@ -364,6 +364,16 @@ BuildCmd=
 FileName=src\ai\ai.c
 CompileCpp=0
 Folder=src/ai
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit33]
+FileName=src\attribute\piece.c
+CompileCpp=0
+Folder=src/attribute
 Compile=1
 Link=1
 Priority=1000

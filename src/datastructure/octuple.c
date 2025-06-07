@@ -135,9 +135,11 @@ NodeOctuple * setNodeAt (NodeOctuple *root, OctupleInfo info,  int col, int row)
 // Author: Ihsan
 NodeOctuple * getNodeAt(NodeOctuple *root, int col, int row) {
     NodeOctuple *current = root;
-    for (int i = 0; i < row; ++i)
+    int i;
+    for (i = 0; i < row; ++i)
         current = current->down;
-    for (int j = 0; j < col; ++j)
+    int j;
+    for (j = 0; j < col; ++j)
         current = current->right;
     return current;
 }
@@ -278,7 +280,8 @@ int loadBoard(NodeOctuple **root, const char *filename) {
     NodeOctuple *current = *root;
 
     // Create first row and connect left-right
-    for (int j = 1; j < 8; j++) {
+    int j;
+    for (j = 1; j < 8; j++) {
         NodeOctuple *newNode = createNodeOctuple(boardArray[0][j]);
         current->right = newNode;
         newNode->left = current;
@@ -288,7 +291,8 @@ int loadBoard(NodeOctuple **root, const char *filename) {
     NodeOctuple *prevRowStart = *root;
 
     // Create remaining rows with full octuple connections
-    for (int i = 1; i < 8; i++) {
+    int i;
+    for (i = 1; i < 8; i++) {
         NodeOctuple *firstNode = createNodeOctuple(boardArray[i][0]);
         current = firstNode;
 
@@ -305,7 +309,7 @@ int loadBoard(NodeOctuple **root, const char *filename) {
         NodeOctuple *prevCurrent = prevRowStart;
         
         // Create rest of the row
-        for (int j = 1; j < 8; j++) {
+        for (j = 1; j < 8; j++) {
             NodeOctuple *newNode = createNodeOctuple(boardArray[i][j]);
             
             // Connect left-right
