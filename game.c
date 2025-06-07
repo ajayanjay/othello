@@ -12,7 +12,7 @@
 #define max(a,b) ((a) > (b) ? (a) : (b))
 #define min(a,b) ((a) < (b) ? (a) : (b))
 
-NbTree * root = NULL;
+NbTree * gRoot = NULL;
 
 //Author: Azzar & Ihsan
 int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, Deque *dequeUndo, char startingPlayer) {
@@ -21,12 +21,14 @@ int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, 
 
     Player * currentPlayer = (startingPlayer == BLACK) ? &player1 : &player2;
     Move lastMove = {-1, -1};
+    char temp;
 
     while (1) {
         clearScreen();
+
         if (isGameOver(board)) {
-            printBoard(board, NULL, 0, 0, EMPTY, false);
             deleteTree();
+            printBoard(board, NULL, 0, 0, EMPTY, false);
             gameOverScreen(board, player1, player2);
             removeSavedGameFiles();
             inputUntilEnter();
@@ -40,42 +42,42 @@ int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, 
         if (player1.type == AI_HARD || player2.type == AI_HARD || player1.type == AI_MEDIUM ||  player2.type == AI_MEDIUM)
             updateTree(lastMove);
 
-        // currentPlayer has no available moves.
-        if (lastMove.x == -1 && lastMove.y == -1) {
-            currentPlayer = (currentPlayer == &player1) ? &player2 : &player1;
-            continue;
-        }
-        // undo
-        else if (lastMove.x == -2 && lastMove.y == -2) {
-            char temp = currentPlayer->symbol;
-            undo(board, dequeUndo, stackRedo, &temp);
-            currentPlayer = (temp == BLACK) ? &player1 : &player2;
-            continue;
-        }
-        // redo
-        else if (lastMove.x == -3 && lastMove.y == -3) {
-            char temp = currentPlayer->symbol;
-            redo(board, dequeUndo, stackRedo, &temp);
-            currentPlayer = (temp == BLACK) ? &player1 : &player2;
-            continue;
-        }
+        switch (lastMove.x) {
+            case -1: // current player has no available moves
+                currentPlayer = (currentPlayer == &player1) ? &player2 : &player1;
+                break;
 
-        emptyStack(stackRedo);
-        pushHead(dequeUndo, activity(board, lastMove, currentPlayer->symbol));
-        makeMove(board, &lastMove, currentPlayer->symbol);
-        currentPlayer = (currentPlayer == &player1) ? &player2 : &player1;
+            case -2: // undo
+                temp = currentPlayer->symbol;
+                undo(board, dequeUndo, stackRedo, &temp);
+                currentPlayer = (temp == BLACK) ? &player1 : &player2;
+                break;
+
+            case -3: // redo
+                temp = currentPlayer->symbol;
+                redo(board, dequeUndo, stackRedo, &temp);
+                currentPlayer = (temp == BLACK) ? &player1 : &player2;
+                break;
+
+            default: // valid move.
+                emptyStack(stackRedo);
+                pushHead(dequeUndo, activity(board, lastMove, currentPlayer->symbol));
+                makeMove(board, &lastMove, currentPlayer->symbol);
+                currentPlayer = (currentPlayer == &player1) ? &player2 : &player1;
+                break;
+        }
     }
     return 0;
 }
 
 void updateTree(Move lastMove) {
-    if (root == NULL) return;
+    if (gRoot == NULL) return;
     if (lastMove.x < -1 || lastMove.y < -1) return;
 
-    NbTree * temp = root->fs;
+    NbTree * temp = gRoot->fs;
     while (temp != NULL) {
         if (isMoveEqual(temp->info.move, lastMove)) {
-            disconnectTreeExcept(&root, temp);
+            disconnectTreeExcept(&gRoot, temp);
             break;
         }
         temp = temp->nb;
@@ -410,9 +412,9 @@ Move getBestMove(NodeOctuple *board, char player, Move * moves, int movesSize, i
     char boardArray[8][8];
     convertOctupleToArray(board, boardArray);
 
-    if (root == NULL) root = createNodeTree(createAIInfo(boardArray, player, (Move){-1, -1}));
+    if (gRoot == NULL) gRoot = createNodeTree(createAIInfo(boardArray, player, (Move){-1, -1}));
 
-    if (root->fs == NULL) {
+    if (gRoot->fs == NULL) {
         // create the first level of the tree with all possible moves.
         for (int i = 0; i < movesSize; ++i) {
             char tempBoard[8][8];
@@ -421,11 +423,11 @@ Move getBestMove(NodeOctuple *board, char player, Move * moves, int movesSize, i
 
             char nextPlayer = (player == BLACK) ? WHITE : BLACK;
             NbTree * childNode = createNodeTree(createAIInfo(tempBoard, nextPlayer, moves[i]));
-            insertChild(root, childNode);
+            insertChild(gRoot, childNode);
         }
     }
 
-    NbTree * child = root->fs;
+    NbTree * child = gRoot->fs;
     Move bestMove = {-1, -1};
     int bestValue = INT_MIN;
 
@@ -531,8 +533,8 @@ int minimax(NbTree * node, int depth, char player, boolean isMax, int alpha, int
 
 
 void deleteTree() {
-    if (root != NULL) {
-        deleteEntireTree(&root);
-        root = NULL;
+    if (gRoot != NULL) {
+        deleteEntireTree(&gRoot);
+        gRoot = NULL;
     }
 }
