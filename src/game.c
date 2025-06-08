@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+#include <limits.h>
 
 #define max(a,b) ((a) > (b) ? (a) : (b))
 #define min(a,b) ((a) < (b) ? (a) : (b))
