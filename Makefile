@@ -44,14 +44,12 @@ OBJECTS = $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SOURCES))
 all: directories $(TARGET)
 
 directories:
-	@echo "Creating base object directory: $(OBJDIR)"
 	@$(call MKDIR, $(OBJDIR))
 
 $(TARGET): $(OBJECTS)
 	$(CC) $(OBJECTS) -o $(TARGET) $(LDFLAGS)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
-	@echo "Compiling $< -> $@"
 	@$(call MKDIR, $(dir $@))
 	$(CC) $(CFLAGS) -c $< -o $@
 
