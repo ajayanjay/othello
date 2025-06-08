@@ -13,7 +13,7 @@ void createDirectory (const char *path) {
     struct stat st = {0}; // get information file
     if (stat(path, &st) == -1) { // -1 if not exist
         #ifdef _WIN32
-            _mkdir(path);
+            mkdir(path);
         #else 
             mkdir(path, 0700);
         #endif
@@ -27,7 +27,7 @@ int removeDirectory (const char *path) {
     
     
     #ifdef _WIN32
-        return _rmdir(path);
+        return rmdir(path);
     #else 
         return rmdir(path);
     #endif
