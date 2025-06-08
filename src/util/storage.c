@@ -5,11 +5,8 @@
 
 // Createdir
 #include <sys/stat.h>
-#ifdef _WIN32
-    #include <direct.h> // mkdir windows
-#else
-    #include <unistd.h>
-#endif
+#include <unistd.h>
+
 
 // for directory storage if not exist
 void createDirectory (const char *path) {
