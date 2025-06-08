@@ -2,7 +2,7 @@ CC       = gcc
 CFLAGS   = -Wall -Wextra -std=c99 -g -Iinclude
 SRCDIR   = src
 BUILDDIR = build
-TARGET   = othello
+TARGET   = build/othello
 
 # Source files
 SOURCES = $(SRCDIR)/game.c \
@@ -47,6 +47,6 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -rf $(BUILDDIR) $(TARGET)
+	rm -rf $(BUILDDIR)
 
 rebuild: clean all
