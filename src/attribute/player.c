@@ -164,6 +164,7 @@ Move playAIMedium(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char
                 if (isStackEmpty(stackRedo))
                     break;
                 
+                return (Move) {-3, -3};
             case ENTER:
                 return bestMove;
                 
