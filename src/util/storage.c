@@ -46,6 +46,10 @@ boolean isFileExist (const char *path, const char *filename) {
     return false;
 }
 
+boolean isDirectoryExist (const char *path) {
+    return stat(path, &(struct stat) {0}) == 0;
+}
+
 int countFiles (const char *directoryPath){
     DIR *d;
     struct dirent *dir;

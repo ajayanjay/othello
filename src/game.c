@@ -511,8 +511,6 @@ int minimax(NbTree * node, int depth, char player, boolean isMax, int alpha, int
         // if has son, we will iterate through all of the sons.
 
         NbTree * child = node->fs;
-        if (child == NULL)
-            return evaluateBoardArray(node->info.board, player);
         
         // if the node is a pass node, we will evaluate the first son.
         if (isMoveEqual(node->info.move, (Move){-1, -1})) 

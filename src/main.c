@@ -10,6 +10,7 @@
 #include "../include/replay.h"
 #include "../include/util/storage.h"
 
+void newGame();
 void mainMenu();
 void continueGame();
 void selectMode();
@@ -41,7 +42,7 @@ void mainMenu()
 
     while (1) // Loop the game until the user exits.
         switch (menu(menuHeader, menuItems, menuFooter)) {
-            case 0: selectMode(); break;
+            case 0: newGame(); break;
             case 1: continueGame(); break;
             case 2: selectReplays(); break;
             case 3: printScoreboard(); break;
@@ -69,6 +70,25 @@ void continueGame() {
         printf("No saved game found. please create a new game first.\n");
         inputUntilEnter();
     }
+}
+
+void newGame() {
+    if (isDirectoryExist(SAVEDATA_DIR)) {
+        const char* header =    "You already have a saved game\n"
+                                "Do you want to create a new game?\n\n";
+        const char* options[] = {
+                                "Yes\n",
+                                "No\n\n", NULL
+        };
+        const char* footer =    "Press ENTER to Select...\n";
+        switch (menu(header, options, footer)) {
+            case 0: continueGame(); return;
+            case 1: return;
+            default: return;
+        }
+    }
+
+    selectMode();
 }
 
 // Author: Ihsan
