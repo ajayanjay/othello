@@ -39,7 +39,7 @@ SOURCES = $(SRCDIR)/game.c \
 # Object files
 OBJECTS = $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SOURCES))
 
-.PHONY: all clean rebuild directories
+.PHONY: all clean rebuild directories run
 
 all: directories $(TARGET)
 
@@ -59,5 +59,8 @@ ifeq ($(OS),Windows_NT)
 else
 	$(RM) $(BUILDDIR)
 endif
+
+run: all
+	$(TARGET)
 
 rebuild: clean all
