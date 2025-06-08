@@ -2,6 +2,7 @@ CC       = gcc
 CFLAGS   = -Wall -Wextra -std=c99 -g -Iinclude
 SRCDIR   = src
 BUILDDIR = build
+OUTDIR   = build/out
 TARGET   = build/othello
 
 # Source files
@@ -23,14 +24,15 @@ SOURCES = $(SRCDIR)/game.c \
           $(SRCDIR)/attribute/piece.c
 
 # Object files
-OBJECTS = $(SOURCES:$(SRCDIR)/%.c=$(BUILDDIR)/%.o)
+OBJECTS = $(SOURCES:$(SRCDIR)/%.c=$(OUTDIR)/%.o)
 
 # Create build directory structure
 BUILDDIRS = $(BUILDDIR) \
-            $(BUILDDIR)/util \
-            $(BUILDDIR)/datastructure \
-            $(BUILDDIR)/attribute \
-            $(BUILDDIR)/ai
+            $(OUTDIR) \
+            $(OUTDIR)/util \
+            $(OUTDIR)/datastructure \
+            $(OUTDIR)/attribute \
+            $(OUTDIR)/ai
 
 .PHONY: all clean directories
 
@@ -43,7 +45,7 @@ $(TARGET): $(OBJECTS)
 	$(CC) $(OBJECTS) -o $(TARGET) $(LDFLAGS)
 
 # Generic rule for object files
-$(BUILDDIR)/%.o: $(SRCDIR)/%.c
+$(OUTDIR)/%.o: $(SRCDIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
