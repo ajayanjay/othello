@@ -1,9 +1,22 @@
+# Detect OS
+ifeq ($(OS),Windows_NT)
+    RM = del /Q /S
+    MKDIR = if not exist $(subst /,\,$(1)) mkdir $(subst /,\,$(1))
+    EXEEXT = .exe
+    NULLDEV = NUL
+else
+    RM = rm -rf
+    MKDIR = mkdir -p $(1)
+    EXEEXT =
+    NULLDEV = /dev/null
+endif
+
 CC       = gcc
-CFLAGS   = -Wall -Wextra -std=c99 -g -Iinclude
+CFLAGS   = -Wall -Wextra -std=c99 -O2 -Iinclude
 SRCDIR   = src
 BUILDDIR = build
-OUTDIR   = build/out
-TARGET   = build/othello
+OBJDIR   = $(BUILDDIR)/out
+TARGET   = $(BUILDDIR)/othello$(EXEEXT)
 
 # Source files
 SOURCES = $(SRCDIR)/game.c \
@@ -24,31 +37,29 @@ SOURCES = $(SRCDIR)/game.c \
           $(SRCDIR)/attribute/piece.c
 
 # Object files
-OBJECTS = $(SOURCES:$(SRCDIR)/%.c=$(OUTDIR)/%.o)
+OBJECTS = $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SOURCES))
 
-# Create build directory structure
-BUILDDIRS = $(BUILDDIR) \
-            $(OUTDIR) \
-            $(OUTDIR)/util \
-            $(OUTDIR)/datastructure \
-            $(OUTDIR)/attribute \
-            $(OUTDIR)/ai
-
-.PHONY: all clean directories
+.PHONY: all clean rebuild directories
 
 all: directories $(TARGET)
 
 directories:
-	@mkdir -p $(BUILDDIRS)
+	@echo "Creating base object directory: $(OBJDIR)"
+	@$(call MKDIR, $(OBJDIR))
 
 $(TARGET): $(OBJECTS)
 	$(CC) $(OBJECTS) -o $(TARGET) $(LDFLAGS)
 
-# Generic rule for object files
-$(OUTDIR)/%.o: $(SRCDIR)/%.c
+$(OBJDIR)/%.o: $(SRCDIR)/%.c
+	@echo "Compiling $< -> $@"
+	@$(call MKDIR, $(dir $@))
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -rf $(BUILDDIR)
+ifeq ($(OS),Windows_NT)
+	@if exist $(subst /,\,$(BUILDDIR)) $(RM) $(subst /,\,$(BUILDDIR))\* > $(NULLDEV) 2>&1 && rmdir /S /Q $(subst /,\,$(BUILDDIR))
+else
+	$(RM) $(BUILDDIR)
+endif
 
 rebuild: clean all
