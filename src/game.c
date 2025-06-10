@@ -14,6 +14,8 @@
 
 NbTree * gRoot = NULL;
 boolean gIsAgainstHardAI = false;
+Player gBlackPlayer;
+Player gWhitePlayer;
 
 //Author: Azzar & Ihsan
 int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, Deque *dequeUndo, char startingPlayer) {
@@ -21,6 +23,8 @@ int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, 
     createDirectory(SAVEDATA_DIR);
 
     gIsAgainstHardAI = player1.type == AI_HARD || player2.type == AI_HARD;
+    gBlackPlayer = player1;
+    gWhitePlayer = player2;
 
     Player * currentPlayer = (startingPlayer == BLACK) ? &player1 : &player2;
     Move lastMove = {-1, -1};
