@@ -1,20 +1,19 @@
-#include "storage.h"
+#include "../../include/util/storage.h"
 #include "dirent.h"
 #include <stdlib.h>
 #include <stdio.h>
 
 // Createdir
 #include <sys/stat.h>
-#ifdef _WIN32
-    #include <direct.h> // mkdir windows
-#endif
+#include <unistd.h>
+
 
 // for directory storage if not exist
 void createDirectory (const char *path) {
     struct stat st = {0}; // get information file
     if (stat(path, &st) == -1) { // -1 if not exist
         #ifdef _WIN32
-            _mkdir(path);
+            mkdir(path);
         #else 
             mkdir(path, 0700);
         #endif
@@ -28,7 +27,7 @@ int removeDirectory (const char *path) {
     
     
     #ifdef _WIN32
-        return _rmdir(path);
+        return rmdir(path);
     #else 
         return rmdir(path);
     #endif
@@ -44,6 +43,10 @@ boolean isFileExist (const char *path, const char *filename) {
         return true;  // File exists
     }
     return false;
+}
+
+boolean isDirectoryExist (const char *path) {
+    return stat(path, &(struct stat) {0}) == 0;
 }
 
 int countFiles (const char *directoryPath){

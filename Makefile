@@ -1,35 +1,66 @@
-CC = gcc
-CFLAGS = -O2 -Wall -Wextra -std=c99
+# Detect OS
+ifeq ($(OS),Windows_NT)
+    RM = del /Q /S
+    MKDIR = if not exist $(subst /,\,$(1)) mkdir $(subst /,\,$(1))
+    EXEEXT = .exe
+    NULLDEV = NUL
+else
+    RM = rm -rf
+    MKDIR = mkdir -p $(1)
+    EXEEXT =
+    NULLDEV = /dev/null
+endif
+
+CC       = gcc
+CFLAGS   = -Wall -Wextra -std=c99 -O2 -Iinclude
+SRCDIR   = src
 BUILDDIR = build
+OBJDIR   = $(BUILDDIR)/out
+TARGET   = $(BUILDDIR)/othello$(EXEEXT)
 
 # Source files
-SRCS = main.c menu.c game.c ai.c score.c player.c
-DATASTRUCTURE_SRCS = datastructures/stack.c datastructures/octuple.c datastructures/nbtree.c datastructures/linked.c datastructures/deque.c datastructures/array.c
+SOURCES = $(SRCDIR)/game.c \
+          $(SRCDIR)/main.c \
+          $(SRCDIR)/replay.c \
+          $(SRCDIR)/util/menu.c \
+          $(SRCDIR)/util/storage.c \
+          $(SRCDIR)/datastructure/array.c \
+          $(SRCDIR)/datastructure/deque.c \
+          $(SRCDIR)/datastructure/linked.c \
+          $(SRCDIR)/datastructure/nbtree.c \
+          $(SRCDIR)/datastructure/octuple.c \
+          $(SRCDIR)/datastructure/stack.c \
+          $(SRCDIR)/attribute/move.c \
+          $(SRCDIR)/attribute/player.c \
+          $(SRCDIR)/attribute/score.c \
+          $(SRCDIR)/ai/ai.c \
+          $(SRCDIR)/attribute/piece.c
 
-# Object files in build directory
-OBJS = $(addprefix $(BUILDDIR)/, $(SRCS:.c=.o))
-DATASTRUCTURE_OBJS = $(addprefix $(BUILDDIR)/, $(DATASTRUCTURE_SRCS:.c=.o))
-ALL_OBJS = $(OBJS) $(DATASTRUCTURE_OBJS)
+# Object files
+OBJECTS = $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SOURCES))
 
-# Target executable
-TARGET = $(BUILDDIR)/build
+.PHONY: all clean rebuild directories run
 
-all: $(TARGET)
+all: directories $(TARGET)
 
-$(TARGET): $(ALL_OBJS) | $(BUILDDIR)
-	$(CC) $(ALL_OBJS) -o $(TARGET)
+directories:
+	@$(call MKDIR, $(OBJDIR))
 
-$(BUILDDIR)/%.o: %.c | $(BUILDDIR) $(BUILDDIR)/datastructures
+$(TARGET): $(OBJECTS)
+	$(CC) $(OBJECTS) -o $(TARGET) $(LDFLAGS)
+
+$(OBJDIR)/%.o: $(SRCDIR)/%.c
+	@$(call MKDIR, $(dir $@))
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILDDIR):
-	mkdir -p $(BUILDDIR)
-
-$(BUILDDIR)/datastructures:
-	mkdir -p $(BUILDDIR)/datastructures
-
 clean:
-	rm -rf $(BUILDDIR)
+ifeq ($(OS),Windows_NT)
+	@if exist $(subst /,\,$(BUILDDIR)) $(RM) $(subst /,\,$(BUILDDIR))\* > $(NULLDEV) 2>&1 && rmdir /S /Q $(subst /,\,$(BUILDDIR))
+else
+	$(RM) $(BUILDDIR)
+endif
 
 run: all
-	cd $(BUILDDIR) && ./build
+	$(TARGET)
+
+rebuild: clean all

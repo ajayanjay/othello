@@ -1,4 +1,4 @@
-#include "deque.h"
+#include "../../include/datastructure/deque.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -11,8 +11,10 @@ void pushTail(Deque *Q, infotype nilai) {
         Q->head = P;
         Q->tail = P;
     } else {
-        insertAkhir(&(Q->tail), P);
+        Q->tail->next = P;
+        P->prev = Q->tail;
         Q->tail = P;
+        
     }
 }
 
@@ -30,32 +32,28 @@ void pushHead(Deque *Q, infotype nilai) {
 }
 
 void popHead(Deque *Q, infotype *nilai){
-    if (!isEmpty(Q->head)) {
-        freeAwal(&Q->head, nilai);
-        if (Q->head == nil) {
-            Q->tail = nil;
-        }
+    if (isEmpty(Q->head)) 
+        return;
+
+    freeAwal(&Q->head, nilai);
+    if (Q->head == nil) {
+        Q->tail = nil;
     }
+
 }
 
 void popTail(Deque *Q, infotype *nilai){
-    if (!isEmpty(Q->head)) {
-        freeAkhir(&Q->tail, nilai);
-        ElmtList * current = Q->head;
-        if (current == NULL) {
-            Q->head = nil;
-            Q->tail = nil;
-        } else {
-            while (current->next != Q->tail) {
-                current = current->next;
-            }
-            Q->tail = current;
-            if (Q->tail == nil) {
-                Q->head = nil; // If the tail is now nil, head should also be nil
-            } else {
-                Q->tail->next = nil; // Set the new tail's next to nil
-            }
-        }
+    if (isEmpty(Q->head)) 
+        return;
+
+    address last = Q->tail;
+    *nilai = last->info;
+    if (last->prev != nil) {
+        Q->tail = last->prev;
+        Q->tail->next = nil;
+    } else {
+        Q->head = nil;
+        Q->tail = nil;
     }
 }
 
@@ -104,5 +102,5 @@ int loadDeque(Deque * Q, const char * filename) {
 }
 
 int isDequeEmpty(Deque *Q) {
-    return (Q->head == nil);
+    return (Q == NULL || Q->head == nil);
 }

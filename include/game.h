@@ -1,8 +1,10 @@
 #ifndef game_h
 #define game_h
 
-#include "player.h"
-#include "boolean.h"
+#include "attribute/player.h"
+#include "util/boolean.h"
+#include "datastructure/octuple.h"
+#include "datastructure/nbtree.h"
 
 #define SAVEDATA_DIR "gamedata/savedata"
 #define SAVEDATA_BOARD_FILE "gamedata/savedata/board.dat"
@@ -28,5 +30,12 @@ int redo(NodeOctuple * board, Deque * dequeUndo, Stack * stackRedo, char * curre
 int saveGame(NodeOctuple * board, Player player1, Player player2, Stack stackRedo, Deque dequeUndo, char currentPlayer);
 int loadGame(NodeOctuple ** board, Player * player1, Player * player2, Stack * stackRedo, Deque * dequeUndo, char * currentPlayer);
 void removeSavedGameFiles();
+
+Move getBestMove(NodeOctuple *board, char player, Move * moves, int movesSize,  int depth);
+
+int minimax(NbTree *root, int depth, char aiPlayer, boolean isMax, int alpha, int beta);
+
+void updateTree(Move lastMove);
+void deleteTree();
 
 #endif

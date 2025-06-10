@@ -1,21 +1,17 @@
 #ifndef ai_h
 #define ai_h
 
-#include "move.h"
-#include "boolean.h"
-
-// board duplicate for AI.
-typedef struct boardarray {
-    char board[8][8];
-    char currentPlayer;
-} BoardArray;
+#include "../attribute/move.h"
+#include "../util/boolean.h"
 
 typedef struct aiinfo {
-    BoardArray board;
+    char board[8][8];
+    char currentPlayer;
     Move move;
-    int score;
-    boolean isMax, evaluated, expanded;
+    boolean isGameFinished;
 } AIInfo;
+
+AIInfo createAIInfo(char board[8][8], char currentPlayer, Move move);
 
 void printBoardArray (char board [8][8], char player, Move *selectedMove);
 
@@ -43,6 +39,9 @@ int isValidMoveArray(char board[8][8], Move *move, char player);
 // Makes a move on the board.
 // This function modifies the board directly.
 void makeMoveArray(char board[8][8], Move *move, char player);
+
+void copyBoard(char dst[8][8], char src[8][8]);
+int isBoardEqual(char board[8][8], char other[8][8]);
 
 int isGameFinishedArray(char board[8][8]);
 

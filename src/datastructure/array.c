@@ -1,4 +1,4 @@
-#include "array.h"
+#include "../../include/datastructure/array.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -31,7 +31,7 @@ int isArrayEmpty(Array * array) {
 }
 
 int getElement(Array * array, int index, void * element) {
-    if (index < 0 || index >= array->size) {
+    if (index < 0 || (unsigned int) index >= array->size) {
         return 0;
     }
     memcpy(element, (char *) array->data + (index * array->elementSize), array->elementSize);

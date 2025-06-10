@@ -6,4 +6,6 @@ typedef struct {
     char y;
 } Move;
 
+int isMoveEqual(Move a, Move b);
+
 #endif

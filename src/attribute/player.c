@@ -1,7 +1,9 @@
-#include "game.h"
-#include "menu.h"
+#include "../../include/game.h"
+#include "../../include/util/menu.h"
 #include <stdlib.h>
 #include <stdio.h>
+
+extern boolean gIsAgainstHardAI;
 
 // Author: Azzar
 Move playAIEasy(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player) {
@@ -26,12 +28,18 @@ Move playAIEasy(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char p
         boolean unnecessaryInput = true;
         while (unnecessaryInput) switch (userInput()) {
             case KEY_Z:
-                if (isDequeEmpty(dequeUndo)) break;
+
+                if (gIsAgainstHardAI) {
+                    printf("\rCannot undo against Hard AI.");
+                    break;
+                } else if (isDequeEmpty(dequeUndo))
+                    break;
 
                 return (Move) {-2, -2};
 
             case KEY_Y:
-                if (isStackEmpty(stackRedo)) break;
+                if (isStackEmpty(stackRedo))
+                    break;
 
                 return (Move) {-3, -3};
             case ENTER:
@@ -82,12 +90,17 @@ Move playHuman(NodeOctuple *root, Deque * dequeUndo, Stack * stackRedo, char pla
                 break;
 
             case KEY_Z:
-                if (isDequeEmpty(dequeUndo)) break;
+                if (gIsAgainstHardAI) {
+                    printf("\rCannot undo against Hard AI.");
+                    break;
+                } else if (isDequeEmpty(dequeUndo))
+                    break;
 
                 return (Move) {-2, -2};
 
             case KEY_Y:
-                if (isStackEmpty(stackRedo)) break;
+                if (isStackEmpty(stackRedo))
+                    break;
 
                 return (Move) {-3, -3};
 
@@ -103,8 +116,99 @@ Move playHuman(NodeOctuple *root, Deque * dequeUndo, Stack * stackRedo, char pla
     //return selected move
     return validMoves[selected];
 }
-// Move playAIMedium(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player);
-// Move playAIHard(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player);
+
+// AI Medium difficulty using minimax with depth 1
+Move playAIMedium(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char player) {
+    Move validMoves[64];
+    int numValidMoves;
+
+    // Get all valid moves for the current player
+    getValidMoves(board, player, validMoves, &numValidMoves);
+
+    // If no valid moves 
+    if (numValidMoves == 0) {
+        Move invalid = {-1, -1};
+        return invalid;
+    }
+
+    while (1) {
+        clearScreen();
+        
+        // Get the best move using minimax with depth 1
+        Move bestMove = getBestMove(board, player, validMoves, numValidMoves, 1);
+        
+        // Find the index of the best move in validMoves for display
+        int selectedIndex = 0;
+        int i;
+        for (i = 0; i < numValidMoves; i++) {
+            if (validMoves[i].x == bestMove.x && validMoves[i].y == bestMove.y) {
+                selectedIndex = i;
+                break;
+            }
+        }
+        
+        printBoard(board, validMoves, numValidMoves, selectedIndex, player, true);
+        
+        boolean unnecessaryInput = true;
+        while (unnecessaryInput) switch (userInput()) {
+            case KEY_Z:
+                if (gIsAgainstHardAI) {
+                    printf("\rCannot undo against Hard AI.");
+                    break;
+                } else if (isDequeEmpty(dequeUndo))
+                    break;
+
+                return (Move) {-2, -2};
+
+            case KEY_Y:
+                if (isStackEmpty(stackRedo))
+                    break;
+                
+                return (Move) {-3, -3};
+            case ENTER:
+                return bestMove;
+                
+            default:
+                break;
+        }
+    }
+}
+
+// AI Hard difficulty using minimax with depth 5
+Move playAIHard(NodeOctuple *board, Deque * UNUSED(dequeUndo), Stack * UNUSED(stackRedo), char player) {
+    Move validMoves[64];
+    int numValidMoves;
+
+    // Get all valid moves for the current player
+    getValidMoves(board, player, validMoves, &numValidMoves);
+
+    // If no valid moves 
+    if (numValidMoves == 0) {
+        Move invalid = {-1, -1};
+        return invalid;
+    }
+    
+    printBoard(board, validMoves, numValidMoves, -1, player, true);
+    printf("\n   AI (%c) is thinking...\n", player);
+
+    // Get the best move using minimax with depth 6
+    Move bestMove = getBestMove(board, player, validMoves, numValidMoves, 6);
+    
+    // Find the index of the best move in validMoves for display
+    int selectedIndex = 0;
+    int i;
+    for (i = 0; i < numValidMoves; i++) {
+        if (validMoves[i].x == bestMove.x && validMoves[i].y == bestMove.y) {
+            selectedIndex = i;
+            break;
+        }
+    }
+    
+    clearScreen();
+    printBoard(board, validMoves, numValidMoves, selectedIndex, player, true);
+    inputUntilEnter();
+    return bestMove;
+}
 
 Player player(PlayerType type, char symbol) {
     Player newPlayer;
@@ -118,17 +222,13 @@ Player player(PlayerType type, char symbol) {
             break;
 
         case AI_MEDIUM:
-            // newPlayer.play = playAIMedium;
+            newPlayer.play = playAIMedium;
             break;
 
         case AI_HARD:
-            // newPlayer.play = playAIHard;
+            newPlayer.play = playAIHard;
             break;
 
-        case REPLAY:
-            // newPlayer.play = playReplay;
-            break;
-        
         default: 
             break;
     }
@@ -164,4 +264,4 @@ int loadPlayer(Player * p, const char *filename) {
     *p = player(p->type, p->symbol);
 
     return 1;
-}   
+}

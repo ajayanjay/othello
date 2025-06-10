@@ -1,24 +1,36 @@
-#include "game.h"
-#include "piece.h"
-#include "menu.h"
-#include "score.h"
-#include "storage.h"
+#include "../include/game.h"
+#include "../include/attribute/piece.h"
+#include "../include/attribute/score.h"
+#include "../include/util/menu.h"
+#include "../include/util/storage.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
+#include <string.h>
+#include <limits.h>
+
+#define max(a,b) ((a) > (b) ? (a) : (b))
+#define min(a,b) ((a) < (b) ? (a) : (b))
+
+NbTree * gRoot = NULL;
+boolean gIsAgainstHardAI = false;
 
 //Author: Azzar & Ihsan
 int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, Deque *dequeUndo, char startingPlayer) {
 
     createDirectory(SAVEDATA_DIR);
 
-    char temp;
+    gIsAgainstHardAI = player1.type == AI_HARD || player2.type == AI_HARD;
+
     Player * currentPlayer = (startingPlayer == BLACK) ? &player1 : &player2;
     Move lastMove = {-1, -1};
+    char temp;
 
     while (1) {
         clearScreen();
+
         if (isGameOver(board)) {
+            deleteTree();
             printBoard(board, NULL, 0, 0, EMPTY, false);
             gameOverScreen(board, player1, player2);
             removeSavedGameFiles();
@@ -30,11 +42,11 @@ int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, 
         
         lastMove = currentPlayer->play(board, dequeUndo, stackRedo, currentPlayer->symbol);
 
+        if (gIsAgainstHardAI || player1.type == AI_MEDIUM ||  player2.type == AI_MEDIUM)
+            updateTree(lastMove);
+
         switch (lastMove.x) {
-            case -1: // no valid moves
-                printBoard(board, NULL, 0, 0, currentPlayer->symbol, true);
-                printf("No valid moves for %c player.\n", currentPlayer->symbol);
-                nonBlockingInput();
+            case -1: // current player has no available moves
                 currentPlayer = (currentPlayer == &player1) ? &player2 : &player1;
                 break;
 
@@ -50,8 +62,8 @@ int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, 
                 currentPlayer = (temp == BLACK) ? &player1 : &player2;
                 break;
 
-            default: // valid move
-                emptyStack(stackRedo); // if user make a move, empty the redo stack.
+            default: // valid move.
+                emptyStack(stackRedo);
                 pushHead(dequeUndo, activity(board, lastMove, currentPlayer->symbol));
                 makeMove(board, &lastMove, currentPlayer->symbol);
                 currentPlayer = (currentPlayer == &player1) ? &player2 : &player1;
@@ -59,6 +71,20 @@ int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, 
         }
     }
     return 0;
+}
+
+void updateTree(Move lastMove) {
+    if (gRoot == NULL) return;
+    if (lastMove.x < -1 || lastMove.y < -1) return;
+
+    NbTree * temp = gRoot->fs;
+    while (temp != NULL) {
+        if (isMoveEqual(temp->info.move, lastMove)) {
+            disconnectTreeExcept(&gRoot, temp);
+            break;
+        }
+        temp = temp->nb;
+    }
 }
 
 // Author: Azzar
@@ -91,8 +117,8 @@ void getValidMoves (NodeOctuple *root, char player, Move *validMoves, int *numVa
         while (col != NULL && colIndex < 8){
             //if isvalidmove, add to list
             if (isValidMove(col, player)){ //col=pointer node
-                validMoves[*numValidMoves].x = rowIndex; //*numvalidmove beacuse acces score
-                validMoves[*numValidMoves].y = colIndex;
+                validMoves[*numValidMoves].x = colIndex; //*numvalidmove beacuse acces score
+                validMoves[*numValidMoves].y = rowIndex;
                 (*numValidMoves)++; //update index validmoves
             }
             col = col->right; //update collumn
@@ -112,11 +138,12 @@ int isValidMove(NodeOctuple* node, char player) {
     if (node->info != EMPTY) return false;
 
     // Determine the opponent's symbol
-    char opponent = (player == BLACK) ? WHITE : BLACK;
+    char opponent = getOppositePiece(player);
     // player x then opponent O, otherwise
 
     // Check all all direction
-    for (int dir = 0; dir < 8; dir++) {
+    int dir;
+    for (dir = 0; dir < 8; dir++) {
         NodeOctuple* current = getNext(node, dir);
         int count = 0;
 
@@ -143,7 +170,7 @@ void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int sel
     int offset = 0;
 
     // Baris atas
-    offset += sprintf(buffer + offset, "\n  +-----------------+\n"); //border top
+    offset += sprintf(buffer + offset, "  +-----------------+\n"); //border top
 
     NodeOctuple *currentRow = board;
     int rowNumber = 1;
@@ -162,7 +189,7 @@ void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int sel
             //check if position contain valid move or isSelected 
             int validMovesIndex = 0;
             while (validMovesIndex < numValidMoves){
-                if (validMoves[validMovesIndex].x == rowIndex && validMoves[validMovesIndex].y == colIndex){
+                if (validMoves[validMovesIndex].x == colIndex && validMoves[validMovesIndex].y == rowIndex){
                     isValid = 1;
                     if (validMovesIndex == selectedIndex){
                         isSelected = 1;
@@ -212,7 +239,7 @@ void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int sel
 }
 
 void gameOverScreen(NodeOctuple * board, Player player1, Player player2){
-    printf("Game Over! No valid moves left.\n\n");
+    printf("\nGame Over! No valid moves left.\n\n");
     // Calculate final scores
     int blackScore = calculateScore(board, BLACK);
     int whiteScore = calculateScore(board, WHITE);
@@ -259,7 +286,7 @@ void gameOverScreen(NodeOctuple * board, Player player1, Player player2){
         }
     }
     
-    printf("\nPress ENTER...\n");
+    printf("Press ENTER...\n");
 }
 
 // Author: Azzar
@@ -284,7 +311,7 @@ int redo(NodeOctuple * board, Deque * dequeUndo, Stack * stackRedo, char * curre
     pushHead(dequeUndo, activity(board, lastMove, *currentPlayer));
     
     makeMove(board, &lastMove, *currentPlayer);
-    *currentPlayer = (*currentPlayer == BLACK) ? WHITE : BLACK;
+    *currentPlayer = getOppositePiece(*currentPlayer);
 
     return 1;
 }
@@ -301,14 +328,15 @@ Activity activity(NodeOctuple * board, Move lastMove, char currentPlayer) {
 // Author: Idotoho
 // Note: Moved to this file by Azzar
 void makeMove(NodeOctuple *board, Move *move, char player) {
-    char opponent = (player == BLACK) ? WHITE : BLACK;
+    char opponent = getOppositePiece(player);
     
     NodeOctuple *moveNode = getNodeAt(board, move->x, move->y);
     
     moveNode->info = player;
     
     // Check all directions and flip opponent pieces
-    for (int dir = 0; dir < 8; dir++) {
+    int dir;
+    for (dir = 0; dir < 8; dir++) {
         NodeOctuple *current = getNext(moveNode, dir);
         NodeOctuple *piecesToFlip[8]; // Max pieces that can be flipped in one direction
         int flipCount = 0;
@@ -324,7 +352,8 @@ void makeMove(NodeOctuple *board, Move *move, char player) {
         
         // if found opponent pieces and ended at a player piece, flip
         if (foundOpponent && current != NULL && current->info == player) {
-            for (int i = 0; i < flipCount; i++) {
+            int i;
+            for (i = 0; i < flipCount; i++) {
                 piecesToFlip[i]->info = player;
             }
         }
@@ -383,4 +412,138 @@ int loadGame(NodeOctuple ** board, Player * player1, Player * player2, Stack * s
         }
 
     return 1;
+}
+
+Move getBestMove(NodeOctuple *board, char player, Move * moves, int movesSize, int depth) {
+    char boardArray[8][8];
+    convertOctupleToArray(board, boardArray);
+
+    if (gRoot == NULL) gRoot = createNodeTree(createAIInfo(boardArray, player, (Move){-1, -1}));
+
+    if (!isBoardEqual(gRoot->info.board, boardArray)) {
+        // if the board is not equal, we will reset the tree.
+        deleteTree();
+        gRoot = createNodeTree(createAIInfo(boardArray, player, (Move){-1, -1}));
+    }
+
+    if (gRoot->fs == NULL) {
+        // create the first level of the tree with all possible moves.
+        int i;
+        for (i = 0; i < movesSize; ++i) {
+            char tempBoard[8][8];
+            copyBoard(tempBoard, boardArray);
+            makeMoveArray(tempBoard, &moves[i], player);
+
+            char nextPlayer = getOppositePiece(player);
+            NbTree * childNode = createNodeTree(createAIInfo(tempBoard, nextPlayer, moves[i]));
+            insertChild(gRoot, childNode);
+        }
+    }
+
+    NbTree * child = gRoot->fs;
+    Move bestMove = {-1, -1};
+    int bestValue = INT_MIN;
+
+    while (child != NULL) {
+        int val = minimax(child, depth - 1, player, false, bestValue, INT_MAX);
+        
+        if (val > bestValue) {
+            bestValue = val;
+            bestMove = child->info.move;
+        }
+        
+        child = child->nb;
+    }
+
+    return bestMove;
+    
+}
+
+int minimax(NbTree * node, int depth, char player, boolean isMax, int alpha, int beta) {
+    if (depth == 0 || node->info.isGameFinished)
+        return evaluateBoardArray(node->info.board, player);
+
+    if (node->fs == NULL) {
+
+        // if has no son, build the tree from this node.
+
+        int validMoveCount;
+        Move * validMoves = getValidMovesArray(node->info.board, node->info.currentPlayer, &validMoveCount);
+
+        if (validMoveCount == 0) {
+            char opponent = getOppositePiece(node->info.currentPlayer);
+            NbTree * passNode = createNodeTree(createAIInfo(node->info.board, opponent, (Move){-1, -1}));
+            node->fs = passNode;
+            return minimax(passNode, depth - 1, player, !isMax, alpha, beta);
+        }
+
+        int bestScore = isMax ? INT_MIN : INT_MAX;
+        boolean cutoff = false;
+        int i;
+        for (i = 0; i < validMoveCount; ++i) {
+            char tempBoard[8][8];
+            copyBoard(tempBoard, node->info.board);
+            makeMoveArray(tempBoard, &validMoves[i], node->info.currentPlayer);
+
+            char nextPlayer = getOppositePiece(node->info.currentPlayer);
+            NbTree * childNode = createNodeTree(createAIInfo(tempBoard, nextPlayer, validMoves[i]));
+            insertChild(node, childNode);
+
+            int eval = isMax ? INT_MIN : INT_MAX;
+            if (!cutoff) eval = minimax(childNode, depth - 1, player, !isMax, alpha, beta);
+            
+            if (isMax) {
+                bestScore = max(bestScore, eval);
+                alpha = max(alpha, eval);
+            } else {
+                bestScore = min(bestScore, eval);
+                beta = min(beta, eval);
+            }
+
+            // if cutoff did happen, stop evaluation but keep adding children of the current note.
+            if (beta <= alpha) cutoff = true;
+        }
+
+        free(validMoves);
+        return bestScore;
+
+    } else {
+
+        // if has son, we will iterate through all of the sons.
+
+        NbTree * child = node->fs;
+        
+        // if the node is a pass node, we will evaluate the first son.
+        if (isMoveEqual(node->info.move, (Move){-1, -1})) 
+            return minimax(child, depth - 1, player, !isMax, alpha, beta);
+        
+        // if the node has children, we will iterate through them.
+        // this is used to build the tree from an existing node.
+        int bestScore = isMax ? INT_MIN : INT_MAX;
+        while (child != NULL) {
+            int eval = minimax(child, depth - 1, player, !isMax, alpha, beta);
+            
+            if (isMax) {
+                bestScore = max(bestScore, eval);
+                alpha = max(alpha, eval);
+            } else {
+                bestScore = min(bestScore, eval);
+                beta = min(beta, eval);
+            }
+
+            if (beta <= alpha) break;
+
+            child = child->nb;
+        }
+        return bestScore;
+    }
+
+    return 0;
+}
+
+void deleteTree() {
+    if (gRoot != NULL) {
+        deleteEntireTree(&gRoot);
+        gRoot = NULL;
+    }
 }

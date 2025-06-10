@@ -2,13 +2,15 @@
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
-#include "menu.h"
-#include "game.h"
-#include "piece.h"
-#include "score.h"
-#include "replay.h"
-#include "storage.h"
 
+#include "../include/util/menu.h"
+#include "../include/game.h"
+#include "../include/attribute/piece.h"
+#include "../include/attribute/score.h"
+#include "../include/replay.h"
+#include "../include/util/storage.h"
+
+void newGame();
 void mainMenu();
 void continueGame();
 void selectMode();
@@ -16,6 +18,7 @@ void howToPlay();
 
 int main(void)
 {
+    atexit(deleteTree);
     srand((unsigned int)time(NULL));
     createDirectory("gamedata");
     initScore();
@@ -39,7 +42,7 @@ void mainMenu()
 
     while (1) // Loop the game until the user exits.
         switch (menu(menuHeader, menuItems, menuFooter)) {
-            case 0: selectMode(); break;
+            case 0: newGame(); break;
             case 1: continueGame(); break;
             case 2: selectReplays(); break;
             case 3: printScoreboard(); break;
@@ -59,10 +62,33 @@ void continueGame() {
     if (loadGame(&board, &player1, &player2, &stackRedo, &dequeUndo, &currentPlayer)) {
         game(player1, player2, board, &stackRedo, &dequeUndo, currentPlayer);
         saveReplayMenu(&dequeUndo);
+        
+        freeStack(&stackRedo);
+        freeDeque(&dequeUndo);
+        freeBoard(board);
     } else {
         printf("No saved game found. please create a new game first.\n");
         inputUntilEnter();
     }
+}
+
+void newGame() {
+    if (isDirectoryExist(SAVEDATA_DIR)) {
+        const char* header =    "You already have a saved game\n"
+                                "Do you want to create a new game?\n\n";
+        const char* options[] = {
+                                "Yes\n",
+                                "No\n\n", NULL
+        };
+        const char* footer =    "Press ENTER to Select...\n";
+        switch (menu(header, options, footer)) {
+            case 0: continueGame(); return;
+            case 1: return;
+            default: return;
+        }
+    }
+
+    selectMode();
 }
 
 // Author: Ihsan
@@ -101,7 +127,7 @@ void selectMode() {
             int player2Selection = menu(player2Header, playerOptions, modeSelector);
             
             // Handle Back option (return to Player 1 selection)
-            if (player2Selection == 5) {
+            if (player2Selection == 4) {
                 break;
             }
             
@@ -111,7 +137,6 @@ void selectMode() {
                 case 1: player2 = player(AI_EASY, WHITE); break;
                 case 2: player2 = player(AI_MEDIUM, WHITE); break;
                 case 3: player2 = player(AI_HARD, WHITE); break;
-                case 4: return;
                 default: continue; // Invalid selection, try again
             }
             
@@ -128,6 +153,10 @@ void selectMode() {
             game(player1, player2, board, &stackRedo, &dequeUndo, startingPlayer);
             
             saveReplayMenu(&dequeUndo);
+
+            freeStack(&stackRedo);
+            freeDeque(&dequeUndo);
+            freeBoard(board);
             
             return; // Return to main menu after game ends
         }

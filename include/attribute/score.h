@@ -1,8 +1,9 @@
 #ifndef score_h
 #define score_h
 
-#include "player.h"
-#include "datastructures/octuple.h"
+#include "../datastructure/octuple.h"
+
+#define SCORE_FILE "gamedata/scores.dat"
 
 typedef struct {
     char playerName[4]; // 3 characters + null terminator

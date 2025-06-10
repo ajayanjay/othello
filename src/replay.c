@@ -1,8 +1,8 @@
-#include "replay.h"
-#include "menu.h"
-#include "storage.h"
-#include "ai.h"
-#include "datastructures/stack.h"
+#include "../include/replay.h"
+#include "../include/util/menu.h"
+#include "../include/util/storage.h"
+#include "../include/ai/ai.h"
+#include "../include/datastructure/stack.h"
 #include <stdio.h>
 #include <dirent.h>
 #include <stdlib.h>
@@ -79,58 +79,52 @@ boolean overwriteReplayMenu (){
 }
 
 void printReplay(const char *fileName){
-    
     Deque replay;
-    if (loadDeque(&replay, fileName) == 0 || isDequeEmpty(&replay))
+    if (!loadDeque(&replay, fileName) || isDequeEmpty(&replay)){
         return;
-
-    Stack stackActivity;
-    initStack(&stackActivity, sizeof(Activity), 64);
-
-    // pre-build: Load all steps from head to tail
-    address current = replay.head;  // start from head
-    while (current != NULL && stackActivity.size < 64) {
-        push(&stackActivity, &current->info);
-        current = current->next;
     }
-    
-    int totalSteps = stackActivity.size;
-   
-    int pos = 1;
-    
-    while (1) {
+
+    address current = replay.tail;
+    int pos = 0;
+
+    while (1){
         clearScreen();
 
-        Activity act;
-        getElement(&stackActivity, totalSteps - pos, &act);
-
-        printf("Step %d of %d (%c):\n", pos, totalSteps, act.currentPlayer);
+        Activity act = current->info;
+        printf("      Step %d (%c):", pos+1, act.currentPlayer);
         printBoardArray(act.board, act.currentPlayer, &act.lastMove);
-        printf("(LEFT = Previous)\n(RIGHT = Next)\n(ESC = Leave)\n");
+        printf(
+            "\n"
+            "   LEFT_KEY = Previous Step\n"
+            "   RIGHT_KEY = Next Step\n"
+            "   ESC_KEY = Exit Replay\n"
+        );
 
-        boolean unnessecaryInput = true;
-        while (unnessecaryInput) switch (userInput()) {
+        boolean unnecessaryInput = true;
+        while (unnecessaryInput) switch (userInput()) {
             case RIGHT:
-                if (pos < totalSteps) {
+                if (current->prev != NULL) {
+                    current = current->prev;
                     pos++;
-                    unnessecaryInput = false;
+                    unnecessaryInput = false;
                 }
-                
                 break;
-                
+
             case LEFT:
-                if (pos > 1) {
+                if (current->next != NULL) {
+                    current = current->next;
                     pos--;
-                    unnessecaryInput = false;
+                    unnecessaryInput = false;
                 }
-                
                 break;
-                
+
             case ESC:
+                freeDeque(&replay);
                 return;
-                
+            
             default:
                 break;
+            
         }
     }
 }
