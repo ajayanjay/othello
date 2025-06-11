@@ -82,13 +82,11 @@ void newGame() {
         };
         const char* footer =    "Press ENTER to Select...\n";
         switch (menu(header, options, footer)) {
-            case 0: continueGame(); return;
+            case 0: selectMode(); return;
             case 1: return;
             default: return;
         }
     }
-
-    selectMode();
 }
 
 // Author: Ihsan
