@@ -80,15 +80,15 @@ Input userInput()
 			case 0: case 224:
 				switch(nonBlockingInput()) 
 				{
-					case 72: return UP;
-					case 75: return LEFT;  
-					case 80: return DOWN;
-					case 77: return RIGHT;
+					case 72: return INPUT_UP;
+					case 75: return INPUT_LEFT;  
+					case 80: return INPUT_DOWN;
+					case 77: return INPUT_RIGHT;
 					default: return NUL;
 				}
 
 			case KEY_ESC:
-				return ESC;
+				return INPUT_ESCAPE;
 		#else
 			case 27:
 				if (keyboardHit()) {
@@ -97,40 +97,40 @@ Input userInput()
 						case 91:
 							switch(nonBlockingInput()) 
 							{
-								case 65: return UP;
-								case 68: return LEFT;  
-								case 66: return DOWN;
-								case 67: return RIGHT;
+								case 65: return INPUT_UP;
+								case 68: return INPUT_LEFT;  
+								case 66: return INPUT_DOWN;
+								case 67: return INPUT_RIGHT;
 								default: return NUL;
 							}
 						default:
 							return NUL;
 					}
 				} else
-					return ESC;
+					return INPUT_ESCAPE;
 		#endif
 
 		case KEY_ENTER:
-			return ENTER;
+			return INPUT_ENTER;
 
 		// WASD movement
 		case 'w': case 'W':
-			return UP;
+			return INPUT_UP;
 
 		case 'a': case 'A':
-			return LEFT;
+			return INPUT_LEFT;
 
 		case 's': case 'S':
-			return DOWN;
+			return INPUT_DOWN;
 
 		case 'd': case 'D':
-			return RIGHT;
+			return INPUT_RIGHT;
 
 		case 'z': case 'Z':
-			return KEY_Z;
+			return INPUT_Z;
 		
 		case 'y': case 'Y':
-			return KEY_Y;
+			return INPUT_Y;
 
 		default: 
 			return NUL;
@@ -146,7 +146,7 @@ void inputLimitedString(char * buffer, int minSize, int maxSize, int (*isCharAll
 
 		if (input == KEY_ENTER && count >= minSize) break;
 
-		if (input == BACKSPC) {
+		if (input == KEY_BACKSPACE) {
 			if (count > 0) {
 				buffer[--count] = '\0';
 				printf("\b \b");
@@ -227,20 +227,20 @@ int menuInput(int *item, int minSize, int maxSize)
 {
 	switch(userInput())
 	{
-		case UP: case LEFT:
+		case INPUT_UP: case INPUT_LEFT:
 			if (isAtFront(*item, minSize)) return UNNECESSARY_INPUT;
 			return moveCursor(&*item, PREVIOUS);
 
-		case DOWN: case RIGHT:
+		case INPUT_DOWN: case INPUT_RIGHT:
 			if (isAtEnd(*item, maxSize)) return UNNECESSARY_INPUT;
 			return moveCursor(&*item, NEXT);
 
-		case ENTER:
-			return ENTER;
+		case INPUT_ENTER:
+			return INPUT_ENTER;
 
-		case ESC:
+		case INPUT_ESCAPE:
 			*item = maxSize;
-			return ENTER;
+			return INPUT_ENTER;
 
 		default:
 			return UNNECESSARY_INPUT;

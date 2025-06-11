@@ -87,6 +87,7 @@ void newGame() {
             default: return;
         }
     }
+    selectMode();
 }
 
 // Author: Ihsan

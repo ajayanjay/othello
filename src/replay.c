@@ -84,14 +84,17 @@ void printReplay(const char *fileName){
         return;
     }
 
-    address current = replay.tail;
-    int pos = 0;
+    address current = replay.head;
+    int pos = 1;
 
     while (1){
         clearScreen();
 
         Activity act = current->info;
-        printf("      Step %d (%c):", pos+1, act.currentPlayer);
+
+        if (current->next == NULL)  printf("      End of Game.");
+        else                        printf("      Step %d (%c):", pos, act.currentPlayer);
+
         printBoardArray(act.board, act.currentPlayer, &act.lastMove);
         printf(
             "\n"
@@ -102,23 +105,23 @@ void printReplay(const char *fileName){
 
         boolean unnecessaryInput = true;
         while (unnecessaryInput) switch (userInput()) {
-            case RIGHT:
-                if (current->prev != NULL) {
-                    current = current->prev;
+            case INPUT_RIGHT:
+                if (current->next != NULL) {
+                    current = current->next;
                     pos++;
                     unnecessaryInput = false;
                 }
                 break;
 
-            case LEFT:
-                if (current->next != NULL) {
-                    current = current->next;
+            case INPUT_LEFT:
+                if (current->prev != NULL) {
+                    current = current->prev;
                     pos--;
                     unnecessaryInput = false;
                 }
                 break;
 
-            case ESC:
+            case INPUT_ESCAPE:
                 freeDeque(&replay);
                 return;
             

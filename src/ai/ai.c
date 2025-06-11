@@ -27,7 +27,7 @@ void printBoardArray (char board [8][8], char player, Move *selectedMove){
                 isSelected = 1;
             }
             if (isSelected) {
-                offset += sprintf(buffer + offset, " \033[30;47m%c\033[0m", tolower(player));
+                offset += sprintf(buffer + offset, " \033[30;47m%c\033[0m", player);
             } else if (isValidMoveArray(board, &move, player)){
                 offset += sprintf (buffer + offset, " \033[2;2m%c\033[0m", tolower(player)); 
             } else { // regular cell

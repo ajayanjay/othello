@@ -28,7 +28,7 @@ Move playAIEasy(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char p
 
         boolean unnecessaryInput = true;
         while (unnecessaryInput) switch (userInput()) {
-            case KEY_Z:
+            case INPUT_Z:
 
                 if (gIsAgainstHardAI) {
                     printf("\rCannot undo against Hard AI.");
@@ -38,12 +38,12 @@ Move playAIEasy(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char p
 
                 return (Move) {-2, -2};
 
-            case KEY_Y:
+            case INPUT_Y:
                 if (isStackEmpty(stackRedo))
                     break;
 
                 return (Move) {-3, -3};
-            case ENTER:
+            case INPUT_ENTER:
                 return validMoves[selected];
                 
             default:
@@ -78,19 +78,19 @@ Move playHuman(NodeOctuple *root, Deque * dequeUndo, Stack * stackRedo, char pla
 
         boolean unnecessaryInput = true;
         while (unnecessaryInput) switch (userInput()){
-            case LEFT: 
+            case INPUT_LEFT: 
             // % num valid for circular || + num valid ensure selected always positive
             //move selection left
                 selected = (selected-1 + numValidMoves) % numValidMoves;
                 unnecessaryInput = false;
                 break;
 
-            case RIGHT:
+            case INPUT_RIGHT:
                 selected = (selected+1) % numValidMoves;
                 unnecessaryInput = false;
                 break;
 
-            case KEY_Z:
+            case INPUT_Z:
                 if (gIsAgainstHardAI) {
                     printf("\rCannot undo against Hard AI.");
                     break;
@@ -99,13 +99,13 @@ Move playHuman(NodeOctuple *root, Deque * dequeUndo, Stack * stackRedo, char pla
 
                 return (Move) {-2, -2};
 
-            case KEY_Y:
+            case INPUT_Y:
                 if (isStackEmpty(stackRedo))
                     break;
 
                 return (Move) {-3, -3};
 
-            case ENTER:
+            case INPUT_ENTER:
                 return validMoves[selected];
                 
             default:
@@ -152,7 +152,7 @@ Move playAIMedium(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char
         
         boolean unnecessaryInput = true;
         while (unnecessaryInput) switch (userInput()) {
-            case KEY_Z:
+            case INPUT_Z:
                 if (gIsAgainstHardAI) {
                     printf("\rCannot undo against Hard AI.");
                     break;
@@ -161,12 +161,12 @@ Move playAIMedium(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char
 
                 return (Move) {-2, -2};
 
-            case KEY_Y:
+            case INPUT_Y:
                 if (isStackEmpty(stackRedo))
                     break;
                 
                 return (Move) {-3, -3};
-            case ENTER:
+            case INPUT_ENTER:
                 return bestMove;
                 
             default:

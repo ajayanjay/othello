@@ -36,6 +36,7 @@ int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, 
 
         if (isGameOver(board)) {
             deleteTree();
+            pushTail(dequeUndo, activity(board, (Move) {-1, -1}, currentPlayer->symbol));
             printBoard(board, NULL, 0, 0, EMPTY, false);
             gameOverScreen(board, player1, player2);
             removeSavedGameFiles();
@@ -69,7 +70,7 @@ int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, 
 
             default: // valid move.
                 emptyStack(stackRedo);
-                pushHead(dequeUndo, activity(board, lastMove, currentPlayer->symbol));
+                pushTail(dequeUndo, activity(board, lastMove, currentPlayer->symbol));
                 makeMove(board, &lastMove, currentPlayer->symbol);
                 currentPlayer = (currentPlayer == &player1) ? &player2 : &player1;
                 break;
@@ -313,7 +314,7 @@ int redo(NodeOctuple * board, Deque * dequeUndo, Stack * stackRedo, char * curre
     Move lastMove;
     pop(stackRedo, &lastMove);
 
-    pushHead(dequeUndo, activity(board, lastMove, *currentPlayer));
+    pushTail(dequeUndo, activity(board, lastMove, *currentPlayer));
     
     makeMove(board, &lastMove, *currentPlayer);
     *currentPlayer = getOppositePiece(*currentPlayer);

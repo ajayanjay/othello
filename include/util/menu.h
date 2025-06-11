@@ -4,29 +4,29 @@
 #define UNNECESSARY_INPUT NUL
 #define CURSOR_MOVE 32
 
-#define PREVIOUS UP
-#define NEXT DOWN
+#define PREVIOUS INPUT_UP
+#define NEXT INPUT_DOWN
 
 #define KEY_ESC 27
 
 #ifdef _WIN32
 	#define KEY_ENTER 13
-	#define BACKSPC 8
+	#define KEY_BACKSPACE 8
 #else
 	#define KEY_ENTER 10
-	#define BACKSPC 127
+	#define KEY_BACKSPACE 127
 #endif
 
 typedef enum input {
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT,
-	ENTER,
-	KEY_Z,
-	KEY_Y,
-	NUL,
-	ESC
+	INPUT_UP,
+	INPUT_DOWN,
+	INPUT_LEFT,
+	INPUT_RIGHT,
+	INPUT_ENTER,
+	INPUT_Z,
+	INPUT_Y,
+	INPUT_ESCAPE,
+	NUL
 } Input ;
 
 int menu(const char* menuHeader, const char* menuItems[], const char* menuFooter);
