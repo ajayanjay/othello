@@ -1,7 +1,7 @@
 #ifndef array_h
 #define array_h
 
-// dynamically allocated array class.
+// dynamically allocated generic array class.
 
 typedef unsigned int SizeData; // type for the size of the array
 

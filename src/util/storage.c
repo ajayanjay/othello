@@ -1,12 +1,11 @@
 #include "../../include/util/storage.h"
-#include "dirent.h"
-#include <stdlib.h>
-#include <stdio.h>
 
 // Createdir
 #include <sys/stat.h>
 #include <unistd.h>
-
+#include "dirent.h"
+#include <stdlib.h>
+#include <stdio.h>
 
 // for directory storage if not exist
 void createDirectory (const char *path) {

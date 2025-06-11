@@ -1,5 +1,6 @@
 #include "../../include/ai/ai.h"
 #include "../../include/attribute/piece.h"
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>

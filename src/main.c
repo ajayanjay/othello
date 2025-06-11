@@ -1,14 +1,14 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <time.h>
-#include <string.h>
-
 #include "../include/util/menu.h"
 #include "../include/game.h"
 #include "../include/attribute/piece.h"
 #include "../include/attribute/score.h"
 #include "../include/replay.h"
 #include "../include/util/storage.h"
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <time.h>
+#include <string.h>
 
 void newGame();
 void mainMenu();

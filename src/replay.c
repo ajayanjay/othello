@@ -2,7 +2,7 @@
 #include "../include/util/menu.h"
 #include "../include/util/storage.h"
 #include "../include/ai/ai.h"
-#include "../include/datastructure/stack.h"
+
 #include <stdio.h>
 #include <dirent.h>
 #include <stdlib.h>

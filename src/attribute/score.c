@@ -2,6 +2,7 @@
 #include "../../include/attribute/player.h"
 #include "../../include/util/menu.h"
 #include "../../include/attribute/piece.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -78,13 +79,8 @@ void printCurrentScores(NodeOctuple *board) {
     int whiteScore = calculateScore(board, WHITE);
     
     // Convert PlayerType enum to string
-    const char* blackType = (gBlackPlayer.type == HUMAN) ? "Human" : 
-                           (gBlackPlayer.type == AI_EASY) ? "Easy AI" :
-                           (gBlackPlayer.type == AI_MEDIUM) ? "Medium AI" : "Hard AI";
-    
-    const char* whiteType = (gWhitePlayer.type == HUMAN) ? "Human" : 
-                           (gWhitePlayer.type == AI_EASY) ? "Easy AI" :
-                           (gWhitePlayer.type == AI_MEDIUM) ? "Medium AI" : "Hard AI";
+    const char* blackType = playerTypeToString(gBlackPlayer.type);
+    const char* whiteType = playerTypeToString(gWhitePlayer.type);
     
     printf("\n   Scores:\n");
     printf("   \033[91mRED\033[m  (X) - %s: %2d pieces\n", blackType, blackScore);

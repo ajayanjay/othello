@@ -1,5 +1,6 @@
 #include "../../include/game.h"
 #include "../../include/util/menu.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -264,4 +265,14 @@ int loadPlayer(Player * p, const char *filename) {
     *p = player(p->type, p->symbol);
 
     return 1;
+}
+
+char * playerTypeToString(PlayerType type) {
+    switch (type) {
+        case HUMAN: return "Human";
+        case AI_EASY: return "Easy AI";
+        case AI_MEDIUM: return "Medium AI";
+        case AI_HARD: return "Hard AI";
+        default: return "Unknown Player Type";
+    }
 }

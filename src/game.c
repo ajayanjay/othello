@@ -3,6 +3,7 @@
 #include "../include/attribute/score.h"
 #include "../include/util/menu.h"
 #include "../include/util/storage.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
