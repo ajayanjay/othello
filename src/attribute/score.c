@@ -49,7 +49,7 @@ void printScoreboard() {
     inputUntilEnter();
 }
 
-int calculateScore(NodeOctuple *board, char player) {
+int calculatePieces(NodeOctuple *board, char player) {
     if (board == NULL) return 0;
     
     int pieceCount = 0;
@@ -72,19 +72,50 @@ int calculateScore(NodeOctuple *board, char player) {
     return pieceCount;
 }
 
+float getDifficultyWeight(PlayerType playerType) {
+    switch (playerType) {
+        case HUMAN:
+            return HUMAN_WEIGHT;
+        case AI_EASY:
+            return AI_EASY_WEIGHT;
+        case AI_MEDIUM:
+            return AI_MEDIUM_WEIGHT;
+        case AI_HARD:
+            return AI_HARD_WEIGHT;
+        default:
+            return HUMAN_WEIGHT;
+    }
+}
+
+int calculateWeightedScore(int pieceCount, PlayerType playerType) {
+    if (pieceCount <= 0) return 0;
+    
+    float weight = getDifficultyWeight(playerType);
+    return (int)(pieceCount * weight);
+}
+
 void printCurrentScores(NodeOctuple *board) {
     if (board == NULL) return;
     
-    int blackScore = calculateScore(board, BLACK);
-    int whiteScore = calculateScore(board, WHITE);
+    int blackPieces = calculatePieces(board, BLACK);
+    int whitePieces = calculatePieces(board, WHITE);
+    
+    // Calculate weighted scores for both players
+    int blackWeightedScore = calculateWeightedScore(blackPieces, gWhitePlayer.type);
+    int whiteWeightedScore = calculateWeightedScore(whitePieces, gBlackPlayer.type);
     
     // Convert PlayerType enum to string
     const char* blackType = playerTypeToString(gBlackPlayer.type);
     const char* whiteType = playerTypeToString(gWhitePlayer.type);
     
-    printf("\n   Scores:\n");
-    printf("   \033[91mRED\033[m  (X) - %s: %2d pieces\n", blackType, blackScore);
-    printf("   \033[96mBLUE\033[m (O) - %s: %2d pieces\n", whiteType, whiteScore);
+    printf("\n        Scores:\n"
+        " "
+        "Black (X) | White (O)\n "
+        "%9s | %-9s\n "
+        "%2d pieces | %d pieces\n "
+        "%9d | %-9d\n",
+        blackType, whiteType, blackPieces, whitePieces, blackWeightedScore, whiteWeightedScore
+        );
 }
 
 void getPlayerName(char* playerName) {
@@ -140,7 +171,7 @@ void loadScoreboard() {
 }
 
 void sortScoreboard() {
-    // Simple bubble sort by high score (descending)
+    // Simple bubble sort by weighted score (descending)
     int i;
     for (i = 0; i < scoreboard.playerCount - 1; i++) {
         int j;
