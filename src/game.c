@@ -301,7 +301,7 @@ void gameOverScreen(NodeOctuple * board, Player player1, Player player2){
 int undo(NodeOctuple * board, Deque * dequeUndo, Stack * stackRedo, char * currentPlayer) {
     
     Activity lastActivity;
-    popHead(dequeUndo, &lastActivity);
+    popTail(dequeUndo, &lastActivity);
 
     convertArrayToOctuple(board, lastActivity.board);
     *currentPlayer = lastActivity.currentPlayer;
