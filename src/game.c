@@ -68,6 +68,9 @@ int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, 
                 currentPlayer = (temp == BLACK) ? &player1 : &player2;
                 break;
 
+            case -4: //escape
+                return 1;
+
             default: // valid move.
                 emptyStack(stackRedo);
                 pushTail(dequeUndo, activity(board, lastMove, currentPlayer->symbol));

@@ -46,6 +46,10 @@ Move playAIEasy(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char p
             case INPUT_ENTER:
                 return validMoves[selected];
                 
+
+            case INPUT_ESCAPE:
+                return (Move) {-4, -4};
+                
             default:
                 break;
         }
@@ -107,6 +111,9 @@ Move playHuman(NodeOctuple *root, Deque * dequeUndo, Stack * stackRedo, char pla
 
             case INPUT_ENTER:
                 return validMoves[selected];
+
+            case INPUT_ESCAPE:
+                return (Move) {-4, -4};
                 
             default:
                 break;
@@ -168,6 +175,9 @@ Move playAIMedium(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char
                 return (Move) {-3, -3};
             case INPUT_ENTER:
                 return bestMove;
+
+            case INPUT_ESCAPE:
+                return (Move) {-4, -4};
                 
             default:
                 break;
@@ -188,7 +198,6 @@ Move playAIHard(NodeOctuple *board, Deque * UNUSED(dequeUndo), Stack * UNUSED(st
         Move invalid = {-1, -1};
         return invalid;
     }
-    
     printBoard(board, validMoves, numValidMoves, -1, player, true);
     printf("\n   AI (%c) is thinking...\n", player);
 
@@ -207,7 +216,16 @@ Move playAIHard(NodeOctuple *board, Deque * UNUSED(dequeUndo), Stack * UNUSED(st
     
     clearScreen();
     printBoard(board, validMoves, numValidMoves, selectedIndex, player, true);
-    inputUntilEnter();
+    
+    while (1) {
+        Input input = userInput();
+        if (input == INPUT_ESCAPE) {
+            return (Move) {-4, -4};
+        } else if (input == INPUT_ENTER) {
+            break;
+        }
+    }
+    
     return bestMove;
 }
 
