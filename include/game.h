@@ -18,6 +18,7 @@ int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, 
 
 void getValidMoves(NodeOctuple *root, char player, Move *validMoves, int *numValidMoves);
 int isValidMove(NodeOctuple* node, char player);
+void getPiecesToFlip(NodeOctuple *board, Move *move, char player, Move *piecesToFlip, int *numPiecesToFlip);
 void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int selectedIndex, char player, boolean showScore);
 void makeMove(NodeOctuple *board, Move *move, char player);
 int hasValidMove(NodeOctuple * board, char player);

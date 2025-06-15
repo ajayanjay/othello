@@ -178,6 +178,13 @@ void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int sel
     char buffer[1024];
     int offset = 0;
 
+    // Get pieces that will be flipped for preview
+    Move piecesToFlip[64];
+    int numPiecesToFlip = 0;
+    if (selectedIndex >= 0 && selectedIndex < numValidMoves) {
+        getPiecesToFlip(board, &validMoves[selectedIndex], player, piecesToFlip, &numPiecesToFlip);
+    }
+
     // Baris atas
     offset += sprintf(buffer + offset, "  +-----------------+\n"); //border top
 
@@ -194,6 +201,7 @@ void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int sel
             int rowIndex = rowNumber -1;
             int isValid = 0;
             int isSelected=0;
+            int willBeFlipped = 0;
 
             //check if position contain valid move or isSelected 
             int validMovesIndex = 0;
@@ -209,8 +217,23 @@ void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int sel
                 validMovesIndex++;
             }
 
+            // Check if this piece will be flipped (for preview)
+            if (selectedIndex >= 0) {
+                int flipIndex = 0;
+                while (flipIndex < numPiecesToFlip) {
+                    if (piecesToFlip[flipIndex].x == colIndex && piecesToFlip[flipIndex].y == rowIndex) {
+                        willBeFlipped = 1;
+                        break;
+                    }
+                    flipIndex++;
+                }
+            }
+
             if (isSelected){ // isSelected>0 with special formatting
                 offset += sprintf (buffer + offset, " \033[30;47m%c\033[0m", player);
+            }
+            else if (willBeFlipped){ // pieces that will be flipped
+                offset += sprintf (buffer + offset, " \033[1;93m%c\033[0m", c);
             }
             else if (isValid){ // possible move
                 offset += sprintf (buffer + offset, " \033[2m%c\033[m", tolower(player));
@@ -366,6 +389,70 @@ void makeMove(NodeOctuple *board, Move *move, char player) {
             int i;
             for (i = 0; i < flipCount; i++) {
                 piecesToFlip[i]->info = player;
+            }
+        }
+    }
+}
+
+// Author: Ihsan
+// Function to get pieces that will be flipped for preview
+void getPiecesToFlip(NodeOctuple *board, Move *move, char player, Move *piecesToFlip, int *numPiecesToFlip) {
+    *numPiecesToFlip = 0;
+    char opponent = getOppositePiece(player);
+    
+    NodeOctuple *moveNode = getNodeAt(board, move->x, move->y);
+
+    int dx[] = {
+        -1,  // 0: left
+        1,  // 1: right
+        0,  // 2: up
+        0,  // 3: down
+        -1,  // 4: upleft
+        1,  // 5: upright
+        -1,  // 6: downleft
+        1   // 7: downright
+    };
+    int dy[] = {
+        0,  // 0: left
+        0,  // 1: right
+        -1,  // 2: up
+        1,  // 3: down
+        -1,  // 4: upleft
+        -1,  // 5: upright
+        1,  // 6: downleft
+        1   // 7: downright
+    };
+
+    int dir;
+    for (dir = 0; dir < 8; dir++) {
+        NodeOctuple *current = getNext(moveNode, dir);
+        Move tempPieces[8];
+        int tempCount = 0;
+        boolean foundOpponent = false;
+
+        // Calculate the coordinates in the direction
+        int cx = move->x + dx[dir];
+        int cy = move->y + dy[dir];
+
+        while (current != NULL && current->info == opponent) {
+            // Save the opponent piece coordinates
+            tempPieces[tempCount].x = cx;
+            tempPieces[tempCount].y = cy;
+            tempCount++;
+            foundOpponent = true;
+
+            // next node in the direction
+            current = getNext(current, dir);
+            cx += dx[dir];
+            cy += dy[dir];
+        }
+
+        // if found our pion, save all tempPieces
+        if (foundOpponent && current != NULL && current->info == player) {
+            int i;
+            for (i = 0; i < tempCount; i++) {
+                piecesToFlip[*numPiecesToFlip] = tempPieces[i];
+                (*numPiecesToFlip)++;
             }
         }
     }
