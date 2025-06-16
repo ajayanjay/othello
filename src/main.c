@@ -62,8 +62,12 @@ void continueGame() {
 
     // Load the last saved game
     if (loadGame(&board, &player1, &player2, &stackRedo, &dequeUndo, &currentPlayer)) {
-        game(player1, player2, board, &stackRedo, &dequeUndo, currentPlayer);
-        saveReplayMenu(&dequeUndo);
+        int gameResult = game(player1, player2, board, &stackRedo, &dequeUndo, currentPlayer);
+        
+        // Only ask to save replay if game finished normally (not escaped)
+        if (gameResult == 0) {
+            saveReplayMenu(&dequeUndo);
+        }
         
         freeStack(&stackRedo);
         freeDeque(&dequeUndo);
@@ -151,9 +155,12 @@ void selectMode() {
 
             char startingPlayer = BLACK;
             // Start the game with selected player types
-            game(player1, player2, board, &stackRedo, &dequeUndo, startingPlayer);
+            int gameResult = game(player1, player2, board, &stackRedo, &dequeUndo, startingPlayer);
             
-            saveReplayMenu(&dequeUndo);
+            // Only ask to save replay if game finished normally (not escaped)
+            if (gameResult == 0) {
+                saveReplayMenu(&dequeUndo);
+            }
 
             freeStack(&stackRedo);
             freeDeque(&dequeUndo);
