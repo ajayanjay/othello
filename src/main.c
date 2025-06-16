@@ -18,11 +18,13 @@ void howToPlay();
 
 int main(void)
 {
+    printf("\e[?25l");
     atexit(deleteTree);
     srand((unsigned int)time(NULL));
     createDirectory("gamedata");
     initScore();
     mainMenu();
+    printf("\e[?25h");
     return 0;
 }
 
