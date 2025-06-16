@@ -176,8 +176,14 @@ void clearScreen() {
 		GetConsoleScreenBufferInfo(hStdOut, &csbi);
 		DWORD dwSize = (DWORD) (csbi.dwSize.X * csbi.dwSize.Y);
 
-		/* Fill the entire buffer with spaces */
-		FillConsoleOutputCharacter(hStdOut, ' ', dwSize, coordScreen, &dwCharsWritten);
+        /* Reset console attributes to default */
+        SetConsoleTextAttribute(hStdOut, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+        
+        /* Fill the entire buffer with spaces */
+        FillConsoleOutputCharacter(hStdOut, ' ', dwSize, coordScreen, &dwCharsWritten);
+        
+        /* Fill attributes with default color */
+        FillConsoleOutputAttribute(hStdOut, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE, dwSize, coordScreen, &dwCharsWritten);
 
 		/* Move the cursor home */
 		SetConsoleCursorPosition(hStdOut, coordScreen);
