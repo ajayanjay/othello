@@ -90,21 +90,6 @@ Or directly:
 - **Y**: Redo undone move
 - **Escape**: Exit to main menu (saving the game)
 
-### Game Interface
-```
-  +-----------------+
-1 | . . . . . . . . |
-2 | . . . . . . . . |
-3 | . . . . . . . . |
-4 | . . . O X . . . |
-5 | . . . X O . . . |
-6 | . . . . . . . . |
-7 | . . . . . . . . |
-8 | . . . . . . . . |
-  +-----------------+
-    A B C D E F G H
-```
-
 ## 📁 Project Structure
 
 ```
