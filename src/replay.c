@@ -99,13 +99,12 @@ void printReplay(const char *fileName){
         else                        printf("      Step %d (%c):", pos, act.currentPlayer);
 
         printBoardArray(act.board, act.currentPlayer, &act.lastMove);
-        printf(
-            "\n"
-            "   LEFT_KEY = Previous Step\n"
-            "   RIGHT_KEY = Next Step\n"
-            "   ESC_KEY = Exit Replay\n"
+        printf("\n"
+           "       Controls:\n"
+           " [LEFT] (Previous Step)\n"
+           " [RIGHT] (Next Step)\n"
+           " [ESCAPE] (Back To Replay Menu)\n\n"
         );
-
         boolean unnecessaryInput = true;
         while (unnecessaryInput) switch (userInput()) {
             case INPUT_RIGHT:
