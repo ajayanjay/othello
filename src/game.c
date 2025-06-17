@@ -137,8 +137,8 @@ void getValidMoves (NodeOctuple *root, char player, Move *validMoves, int *numVa
         while (col != NULL && colIndex < 8){
             //if isvalidmove, add to list
             if (isValidMove(col, player)){ //col=pointer node
-                validMoves[*numValidMoves].x = colIndex; //*numvalidmove beacuse acces score
-                validMoves[*numValidMoves].y = rowIndex;
+                validMoves[*numValidMoves].x = (char)colIndex; //*numvalidmove beacuse acces score
+                validMoves[*numValidMoves].y = (char)rowIndex;
                 (*numValidMoves)++; //update index validmoves
             }
             col = col->right; //update collumn
@@ -447,8 +447,8 @@ void getPiecesToFlip(NodeOctuple *board, Move *move, char player, Move *piecesTo
 
         while (current != NULL && current->info == opponent) {
             // Save the opponent piece coordinates
-            tempPieces[tempCount].x = cx;
-            tempPieces[tempCount].y = cy;
+            tempPieces[tempCount].x = (char)cx;
+            tempPieces[tempCount].y = (char)cy;
             tempCount++;
             foundOpponent = true;
 
