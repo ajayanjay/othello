@@ -141,6 +141,8 @@ void inputLimitedString(char * buffer, int minSize, int maxSize, int (*isCharAll
 	int count = 0;
 	int input;
 
+	printf("\e[?25h");
+
 	while (1) {
 		input = nonBlockingInput();
 
@@ -163,6 +165,7 @@ void inputLimitedString(char * buffer, int minSize, int maxSize, int (*isCharAll
 
 	buffer[count] = '\0';
 	printf("\n");
+	printf("\e[?25l");
 }
 
 void clearScreen() {
