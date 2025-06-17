@@ -182,7 +182,7 @@ void howToPlay()
         "2. Players take turns placing their pieces on the board.\n"
         "3. A player can capture the opponent's pieces by enclosing them.\n"
         "4. The game ends when the board is full or no more moves are possible.\n"
-        "5. The player with the most pieces on the board wins.\n"
+        "5. The player with the most pieces on the board wins.\n\n"
         "Press ENTER to return to the main menu...\n"
     );
     inputUntilEnter();
