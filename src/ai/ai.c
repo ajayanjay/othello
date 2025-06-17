@@ -158,6 +158,7 @@ Move * getValidMovesArray(char board[8][8], char player, int *returnSize) {
     for (i = 0; i < 8; ++i) {
         int j;
         for (j = 0; j < 8; ++j) {
+            if (board[i][j] != EMPTY) continue;
             Move temp = {.x = j, .y = i};
             if (isValidMoveArray(board, &temp, player) == 1) {
                 buffer[*returnSize] = temp;
@@ -286,14 +287,17 @@ int isBoardEqual(char board[8][8], char other[8][8]) {
 
 int isGameFinishedArray(char board[8][8]) {
     
-    int countBlack = 0, countWhite = 0;
-    Move *movesBlack = getValidMovesArray(board, BLACK, &countBlack);
-    Move *movesWhite = getValidMovesArray(board, WHITE, &countWhite);
+    int i;
+    for (i = 0; i < 8; ++i) {
+        int j;
+        for (j = 0; j < 8; ++j) {
+            if (board[i][j] != EMPTY) continue;
+            if (isValidMoveArray(board, &(Move){j, i}, BLACK) || 
+                isValidMoveArray(board, &(Move){j, i}, WHITE)) {
+                return 0;
+            }
+        }
+    }
 
-    if ((movesBlack == NULL) && (movesWhite == NULL)) return 1;
-
-    free(movesBlack);
-    free(movesWhite);
-
-    return 0;
+    return 1;
 }

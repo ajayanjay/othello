@@ -98,14 +98,25 @@ void updateTree(Move lastMove) {
 
 // Author: Azzar
 int isGameOver(NodeOctuple * board) {
-    return !hasValidMove(board, BLACK) && !hasValidMove(board, WHITE);
-}
+    NodeOctuple * y = board;
+    NodeOctuple * x;
 
-// Author: Azzar
-int hasValidMove(NodeOctuple * board, char player) {
-    Move buffer[64]; int bufferSize = 0;
-    getValidMoves(board, player, buffer, &bufferSize);
-    return bufferSize > 0;
+    while (y != NULL) {
+        x = y;
+        while (x != NULL) {
+            if (x->info != EMPTY) {
+                x = x->right;
+                continue;
+            }
+            if (isValidMove(x, BLACK) || isValidMove(x, WHITE))
+                return 0;
+            
+            x = x->right;
+        }
+        y = y->down;
+    }
+
+    return 1;
 }
 
 // Author: Ihsan
