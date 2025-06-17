@@ -276,4 +276,5 @@ boolean confirmDeleteReplay(){
         case 1: //yes
             return true; // Delete replay file
     }
+    return false;
 }
