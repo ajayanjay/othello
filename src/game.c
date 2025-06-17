@@ -269,15 +269,15 @@ void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int sel
     }
 
     offset += sprintf(buffer + offset, "  +-----------------+\n"); //border bottom
-    offset += sprintf(buffer + offset, "    A B C D E F G H\n");
+    offset += sprintf(buffer + offset, "    A B C D E F G H\n\n");
+
+    offset += sprintf(buffer + offset, "    Current Player:\n");
+    offset += sprintf(buffer + offset, "      (%c) [%d, %d]\n", player, validMoves[selectedIndex].x + 1, validMoves[selectedIndex].y + 1);
 
     // Print all
     printf("%s", buffer);
     if (showScore == true){
         printCurrentScores(board);
-    }
-    else{
-        return;
     }
 }
 
