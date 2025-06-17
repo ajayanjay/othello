@@ -569,7 +569,11 @@ Move getBestMove(NodeOctuple *board, char player, Move * moves, int movesSize, i
 }
 
 int minimax(NbTree * node, int depth, char player, boolean isMax, int alpha, int beta) {
-    if (depth == 0 || node->info.isGameFinished)
+
+    if (node->info.isGameFinished)
+        return evaluateFinishedGameBoardArray(node->info.board, player);
+
+    if (depth == 0)
         return evaluateBoardArray(node->info.board, player);
 
     if (node->fs == NULL) {

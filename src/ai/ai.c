@@ -68,6 +68,17 @@ int evaluateBoardArray(char board[8][8], char player) {
     return 2 * mobility + pieceDifference + 10 * corner;
 }
 
+int evaluateFinishedGameBoardArray(char board[8][8], char player) {
+    char opponent = getOppositePiece(player);
+
+    int myPieces = getPieceCountArray(board, player);
+    int opponentPieces = getPieceCountArray(board, opponent);
+
+    if (myPieces > opponentPieces) return 1000; // Win
+    else if (myPieces < opponentPieces) return -1000; // Loss
+    else return 0; // Draw
+}
+
 int evaluatePieceDifference(char board[8][8], char player) {
     char opponent = getOppositePiece(player);
 

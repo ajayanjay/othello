@@ -16,6 +16,7 @@ AIInfo createAIInfo(char board[8][8], char currentPlayer, Move move);
 void printBoardArray (char board [8][8], char player, Move *selectedMove);
 
 int evaluateBoardArray(char board[8][8], char player);
+int evaluateFinishedGameBoardArray(char board[8][8], char player);
 
 int evaluateBoardMapArray(char board[8][8], char player);
 
