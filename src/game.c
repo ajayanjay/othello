@@ -290,8 +290,8 @@ void gameOverScreen(NodeOctuple * board, Player player1, Player player2){
     int whiteScore = calculateWeightedScore(whitePieces, gBlackPlayer.type);
     
     printf("Final Scores:\n");
-    printf("Black (X): %d pieces\n", blackScore);
-    printf("White (O): %d pieces\n", whiteScore);
+    printf("Black (X): %d\n", blackScore);
+    printf("White (O): %d\n", whiteScore);
     
     // Determine winner and handle scoring for human players
     if (blackScore > whiteScore) {
