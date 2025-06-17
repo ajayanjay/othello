@@ -1,6 +1,6 @@
 # Othello Game in C
 
-![Alt text](./preview.png?raw=true "Preview")
+![Alt text](./preview.png?raw=true "Preview")  
 A comprehensive implementation of the classic Othello (Reversi) board game written in C, featuring multiple AI difficulty levels, game saving/loading, replay system, and cross-platform compatibility.
 
 ## 🎯 Overview
