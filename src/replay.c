@@ -19,10 +19,10 @@ boolean saveReplayMenu(Deque * dequeUndo) {
 
     createDirectory (REPLAY_DIR);
 
-    const char* saveHeader = "Would you like to save replay this match\n";
+    const char* saveHeader = "Would you like to save replay this match\n\n";
     const char* saveItems[] = {
         "Yes\n",
-        "No\n",
+        "No\n\n",
         NULL
     };
     const char* saveSelector = "Press Enter to Select...";
@@ -56,6 +56,9 @@ boolean saveReplayMenu(Deque * dequeUndo) {
             saveDeque (dequeUndo, "gamedata/replays/1LastGame");
             return true;
         } else if (result == 1) {
+            saveDeque (dequeUndo, "gamedata/replays/1LastGame");
+            return false;
+        } else {
             saveDeque (dequeUndo, "gamedata/replays/1LastGame");
             return false;
         }
@@ -136,7 +139,8 @@ void replayMainMenu() {
     const char* replayMenuHeader = "Replay Menu\n\n";
     const char* replayMenuItems[] = {
         "Play Replay\n",
-        "Delete Replay\n", 
+        "Delete Replay\n\n",
+
         "Back to Main Menu\n",
         NULL
     };
@@ -158,7 +162,7 @@ void replayMainMenu() {
                 return;
                 
             default:
-                break;
+                return;
         }
     }
 }
@@ -239,6 +243,8 @@ void selectReplays(int action){
                 default:
                     return;
             }
+        } else {
+            return;
         }
     }
 }
@@ -262,10 +268,10 @@ void deleteReplay(const char *filename) {
 }
 
 boolean confirmDeleteReplay(){
-    const char* confirmDeleteHeader = "Are you sure you want to delete this replay?\n";
+    const char* confirmDeleteHeader = "Are you sure you want to delete this replay?\n\n";
     const char* saveItems[] = {
         "No\n",
-        "Yes\n",
+        "Yes\n\n",
         NULL
     };
     const char* confirmDeleteSelector = "Press ENTER to confirm\n";
@@ -275,6 +281,8 @@ boolean confirmDeleteReplay(){
             return false; // Do nothing
         case 1: //yes
             return true; // Delete replay file
+        default:
+            return false;
     }
     return false;
 }

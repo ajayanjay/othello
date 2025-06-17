@@ -36,7 +36,8 @@ void mainMenu()
                                 "Continue\n",
                                 "Watch Replays\n",
                                 "Scoreboard\n",
-                                "How To Play\n",
+                                "How To Play\n\n",
+
                                 "Exit\n\n",
                                 NULL
     };
@@ -50,6 +51,7 @@ void mainMenu()
             case 3: printScoreboard(); break;
             case 4: howToPlay(); break;
             case 5: return;
+            default: return;
         }
 }
 
@@ -104,7 +106,7 @@ void selectMode() {
         "Human\n",
         "Easy AI\n",
         "Medium AI\n",
-        "Hard AI\n",
+        "Hard AI\n\n",
         "Back\n\n",
         NULL
     };
@@ -124,7 +126,7 @@ void selectMode() {
             case 2: player1 = player(AI_MEDIUM, BLACK); break;
             case 3: player1 = player(AI_HARD, BLACK); break;
             case 4: return;
-            default: continue;
+            default: return;
         }
         
         // Select Player 2
@@ -132,7 +134,7 @@ void selectMode() {
             int player2Selection = menu(player2Header, playerOptions, modeSelector);
             
             // Handle Back option (return to Player 1 selection)
-            if (player2Selection == 4) {
+            if (player2Selection == 4 || player2Selection < 0) {
                 break;
             }
             

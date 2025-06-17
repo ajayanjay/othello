@@ -14,6 +14,18 @@
 
 // All functions in this file were authored by Azzar
 
+int moveConsoleCursorTo(int x, int y)
+{
+	#ifdef _WIN32
+		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+		COORD coord = {x, y};
+		SetConsoleCursorPosition(hConsole, coord);
+	#else
+		printf("\033[%d;%dH", y + 1, x + 1); // ANSI escape code for moving cursor
+	#endif
+	return 0;
+}
+
 int menu(const char *menuHeader, const char **menuItems, const char *menuFooter)
 {
 	int cursor = 0, action;
@@ -22,15 +34,16 @@ int menu(const char *menuHeader, const char **menuItems, const char *menuFooter)
 	char buffer[64 * (n + 2)];
 	int offset = 0;
 
+	clearScreen();
 	while (1) 
 	{
-		clearScreen();
+		moveConsoleCursorTo(0, 0);
 		buffer[0] = 0; offset = 0;
 
 		offset += sprintf(buffer + offset, "%s", menuHeader);
 		int i;
 		for (i = 0; i < n; ++i) {
-			if (i == cursor) offset += sprintf(buffer + offset ,"> %s", menuItems[i]);
+			if (i == cursor) offset += sprintf(buffer + offset ,"\033[7m%s\033[m", menuItems[i]);
 			else offset += sprintf(buffer + offset, "%s", menuItems[i]);
 		}
 		offset += sprintf(buffer + offset, "%s", menuFooter);
@@ -248,7 +261,7 @@ int menuInput(int *item, int minSize, int maxSize)
 			return INPUT_ENTER;
 
 		case INPUT_ESCAPE:
-			*item = maxSize;
+			*item = minSize - 1;
 			return INPUT_ENTER;
 
 		default:
