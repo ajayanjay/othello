@@ -25,6 +25,7 @@ Move playAIEasy(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char p
     while (1) {
         clearScreen();
         printBoard (board, validMoves, numValidMoves, selected, player, true);
+        printHelpAI();
 
         boolean unnecessaryInput = true;
         while (unnecessaryInput) switch (userInput()) {
@@ -79,6 +80,7 @@ Move playHuman(NodeOctuple *root, Deque * dequeUndo, Stack * stackRedo, char pla
     while (1){
         clearScreen();
         printBoard (root, validMoves, numValidMoves, selected, player, true);
+        printHelpHuman();
 
         boolean unnecessaryInput = true;
         while (unnecessaryInput) switch (userInput()){
@@ -156,6 +158,7 @@ Move playAIMedium(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char
         }
         
         printBoard(board, validMoves, numValidMoves, selectedIndex, player, true);
+        printHelpAI();
         
         boolean unnecessaryInput = true;
         while (unnecessaryInput) switch (userInput()) {
@@ -216,6 +219,7 @@ Move playAIHard(NodeOctuple *board, Deque * UNUSED(dequeUndo), Stack * UNUSED(st
     
     clearScreen();
     printBoard(board, validMoves, numValidMoves, selectedIndex, player, true);
+    printHelpAIHard();
     
     while (1) {
         Input input = userInput();

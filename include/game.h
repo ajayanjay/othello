@@ -27,6 +27,10 @@ Activity activity(NodeOctuple * board, Move lastMove, char currentPlayer);
 int undo(NodeOctuple * board, Deque * dequeUndo, Stack * stackRedo, char * currentPlayer);
 int redo(NodeOctuple * board, Deque * dequeUndo, Stack * stackRedo, char * currentPlayer);
 
+void printHelpHuman();
+void printHelpAI();
+void printHelpAIHard();
+
 int saveGame(NodeOctuple * board, Player player1, Player player2, Stack stackRedo, Deque dequeUndo, char currentPlayer);
 int loadGame(NodeOctuple ** board, Player * player1, Player * player2, Stack * stackRedo, Deque * dequeUndo, char * currentPlayer);
 void removeSavedGameFiles();

@@ -33,7 +33,6 @@ int game(Player player1, Player player2, NodeOctuple * board, Stack *stackRedo, 
 
     while (1) {
         clearScreen();
-
         if (isGameOver(board)) {
             deleteTree();
             pushTail(dequeUndo, activity(board, (Move) {-1, -1}, currentPlayer->symbol));
@@ -271,12 +270,14 @@ void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int sel
     offset += sprintf(buffer + offset, "  +-----------------+\n"); //border bottom
     offset += sprintf(buffer + offset, "    A B C D E F G H\n\n");
 
-    offset += sprintf(buffer + offset, "    Current Player:\n");
-    offset += sprintf(buffer + offset, "      (%c) [%d, %d]\n", player, validMoves[selectedIndex].x + 1, validMoves[selectedIndex].y + 1);
+    if (showScore) {
+        offset += sprintf(buffer + offset, "    Current Player:\n");
+        offset += sprintf(buffer + offset, "      (%c) [%d, %d]\n", player, validMoves[selectedIndex].x + 1, validMoves[selectedIndex].y + 1);
+    }
 
     // Print all
     printf("%s", buffer);
-    if (showScore == true){
+    if (showScore){
         printCurrentScores(board);
     }
 }
@@ -467,6 +468,35 @@ void getPiecesToFlip(NodeOctuple *board, Move *move, char player, Move *piecesTo
             }
         }
     }
+}
+
+void printHelpHuman() {
+    printf("\n"
+           "       Controls:\n"
+           " [ENTER] (Confirm the Selected Move)\n"
+           " [LEFT / RIGHT] (Navigate the Available Moves)\n"
+           " [Z] (UNDO the last Move)\n"
+           " [Y] (REDO the UNDO'd Move)\n"
+           " [ESCAPE] (Exit to Main Menu)\n\n"
+        );
+}
+
+void printHelpAI() {
+    printf("\n"
+           "       Controls:\n"
+           " [ENTER] (Confirm AI's Move)\n"
+           " [Z] (UNDO the last Move)\n"
+           " [Y] (REDO the UNDO'd Move)\n"
+           " [ESCAPE] (Exit to Main Menu)\n\n"
+        );
+}
+
+void printHelpAIHard() {
+    printf("\n"
+           "       Controls:\n"
+           " [ENTER] (Confirm AI's Move)\n"
+           " [ESCAPE] (Exit to Main Menu)\n\n"
+        );
 }
 
 int saveCurrentPlayer(char currentPlayer, const char *filename) {
