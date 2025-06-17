@@ -65,3 +65,7 @@ int countFiles (const char *directoryPath){
     }
     return countTotalFile;
 }
+
+int removeFile (const char *filePath) {
+    return remove(filePath);
+}

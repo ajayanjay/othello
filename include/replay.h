@@ -9,6 +9,9 @@
 boolean overwriteReplayMenu();
 boolean saveReplayMenu(Deque * dequeUndo);
 void printReplay(const char *filename);
-void selectReplays();
+void replayMainMenu();
+void selectReplays(int action);
+void deleteReplay(const char *filename);
+boolean confirmDeleteReplay();
 
 #endif

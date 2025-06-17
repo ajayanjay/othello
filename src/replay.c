@@ -132,40 +132,85 @@ void printReplay(const char *fileName){
     }
 }
 
-void selectReplays(){
-    const char* menuReplayHeader = "Select replay you want to see\n\n";
-    const char* replaySelector = "\nPress ENTER to select\n";
-
-    int countTotalFile = countFiles (REPLAY_DIR);
-
-    if (countTotalFile == 0) {
-        printf("No replay files found!\n");
-        return;
-    }
-
-    DIR *d;
-    struct dirent *dir;
-
-    char listItem[countTotalFile][64];
-    const char *listPtr[countTotalFile + 2];
-    int count = 0;
-
-    d = opendir (REPLAY_DIR);
-    if (!d) return;
-
-    while ((dir = readdir (d)) != NULL){
-        if (dir->d_name[0] == '.') continue;
-        snprintf(listItem[count], 261, "%s\n", dir->d_name);
-        listItem[count][63] = '\0';
-        listPtr[count] = listItem[count];
-        count++;
-    }
-    closedir(d);
-
-    listPtr[count] = "(Back To Main Menu)\n";
-    listPtr[count+1] = NULL;
+void replayMainMenu() {
+    const char* replayMenuHeader = "Replay Menu\n\n";
+    const char* replayMenuItems[] = {
+        "Play Replay\n",
+        "Delete Replay\n", 
+        "Back to Main Menu\n",
+        NULL
+    };
+    const char* replayMenuSelector = "\nPress ENTER to select\n";
 
     while (1) {
+        int selected = menu(replayMenuHeader, replayMenuItems, replayMenuSelector);
+        
+        switch (selected) {
+            case 0: // Play Replay
+                selectReplays(0);
+                break;
+                
+            case 1: // Delete Replay
+                selectReplays(1);
+                break;
+                
+            case 2: // Back to Main Menu
+                return;
+                
+            default:
+                break;
+        }
+    }
+}
+
+void selectReplays(int action){
+    const char* menuReplayHeader;
+    switch (action) {
+        case 0: // Play replay
+            menuReplayHeader = "Select replay you want to play\n\n";
+            break;
+        case 1: // Delete replay
+            menuReplayHeader = "Select replay you want to delete\n\n";
+            break;
+        default:
+            return;
+    }
+    const char* replaySelector = "\nPress ENTER to select\n";
+
+    while (1) {
+        // Refresh file list runtime
+        int countTotalFile = countFiles (REPLAY_DIR);
+
+        if (countTotalFile == 0) {
+            clearScreen();
+            printf("No replay files found!\n");
+            printf("Press any key to continue...\n");
+            inputUntilEnter();
+            return;
+        }
+
+        DIR *d;
+        struct dirent *dir;
+
+        char listItem[countTotalFile][64];
+        const char *listPtr[countTotalFile + 2];
+        int count = 0;
+
+        d = opendir (REPLAY_DIR);
+        if (!d) return;
+
+        while ((dir = readdir (d)) != NULL){
+            if (dir->d_name[0] == '.') continue;
+            snprintf(listItem[count], 261, "%s\n", dir->d_name);
+            listItem[count][63] = '\0';
+            listPtr[count] = listItem[count];
+            count++;
+        }
+        closedir(d);
+
+        listPtr[count] = "(Back)\n";
+        listPtr[count+1] = NULL;
+
         int selected = menu(menuReplayHeader, listPtr, replaySelector);
 
         if (selected == count){
@@ -179,10 +224,56 @@ void selectReplays(){
             filename[63] = '\0';
             char *newline = strchr(filename, '\n');
             if (newline) *newline = '\0';
-
             char path[128];
-            snprintf(path, sizeof(path), "gamedata/replays/%s", filename);
-            printReplay(path);
+
+            switch (action) {
+                case 0: // Play replay
+                    snprintf(path, sizeof(path), "%s/%s", REPLAY_DIR, filename);
+                    printReplay(path);
+                    break; // back
+                case 1: // Delete replay
+                    if (confirmDeleteReplay()) {
+                        deleteReplay(filename);
+                    }
+                    break; // back
+                default:
+                    return;
+            }
         }
+    }
+}
+
+void deleteReplay(const char *filename) {
+    clearScreen();
+    if (filename == NULL || strlen(filename) == 0) {
+        return;
+    }
+    char path[128];
+    snprintf(path, sizeof(path), "%s/%s", REPLAY_DIR, filename);
+    
+    if (removeFile(path) == 0) {
+        printf("Replay deleted successfully!\n");
+    } else {
+        printf("Failed to delete replay file!\n");
+    }
+    
+    printf("Press any key to continue...\n");
+    inputUntilEnter();
+}
+
+boolean confirmDeleteReplay(){
+    const char* confirmDeleteHeader = "Are you sure you want to delete this replay?\n";
+    const char* saveItems[] = {
+        "No\n",
+        "Yes\n",
+        NULL
+    };
+    const char* confirmDeleteSelector = "Press ENTER to confirm\n";
+    int selected = menu(confirmDeleteHeader, saveItems, confirmDeleteSelector);
+    switch (selected) {
+        case 0: //no
+            return false; // Do nothing
+        case 1: //yes
+            return true; // Delete replay file
     }
 }

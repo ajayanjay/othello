@@ -46,7 +46,7 @@ void mainMenu()
         switch (menu(menuHeader, menuItems, menuFooter)) {
             case 0: newGame(); break;
             case 1: continueGame(); break;
-            case 2: selectReplays(); break;
+            case 2: replayMainMenu(); break;
             case 3: printScoreboard(); break;
             case 4: howToPlay(); break;
             case 5: return;
