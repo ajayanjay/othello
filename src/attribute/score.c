@@ -38,7 +38,7 @@ void printScoreboard() {
     
     int i;
     for (i = 0; i < scoreboard.playerCount; i++) {
-        printf("%2d.   %s   %3d\n", 
+        printf("%2d.   %-3s   %3d\n", 
                i + 1,
                scoreboard.scores[i].playerName,
                scoreboard.scores[i].highScore);
