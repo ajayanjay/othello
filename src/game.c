@@ -476,7 +476,7 @@ void printHelpHuman() {
            " [ENTER] (Confirm the Selected Move)\n"
            " [LEFT / RIGHT] (Navigate the Available Moves)\n"
            " [Z] (UNDO the last Move)\n"
-           " [Y] (REDO the UNDO'd Move)\n"
+           " [Y] (REDO the undone Move)\n"
            " [ESCAPE] (Exit to Main Menu)\n\n"
         );
 }
@@ -486,7 +486,7 @@ void printHelpAI() {
            "       Controls:\n"
            " [ENTER] (Confirm AI's Move)\n"
            " [Z] (UNDO the last Move)\n"
-           " [Y] (REDO the UNDO'd Move)\n"
+           " [Y] (REDO the undone Move)\n"
            " [ESCAPE] (Exit to Main Menu)\n\n"
         );
 }
