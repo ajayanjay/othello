@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Validates if character is alphanumeric or space to avoid bug
 int isAlphaOrNumberOrSpace(int c) {
     return ((c >= 'a' && c <= 'z') || 
             (c >= 'A' && c <= 'Z') || 
@@ -15,6 +16,7 @@ int isAlphaOrNumberOrSpace(int c) {
             (c == ' '));
 }
 
+// Displays menu for saving game replay with filename input
 boolean saveReplayMenu(Deque * dequeUndo) {
 
     createDirectory (REPLAY_DIR);
@@ -65,6 +67,7 @@ boolean saveReplayMenu(Deque * dequeUndo) {
     }
 }
 
+// Shows confirmation menu when attempting to overwrite existing replay file
 boolean overwriteReplayMenu (){
     const char* overwriteHeader = "File already exists! Do you want to overwrite?\n";
     const char* overwriteItems[] = {
@@ -75,12 +78,13 @@ boolean overwriteReplayMenu (){
     const char* overwriteSelector = "Press enter to select\n";
 
     switch(menu(overwriteHeader, overwriteItems, overwriteSelector)) {
-        case 0: return false;
-        case 1: return true;
+        case 0: return false; // no, new name
+        case 1: return true; // overwrite
         default: return false;
     }
 }
 
+// Displays saved replay step by step with navigation controls
 void printReplay(const char *fileName){
     Deque replay;
     if (!loadDeque(&replay, fileName) || isDequeEmpty(&replay)){
@@ -134,6 +138,7 @@ void printReplay(const char *fileName){
     }
 }
 
+// Main menu interface for replay system with play and delete options
 void replayMainMenu() {
     const char* replayMenuHeader = "Replay Menu\n\n";
     const char* replayMenuItems[] = {
@@ -166,6 +171,7 @@ void replayMainMenu() {
     }
 }
 
+// Displays list of available replays for selection
 void selectReplays(int action){
     const char* menuReplayHeader;
     switch (action) {
@@ -182,9 +188,9 @@ void selectReplays(int action){
 
     while (1) {
         // Refresh file list runtime
-        int countTotalFile = countFiles (REPLAY_DIR);
+        int countTotalFile = countFiles (REPLAY_DIR); // Get total count of files in replay directory
 
-        if (countTotalFile == 0) {
+        if (countTotalFile == 0) { // No replay files found
             clearScreen();
             printf("No replay files found!\n");
             printf("Press any key to continue...\n");
@@ -195,7 +201,7 @@ void selectReplays(int action){
         DIR *d;
         struct dirent *dir;
 
-        char listItem[countTotalFile][64];
+        char listItem[countTotalFile][64]; // Array to gathering file names
         const char *listPtr[countTotalFile + 2];
         int count = 0;
 
@@ -211,17 +217,17 @@ void selectReplays(int action){
         }
         closedir(d);
 
-        listPtr[count] = "(Back)\n";
+        listPtr[count] = "(Back)\n"; // Add back option
         listPtr[count+1] = NULL;
 
-        int selected = menu(menuReplayHeader, listPtr, replaySelector);
+        int selected = menu(menuReplayHeader, listPtr, replaySelector); // Get selected item from menu
 
         if (selected == count){
             return; // case back
         }
 
         if (selected >= 0 && selected < count) {
-            // Hapus newline sebelum membuat path
+            // Delete newline before path
             char filename[64];
             strncpy(filename, listItem[selected], 63);
             filename[63] = '\0';
@@ -248,6 +254,7 @@ void selectReplays(int action){
     }
 }
 
+// Deletes specified replay file from filesystem
 void deleteReplay(const char *filename) {
     clearScreen();
     if (filename == NULL || strlen(filename) == 0) {
@@ -256,7 +263,7 @@ void deleteReplay(const char *filename) {
     char path[128];
     snprintf(path, sizeof(path), "%s/%s", REPLAY_DIR, filename);
     
-    if (removeFile(path) == 0) {
+    if (removeFile(path) == 0) { // Success delete 
         printf("Replay deleted successfully!\n");
     } else {
         printf("Failed to delete replay file!\n");
@@ -266,6 +273,7 @@ void deleteReplay(const char *filename) {
     inputUntilEnter();
 }
 
+// Shows confirmation dialog before permanently deleting a replay file
 boolean confirmDeleteReplay(){
     const char* confirmDeleteHeader = "Are you sure you want to delete this replay?\n\n";
     const char* saveItems[] = {

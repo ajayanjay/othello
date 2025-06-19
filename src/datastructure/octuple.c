@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// Creates a new octuple node with info and set all direction NULL
 // Author: Ihsan
 NodeOctuple * createNodeOctuple (OctupleInfo info){
     NodeOctuple * newNode = malloc (sizeof(NodeOctuple));
@@ -19,6 +20,7 @@ NodeOctuple * createNodeOctuple (OctupleInfo info){
     return newNode;
 }
 
+// Constructs 8x8 octuple linked list for Othello board with initial game pieces
 // Author: Ihsan
 void constructOthelloBoard(NodeOctuple **root) {
     /*
@@ -133,6 +135,7 @@ NodeOctuple * setNodeAt (NodeOctuple *root, OctupleInfo info,  int col, int row)
     return current;
 }
 
+// Returns pointer to node at specific column and row position in octuple board
 // Author: Ihsan
 NodeOctuple * getNodeAt(NodeOctuple *root, int col, int row) {
     NodeOctuple *current = root;
@@ -145,6 +148,7 @@ NodeOctuple * getNodeAt(NodeOctuple *root, int col, int row) {
     return current;
 }
 
+// Converts octuple linked list to 2D array for minimal memory and easier processing
 // Author: Ihsan
 void convertOctupleToArray (NodeOctuple *root, char boardArray[8][8]){
     /*
@@ -170,6 +174,7 @@ void convertOctupleToArray (NodeOctuple *root, char boardArray[8][8]){
     }
 }
 
+// convert array to octuple linked list
 // Author: Ihsan
 void convertArrayToOctuple(NodeOctuple *root, char boardArray[8][8]) {
     /*
@@ -195,6 +200,7 @@ void convertArrayToOctuple(NodeOctuple *root, char boardArray[8][8]) {
     }
 }
 
+// Saves octuple board to text file in 8x8 grid format
 // Author: Ihsan
 void saveBoard(NodeOctuple *root, const char *filename) {
     /*
@@ -355,6 +361,7 @@ int loadBoard(NodeOctuple **root, const char *filename) {
     return 1; // Board loaded successfully
 }
 
+// Helper function to get next node in specified direction (0-7 for 8 directions)
 // Author: Ihsan
 NodeOctuple* getNext(NodeOctuple* node, int dir) {
     // Function helper to get access various direction. Returns pointer node
@@ -371,6 +378,7 @@ NodeOctuple* getNext(NodeOctuple* node, int dir) {
     }
 }
 
+// Free memory of single row in octuple board recursive from right to left
 // Author: Ihsan
 void freeRow(NodeOctuple *col) {
     if (col == NULL) return;
@@ -378,6 +386,7 @@ void freeRow(NodeOctuple *col) {
     free(col);
 }
 
+// Free entire octuple board memory recursively from bottom to top
 // Author: Ihsan
 void freeBoard(NodeOctuple *row) {
     if (row == NULL) return;

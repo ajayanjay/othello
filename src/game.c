@@ -118,6 +118,7 @@ int isGameOver(NodeOctuple * board) {
     return 1;
 }
 
+// Finds all valid moves for a player and stores them in validMoves array
 // Author: Ihsan
 // Note: Moved to this file by Azzar
 void getValidMoves (NodeOctuple *root, char player, Move *validMoves, int *numValidMoves) {
@@ -148,6 +149,7 @@ void getValidMoves (NodeOctuple *root, char player, Move *validMoves, int *numVa
     }
 }
 
+// Checks if a move is valid by verifying if it can capture opponent pieces in any direction
 // Author: Ihsan
 // Note: Moved to this file by Azzar
 int isValidMove(NodeOctuple* node, char player) {
@@ -182,6 +184,7 @@ int isValidMove(NodeOctuple* node, char player) {
     return false;
 }
 
+// Displays game board with valid moves, current selection preview
 // Author: Ihsan
 // Note: Moved to this file by Azzar
 void printBoard(NodeOctuple *board, Move *validMoves, int numValidMoves, int selectedIndex, char player, boolean showScore) {
@@ -407,7 +410,7 @@ void makeMove(NodeOctuple *board, Move *move, char player) {
 }
 
 // Author: Ihsan
-// Function to get pieces that will be flipped for preview
+// Get coordinats will be flipped for a given selected move for preview
 void getPiecesToFlip(NodeOctuple *board, Move *move, char player, Move *piecesToFlip, int *numPiecesToFlip) {
     *numPiecesToFlip = 0;
     char opponent = getOppositePiece(player);

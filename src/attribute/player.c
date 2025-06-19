@@ -60,6 +60,7 @@ Move playAIEasy(NodeOctuple *board, Deque * dequeUndo, Stack * stackRedo, char p
     return validMoves[selected];
 }
 
+// Handles human player input with move selection
 // Author: Ihsan
 // Note: Moved to this file by Azzar
 Move playHuman(NodeOctuple *root, Deque * dequeUndo, Stack * stackRedo, char player){
@@ -103,19 +104,19 @@ Move playHuman(NodeOctuple *root, Deque * dequeUndo, Stack * stackRedo, char pla
                 } else if (isDequeEmpty(dequeUndo))
                     break;
 
-                return (Move) {-2, -2};
+                return (Move) {-2, -2};  // undo
 
             case INPUT_Y:
                 if (isStackEmpty(stackRedo))
                     break;
 
-                return (Move) {-3, -3};
+                return (Move) {-3, -3};  // redo
 
             case INPUT_ENTER:
-                return validMoves[selected];
+                return validMoves[selected];  // Return selected valid move
 
             case INPUT_ESCAPE:
-                return (Move) {-4, -4};
+                return (Move) {-4, -4};  // exit
                 
             default:
                 break;

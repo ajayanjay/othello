@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <ctype.h>
 
+// Displays 2D array board with colored pieces, valid moves, and current selection highlighting
 void printBoardArray (char board [8][8], char player, Move *selectedMove){
     char buffer[4096];
     int offset = 0;

@@ -98,6 +98,7 @@ void newGame() {
     selectMode();
 }
 
+// Displays game mode selection menu for choosing player types (Human/AI difficulty levels)
 // Author: Ihsan
 void selectMode() {
     const char* player1Header = "Select Player 1\n\n";

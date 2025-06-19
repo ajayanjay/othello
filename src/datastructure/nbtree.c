@@ -3,11 +3,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// Checks if tree is empty
 // Author: Ihsan
 boolean isEmptyTree(NbTree *root){
     return root == NULL;
 }
 
+// Creates new tree node with info and child pointers to null
 // Author: Ihsan
 NbTree* createNodeTree (InfoNbTree b){
     NbTree* temp= (NbTree*) malloc (sizeof(NbTree));
@@ -21,6 +23,7 @@ NbTree* createNodeTree (InfoNbTree b){
     return temp;
 }
 
+// Recursive deletes entire tree structure and frees all allocated memory
 // Author: Ihsan
 void deleteEntireTree(NbTree** root){
     if (root== NULL || *root == NULL){
@@ -41,6 +44,7 @@ void deleteEntireTree(NbTree** root){
     *root = NULL;
 }
 
+// Keeps only chosen subtree and deletes all other branches for tree pruning
 // Author: Ihsan
 void disconnectTreeExcept(NbTree **root, NbTree * chosen) {
     if (*root == NULL) return;
@@ -54,26 +58,28 @@ void disconnectTreeExcept(NbTree **root, NbTree * chosen) {
     NbTree *prev = NULL;
     NbTree *curr = parent->fs;
 
+    // Search for chosen node among siblings
     while (curr != NULL && !isMoveEqual(curr->info.move, chosen->info.move)) {
         prev = curr;
         curr = curr->nb;
     }
 
-    if (curr != chosen) return;
+    if (curr != chosen) return;  // Chosen node not found
 
+    // Remove chosen node from sibling chain
     if (prev == NULL) {
         parent->fs = (chosen)->nb;
     } else {
         prev->nb = (chosen)->nb;
     }
 
-    (chosen)->nb = NULL;
+    (chosen)->nb = NULL;  // Disconnect chosen from siblings
 
     NbTree *oldRoot = *root;
 
-    *root = chosen;
+    *root = chosen;  // Make chosen node the new root
 
-    deleteEntireTree(&oldRoot);
+    deleteEntireTree(&oldRoot);  // Delete old tree structure
 }
 
 int insertChild(NbTree *parent, NbTree * son) {
